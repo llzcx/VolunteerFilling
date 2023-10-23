@@ -1,0 +1,76 @@
+server:
+    port: 8081
+    address: 0.0.0.0
+
+
+spring:
+    main:
+        allow-circular-references: true
+    datasource:
+#        url: jdbc:mysql://localhost:3306/social
+#        username: test
+#        password: root
+        url: jdbc:mysql://101.35.43.156:3306/test
+        username: root
+        password: 123abc456
+        driver-class-name: com.mysql.jdbc.Driver
+    data:
+        redis:
+            host: ${redis.host:127.0.0.1}
+            port: ${redis.port:6379} #redis通信地址
+            timeout: 1000 #超时时间ms
+            password:
+            lettuce:
+                pool: #连接池
+                    minIdle: 30
+                    maxIdle: 500
+                    maxWait: 10000
+                    maxActive: 500
+mybatis-plus:
+    configuration:
+        map-underscore-to-camel-case: true #开启驼峰转下划线
+
+#阿里云 OSS
+#不同的服务器，地址不同
+aliyun:
+    oss:
+        file:
+            endpoint: oss-cn-beijing.aliyuncs.com
+            keyid: LTAI5tBq6BzcnToWG84snx4S
+            keysecret: Nfj2tDXI5nBjtAYHNttywa7hK3fHVb
+            bucketname: social-application
+    #bucket可以在控制台创建，也可以使用java代码创建
+
+#JWT 双token
+jwt:
+    accessTokenHeader: ACCESSTOKEN
+    refreshTokenHeader: REFRESHTOKEN
+    accessTokenExpire: 1800 #（秒）30分钟
+    refreshTokenExpire: 172800 #（秒）2天
+    secret: abcdefghabcdefghabcdefghabcdefgh
+
+security:
+    releasable-path: #可放行资源
+        - /user/login #登录
+        - /user/loginVerify/image #登录验证码
+        - /user/loginVerify/base64 #图片Base54
+        - /user/loginOut #登出
+        - /user/register #注册
+        - /user/register/send/** #注册手机验证码发送
+        - /test/** #测试
+
+logging:
+    level:
+        root: INFO # 日志级别，可选值为：TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
+#        org.springframework: OFF
+#        com.baomidou.mybatisplus: OFF
+
+
+    pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" # 控制台日志输出格式
+        file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" # 日志文件输出格式
+#    file:
+#        path: /var/log/myapp
+#    file:
+#        name: myapp.log
+

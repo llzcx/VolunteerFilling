@@ -1,0 +1,75 @@
+package com.social.demo.common;
+
+/**
+ * @Author: 陈翔
+ * 规定:
+ * #200表示成功
+ * #999表示默认失败
+ * #1001～1999 区间表示参数错误
+ * #2001～2999 区间表示用户错误
+ * #3001～3999 区间表示接口异常
+ */
+public enum ResultCode {
+    /* 成功 */
+    SUCCESS(200, "成功"),
+
+    ERROR_UNKNOWN(400,"未知错误"),
+
+    ERROR_404(404,"网页或文件未找到"),
+
+    ERROR_505(500,"出错了"),
+
+    /* 默认失败 */
+    COMMON_FAIL(999, "失败"),
+
+    /* 参数错误：1000～1999 */
+    PARAM_NOT_VALID(1001, "参数无效"),
+    PARAM_IS_BLANK(1002, "参数为空"),
+    PARAM_TYPE_ERROR(1003, "参数类型错误"),
+    PARAM_NOT_COMPLETE(1004, "参数缺失"),
+
+
+    /* 用户错误 */
+    PASSWORD_ERROR(2001,"密码错误"),
+    CODE_ERROR(2002,"验证码错误"),
+    NOT_LOGIN(2003,"未登录"),
+    TOKEN_TIME_OUT(2004,"token已过期"),
+    TOKEN_EXCEPTION(2005,"token异常"),
+    AUTHENTICATION_EXCEPTION(2006,"身份验证异常"),
+    ACCESS_WAS_DENIED(2007,"访问被拒绝"),
+    OPERATION_FAIL(2008,"操作失败"),
+    UNAUTHORIZED_ACCESS(2009,"无权访问"),
+    USERNAME_HAS_ALREADY_BEEN_USED(2010,"用户名已经被使用"),
+    CODE_TIME_OUT(2011,"验证码过期"),
+    USER_NOT_AUTHENTICATED(2012,"用户未认证"),
+    USER_GENDER_MISMATCH(2013,"用户性别不符合"),
+
+
+
+        /*接口异常*/
+    UNDEFINED(3001,"枚举范围错误"),
+    NULL_POINT_EXCEPTION(3002,"空指针异常"),
+    ENCODING_ANOMALY(3003,"系统编码错误"),
+    DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
+
+    ;
+    private Integer code;
+    private String message;
+
+    ResultCode(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+}
