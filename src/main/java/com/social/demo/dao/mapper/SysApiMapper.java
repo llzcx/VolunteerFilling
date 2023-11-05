@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface SysApiMapper extends BaseMapper<SysApi> {
     /**
-     * 查询所有Api
+     * 查询系统中所有Api以及对应的身份列表
      * @return
      */
     List<SysApi> selectApisWithRoles();

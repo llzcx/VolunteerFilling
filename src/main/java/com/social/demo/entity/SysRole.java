@@ -28,6 +28,7 @@ public class SysRole {
     @TableField("update_time")
     private Timestamp updateTime;
 
+    @TableField("status")
     private Boolean status;
 
 }

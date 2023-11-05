@@ -18,12 +18,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * 权限-角色与用户操作
  * @author 陈翔
  */
 @Slf4j
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/role")
+@RequestMapping("/role")
 public class SysRoleController {
 
     @Autowired
@@ -38,6 +39,7 @@ public class SysRoleController {
 
     /**
      * 根据用户id获取身份
+     *
      * @return
      */
     @GetMapping
@@ -49,38 +51,63 @@ public class SysRoleController {
 
     /**
      * 添加一种身份
+     *
      * @param saveSysRoleDto
      * @return
      */
     @PostMapping
     public ApiResp<Object> saveRole(@RequestBody SaveSysRoleDto saveSysRoleDto) {
         SysRole sysRole = new SysRole();
-        BeanUtils.copyProperties(saveSysRoleDto,sysRole);
+        BeanUtils.copyProperties(saveSysRoleDto, sysRole);
         sysRoleService.save(sysRole);
         return ApiResp.success();
     }
 
     /**
      * 删除一种身份
-     * @param roleName
+     * @param roleId 身份id
      * @return
      */
-    @DeleteMapping("/{roleName}")
-    public ApiResp<Object> deleteRole(@PathVariable String roleName) {
-        sysRoleService.deleteRole(roleName);
+    @DeleteMapping("/{roleId}")
+    public ApiResp<Boolean> deleteRole(@PathVariable String roleId) {
+        sysRoleService.removeById(roleId);
+        return ApiResp.success(true);
+    }
+
+    /**
+     * 添加一条role -> user
+     * @param roleId 角色id
+     * @param userId 用户id
+     * @return
+     */
+    @PostMapping("/permission")
+    public ApiResp<Boolean> saveUserRole(@PathVariable Long roleId, @PathVariable Long userId) {
+
+        return ApiResp.success(true);
+    }
+
+    /**
+     * 删除一条role -> user
+     * @param userRoleId
+     * @return
+     */
+    @DeleteMapping("/permission/{userRoleId}")
+    public ApiResp<Object> deleteUserRole(@PathVariable String userRoleId) {
+
         return ApiResp.success();
     }
 
+    /**
+     * 查询一个身份的所有的role -> user （分页给出）
+     *
+     * @param roleId
+     * @return
+     */
     @GetMapping("/permission/{roleId}")
-    public ApiResp<Object> getPermission(@PathVariable Long roleId) {
-        // Your implementation to get permissions by roleId
-        return ApiResp.success();
-    }
-
-    @PostMapping("/{roleId}/permission")
-    public ApiResp<Object> savePermission(@PathVariable Long roleId, @RequestBody Set<Long> menus) {
+    public ApiResp<Object> selectUserRole(@PathVariable Long roleId) {
         // Your implementation to save permissions for roleId
         return ApiResp.success();
     }
+
 }
 
