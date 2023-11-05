@@ -26,6 +26,4 @@ public class Application {
 	public static  <T> T getBean(Class<T> cls){
 		return applicationContext.getBean(cls);
 	}
-
-
 }

@@ -1,26 +1,15 @@
-package com.social.demo.entity;
+package com.social.demo.data.dto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import com.social.demo.entity.Subject;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
- * <p>
- * 用户信息表
- * </p>
- *
- * @author 陈翔
- * @since 2023-07-02
+ * @author 杨世博
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class UserDtoByTeacher {
     /**
      * 主键id
      */
@@ -75,11 +64,7 @@ public class User implements Serializable {
      */
     private String phone;
     /**
-     * 密码
+     * 选课
      */
-    private String password;
-    /**
-     * 选科id
-     */
-    private Long chooseId;
+    private List<Subject> subjects;
 }

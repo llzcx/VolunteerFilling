@@ -8,6 +8,9 @@ import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
+import com.social.demo.data.dto.UserDtoByStudent;
+import com.social.demo.data.dto.UserDtoByTeacher;
+import com.social.demo.data.vo.UserVo;
 import com.social.demo.entity.User;
 import com.social.demo.manager.security.authentication.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
@@ -51,5 +54,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             final User user = users.get(0);
             return jwtUtil.createTokenAndSaveToKy(user.getUsername());
         }
+    }
+
+    @Override
+    public UserVo getInformation(HttpServletRequest id) {
+        return null;
+    }
+
+    @Override
+    public UserVo modifyInformation(UserDtoByStudent userDtoByStudent) {
+        return null;
+    }
+
+    @Override
+    public UserVo getStudent(Long id) {
+        return null;
+    }
+
+    @Override
+    public UserVo modifyStudent(UserDtoByTeacher userDtoByTeacher) {
+        return null;
+    }
+
+    @Override
+    public Boolean reset(Long id) {
+        return null;
     }
 }
