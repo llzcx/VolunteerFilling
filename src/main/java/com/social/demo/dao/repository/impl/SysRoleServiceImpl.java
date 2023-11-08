@@ -5,7 +5,7 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.RoleConstant;
 import com.social.demo.dao.mapper.SysRoleMapper;
-import com.social.demo.dao.mapper.UserRoleMapper;
+import com.social.demo.dao.mapper.SysUserRoleMapper;
 import com.social.demo.dao.repository.ISysRoleService;
 import com.social.demo.entity.SysRole;
 import com.social.demo.util.MybatisPlusUtil;
@@ -26,7 +26,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>  imp
     SysRoleMapper sysRoleMapper;
 
     @Autowired
-    UserRoleMapper userRoleMapper;
+    SysUserRoleMapper sysUserRoleMapper;
 
     @Override
     public List<SysRole> getRoleByUserId(String userName) {

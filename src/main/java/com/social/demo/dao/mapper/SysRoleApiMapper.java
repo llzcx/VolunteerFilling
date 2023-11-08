@@ -1,7 +1,7 @@
 package com.social.demo.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.social.demo.entity.RoleApi;
+import com.social.demo.entity.SysRoleApi;
 import org.apache.ibatis.annotations.Mapper;
 
 
@@ -9,6 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author 陈翔
  */
 @Mapper
-public interface UserApiMapper extends BaseMapper<RoleApi> {
+public interface SysRoleApiMapper extends BaseMapper<SysRoleApi> {
     // 这里可以自定义需要的方法
 }

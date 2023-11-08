@@ -13,7 +13,8 @@ import java.util.Date;
  */
 @Data
 @TableName("user_role")
-public class UserRole {
+public class SysUserRole {
+
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
@@ -22,11 +23,4 @@ public class UserRole {
 
     @TableField("role_id")
     private Long roleId;
-
-    @TableField("create_time")
-    private Date createTime;
-
-    // 省略getter和setter方法
-
-    // 可以根据需要添加其他字段和方法
 }

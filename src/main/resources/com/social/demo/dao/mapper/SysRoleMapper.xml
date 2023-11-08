@@ -5,7 +5,7 @@
     <select id="selectRoleListByUserName" resultType="com.social.demo.entity.SysRole">
         select *
         from sys_role
-        right join (select * from user_role where user_id = (select id from user where username = #{username}))
+        right join (select * from sys_user_role where user_id = (select id from user where username = #{username}))
             ur on sys_role.id = ur.role_id
     </select>
 

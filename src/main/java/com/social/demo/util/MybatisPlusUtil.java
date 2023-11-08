@@ -3,8 +3,6 @@ package com.social.demo.util;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.social.demo.common.ResultCode;
-import com.social.demo.common.SystemException;
 
 import java.util.HashMap;
 import java.util.Map;
