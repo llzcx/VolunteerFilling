@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
  *
  * @author 杨世博
  */
-public class Volunteer {
+public class Wish {
     /**
      * 志愿填报id
      */

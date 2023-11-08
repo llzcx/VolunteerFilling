@@ -43,6 +43,8 @@ public enum ResultCode {
     CODE_TIME_OUT(2011,"验证码过期"),
     USER_NOT_AUTHENTICATED(2012,"用户未认证"),
     USER_GENDER_MISMATCH(2013,"用户性别不符合"),
+    SCHOOL_ALREADY_EXISTS(2014,"学校编码或学校名已存在"),
+    SCHOOL_NOT_EXISTS(2014,"学校不存在"),
 
 
 
