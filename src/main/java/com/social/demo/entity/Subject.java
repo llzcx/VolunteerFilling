@@ -16,7 +16,7 @@ public class Subject {
     /**
      * 科目id
      */
-    private Long id;
+    private Long subjectId;
     /**
      * 科目名称
      */

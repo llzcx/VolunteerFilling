@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 上传文件
  * @author 陈翔
  */
+
 public interface UploadFile {
 
     /**

@@ -18,9 +18,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     /**
      * 根据业务username查询主键id
-     * @param username
+     * @param studentNumber
      * @return
      */
-    Long selectUserIdByUserName(@Param("username") String username);
+    Long selectUserIdByUserName(@Param("studentNumber") String studentNumber);
 
 }

@@ -8,12 +8,12 @@ spring:
         allow-circular-references: true
     datasource:
 #        url: jdbc:mysql://localhost:3306/social
-#        username: test
+#        studentNumber: test
 #        password: root
         url: jdbc:mysql://101.35.43.156:3306/wish
         username: root
         password: 123abc456
-        driver-class-name: com.mysql.jdbc.Driver
+        driver-class-name: com.mysql.cj.jdbc.Driver
     data:
         redis:
             host: ${redis.host:127.0.0.1}
@@ -51,6 +51,7 @@ jwt:
 
 security:
     releasable-path: #可放行资源
+        - /** #所有路径
         - /user/login #登录
         - /user/loginVerify/image #登录验证码
         - /user/loginVerify/base64 #图片Base54

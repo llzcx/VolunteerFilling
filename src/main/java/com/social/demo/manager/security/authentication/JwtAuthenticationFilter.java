@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @author 陈翔
@@ -46,6 +47,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         final String accessToken = request.getHeader(jwtUtil.getAccessTokenHeader());
         final String refreshToken = request.getHeader(jwtUtil.getRefreshTokenHeader());
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        for (String s : parameterMap.keySet()) {
+            System.out.println(s);
+        }
         log.debug("token：\nAccessToken:{}\nRefreshToken:{}",accessToken,refreshToken);
         // 这里如果没有jwt，继续往后走，因为后面还有鉴权管理器等去判断是否拥有身份凭证，所以是可以放行的
         // 没有jwt相当于匿名访问，若有一些接口是需要权限的，则不能访问这些接口

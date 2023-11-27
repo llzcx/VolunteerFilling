@@ -3,11 +3,11 @@ package com.social.demo.controller;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IUserService;
-import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.TeacherVo;
-import com.social.demo.data.vo.UserVo;
+import com.social.demo.data.vo.StudentVo;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,46 +25,49 @@ public class TeacherController {
     IUserService userService;
 
     /**
+     * ps 暂时无法从Token中获取用户id
+     *
      * 老师查看个人信息
      * @param request
      * @return 老师的个人信息
      */
     @GetMapping("/information")
-    public ApiResp<UserVo> getInformation(HttpServletRequest request){
-        UserVo user = userService.getInformation(request);
+    public ApiResp<StudentVo> getInformation(HttpServletRequest request){
+        StudentVo user = userService.getInformationOfTeacher(request);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
-     * 老师修改个人信息
-     * @param userDtoByStudent
+     * 老师修改电话号码
+     * @param phone 电话号码
      * @return 老师的个人信息
      */
-    @PutMapping("/information")
-    public ApiResp<UserVo> modifyInformation(@RequestBody UserDtoByStudent userDtoByStudent){
-        UserVo user = userService.modifyInformation(userDtoByStudent);
-        return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
+    @PutMapping("/phone")
+    public ApiResp<TeacherVo> modifyPhone(HttpServletRequest request,
+                                                @RequestBody String phone){
+        TeacherVo teacher = userService.modifyPhone(request, phone);
+        return ApiResp.judge(teacher != null, teacher, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 老师获取学生个人信息
-     * @param
+     * @param number 学生学号
      * @return 学生个人信息
      */
-    @GetMapping("/student/{id}")
-    public ApiResp<UserVo> getStudent(@PathVariable(value = "id")Long id){
-        UserVo user = userService.getStudent(id);
+    @GetMapping("/student")
+    public ApiResp<StudentVo> getStudent(@RequestParam("number")Long number){
+        StudentVo user = userService.getStudent(number);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 老师修改学生个人信息
-     * @param userDtoByTeacher 老师修改的个人信息
+     * @param userDtoByTeacher 修改的学生信息
      * @return 学生个人信息
      */
     @PutMapping("/student")
-    public ApiResp<UserVo> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher){
-        UserVo user = userService.modifyStudent(userDtoByTeacher);
+    public ApiResp<StudentVo> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher){
+        StudentVo user = userService.modifyStudent(userDtoByTeacher);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
@@ -78,6 +81,4 @@ public class TeacherController {
         Boolean reset = userService.reset(id);
         return ApiResp.success(reset);
     }
-
-
 }

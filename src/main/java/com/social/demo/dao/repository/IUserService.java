@@ -5,7 +5,8 @@ import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.dto.UserDtoByTeacher;
-import com.social.demo.data.vo.UserVo;
+import com.social.demo.data.vo.TeacherVo;
+import com.social.demo.data.vo.StudentVo;
 import com.social.demo.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,55 +16,74 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface IUserService extends IService<User> {
 
 
-
     /**
      * 退出登录
+     *
      * @param request
      * @return
      */
     Boolean loginOut(HttpServletRequest request);
 
 
-
     /**
      * 登录
+     *
      * @param loginDto
      * @return token 登录令牌
      */
     TokenPair login(LoginDto loginDto);
 
     /**
-     * 获取用户信息
-     * @param id 用户id
+     * 获取用户信息-学生
+     * @param request 用户id
      * @return 用户信息
      */
-    UserVo getInformation(HttpServletRequest id);
+    StudentVo getInformationOfStudent(HttpServletRequest request);
 
     /**
-     * 修改个人信息
+     * 修改个人信息-学生
+     * @param request
      * @param userDtoByStudent 用户修改后的数据
      * @return 用户修改后的个人信息
      */
-    UserVo modifyInformation(UserDtoByStudent userDtoByStudent);
+    StudentVo modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent);
 
     /**
-     * 获取学生个人信息
-     * @param id 学生id
+     * 老师获取学生个人信息
+     *
+     * @param number 学号
      * @return 学生个人信息
      */
-    UserVo getStudent(Long id);
+    StudentVo getStudent(Long number);
 
     /**
      * 修改学生个人信息
+     *
      * @param userDtoByTeacher 老师上传的学生修改信息
      * @return 学生个人信息
      */
-    UserVo modifyStudent(UserDtoByTeacher userDtoByTeacher);
+    StudentVo modifyStudent(UserDtoByTeacher userDtoByTeacher);
 
     /**
      * 重置学生密码
+     *
      * @param id 学生id
      * @return 是否操作成功
      */
     Boolean reset(Long id);
+
+    /**
+     * 获取用户信息-老师
+     * @param request
+     * @return 老师用户信息
+     */
+    StudentVo getInformationOfTeacher(HttpServletRequest request);
+
+    /**
+     * 老师修改电话号码
+     * @param request
+     * @param phone 电话号码
+     * @return 修改后的学生信息
+     */
+    TeacherVo modifyPhone(HttpServletRequest request, String phone);
 }

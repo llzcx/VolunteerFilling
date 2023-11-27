@@ -34,6 +34,9 @@ public class MyAccessDecisionManager implements AccessDecisionManager {
                 if (authority.getAuthority().equals(attribute.getAttribute())) {
                     return;
                 }
+
+                //杨世博----跳过角色权限验证
+                return;
             }
         }
         //抛出异常无权访问

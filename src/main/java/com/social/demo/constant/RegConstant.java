@@ -31,6 +31,13 @@ public interface RegConstant {
    String USERNAME = "^[a-zA-Z][a-zA-Z0-9_-]{2,15}$";
 
     /**
+     * 学号/工号
+     * 只能使用数字
+     * 长度在2到16个字符之间
+     */
+   String STUDENT_NUMBER = "[0-9]{2,16}$";
+
+    /**
      * 微信号
      */
    String WECHAT = "^[a-zA-Z][-_a-zA-Z0-9]{5,19}$";
@@ -60,4 +67,9 @@ public interface RegConstant {
      * 经度,纬度
      */
    String GEOHASH = "^-?\\d{1,3}\\.\\d+,-?\\d{1,2}\\.\\d+$";
+
+    /**
+     * 身份证
+     */
+   String IDCard = "(\\d{17}[0-9a-zA-Z])|(\\d{14}[0-9a-zA-Z])";
 }

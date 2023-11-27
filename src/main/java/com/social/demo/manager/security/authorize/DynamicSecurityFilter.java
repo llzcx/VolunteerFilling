@@ -46,6 +46,7 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
          */
         String alreadyFilteredAttributeName = getAlreadyFilteredAttributeName();
         boolean hasAlreadyFilteredAttribute = request.getAttribute(alreadyFilteredAttributeName) != null;
+
         if (hasAlreadyFilteredAttribute) {
             fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
             return;

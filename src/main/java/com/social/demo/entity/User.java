@@ -2,6 +2,7 @@ package com.social.demo.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,26 +19,27 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@TableName("user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
+    @TableId(value = "user_id", type = IdType.AUTO)
+    private Long userId;
     /**
      * 学号
      */
-    private Long studentNumber;
+    private Long userNumber;
     /**
      * 民族
      */
-    private Boolean nation;
+    private String nation;
     /**
      * 班级id
      */
-    private Boolean classId;
+    private Long classId;
     /**
      * 目标院校的院校编码
      */
@@ -82,4 +84,8 @@ public class User implements Serializable {
      * 选科id
      */
     private Long chooseId;
+    /**
+     * 性别
+     */
+    private Boolean sex;
 }

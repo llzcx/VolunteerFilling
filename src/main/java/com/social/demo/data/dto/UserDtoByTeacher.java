@@ -3,34 +3,35 @@ package com.social.demo.data.dto;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.social.demo.entity.Subject;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 /**
  * @author 杨世博
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDtoByTeacher {
-    /**
-     * 主键id
-     */
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
     /**
      * 学号
      */
-    private Long studentNumber;
+    private Long userNumber;
     /**
      * 民族
      */
     private Boolean nation;
     /**
-     * 班级id
+     * 班级名
      */
-    private Boolean classId;
+    private String className;
     /**
-     * 目标院校的院校编码
+     * 目标院校
      */
-    private Long schoolNumber;
+    private String school;
     /**
      * 来源省份
      */
@@ -64,7 +65,11 @@ public class UserDtoByTeacher {
      */
     private String phone;
     /**
-     * 选课
+     * 选科id
      */
     private List<Subject> subjects;
+    /**
+     * 性别
+     */
+    private String sex;
 }

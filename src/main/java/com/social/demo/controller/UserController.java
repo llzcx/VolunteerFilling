@@ -5,8 +5,6 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
-import com.social.demo.data.dto.UserDtoByStudent;
-import com.social.demo.data.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

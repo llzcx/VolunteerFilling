@@ -1,13 +1,20 @@
 package com.social.demo.data.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * @author 杨世博
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDtoByStudent {
     /**
-     * 父母电话
+     * 姓名
      */
-    private String parentPhone;
+    private String username;
     /**
      * 家庭地址
      */

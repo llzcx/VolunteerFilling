@@ -35,11 +35,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user =
-                userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("username", username));
+                userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("studentNumber", username));
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        return new AccountUserBo(user.getId(), user.getUsername(), user.getPassword(), getUserAuthority(username));
+        return new AccountUserBo(user.getUserId(), user.getUsername(), user.getPassword(), getUserAuthority(username));
 
     }
 

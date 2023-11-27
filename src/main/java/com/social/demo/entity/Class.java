@@ -1,21 +1,24 @@
 package com.social.demo.entity;
 
+import lombok.Data;
+
 /**
  * 班级
  *
  * @author 杨世博
  */
+@Data
 public class Class {
     /**
      * 班级id
      */
-    private Long id;
+    private Long classId;
     /**
      * 班主任id
      */
     private Long userId;
     /**
-     * 班级编号
+     * 班级名
      */
-    private Integer classNumber;
+    private String className;
 }
