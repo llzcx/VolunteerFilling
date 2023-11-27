@@ -31,7 +31,7 @@ public class User implements Serializable {
     /**
      * 学号
      */
-    private Long userNumber;
+    private String userNumber;
     /**
      * 民族
      */
@@ -88,4 +88,8 @@ public class User implements Serializable {
      * 性别
      */
     private Boolean sex;
+    /**
+     * 入学年份
+     */
+    private LocalDateTime enrollmentYear;
 }

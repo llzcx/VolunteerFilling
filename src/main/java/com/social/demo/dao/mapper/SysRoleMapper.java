@@ -18,7 +18,7 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
      * @param username
      * @return
      */
-    List<SysRole> selectRoleListByUserName(@Param("studentNumber")String username);
+    List<SysRole> selectRoleListByUserName(@Param("userNumber")String username);
 
 
 

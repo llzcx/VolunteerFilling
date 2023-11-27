@@ -27,8 +27,8 @@ public class LoginDto implements Serializable {
      * 普通账号密码登录
      */
     @NotNull
-    @Pattern(regexp=RegConstant.STUDENT_NUMBER)
-    private String studentNumber;
+    @Pattern(regexp=RegConstant.USER_NUMBER)
+    private String userNumber;
 
     @NotNull
     @Pattern(regexp = RegConstant.PASSWORD)
@@ -37,9 +37,9 @@ public class LoginDto implements Serializable {
     public LoginDto() {
     }
 
-    public LoginDto(Integer type, String studentNumber, String password) {
+    public LoginDto(Integer type, String userNumber, String password) {
         this.type = type;
-        this.studentNumber = studentNumber;
+        this.userNumber = userNumber;
         this.password = password;
     }
 }

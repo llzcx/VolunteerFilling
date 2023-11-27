@@ -4,11 +4,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.RedisConstant;
-import com.social.demo.data.bo.TokenPair;
 import com.social.demo.util.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
@@ -30,7 +28,7 @@ import java.util.Map;
 public class JwtUtil implements InitializingBean {
 
 
-    public static String USERNAME = "USERNAME";
+    public static String USER_NUMBER = "USER_NUMBER";
     public static Map<String, Object> header = new HashMap<>();
     public static Algorithm algorithm;
     static {
@@ -53,34 +51,34 @@ public class JwtUtil implements InitializingBean {
     }
     /**
      * 生成AccessTokenJWT
-     * @param username 用户名
+     * @param userNumber 用户名
      * @return
      */
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(String userNumber) {
         Date nowDate = new Date();
         //设置token过期时间
         Date expireDate = new Date(nowDate.getTime() + 1000 * accessTokenExpire);
         //秘钥是密码则省略
         return JWT.create()
                 .withHeader(header)
-                .withSubject(username)
+                .withSubject(userNumber)
                 .withExpiresAt(expireDate)
                 .sign(algorithm);
     }
 
     /**
      * 生成refreshTokenJWT
-     * @param username
+     * @param userNumber
      * @return
      */
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String userNumber) {
         Date nowDate = new Date();
         //设置token过期时间
         Date expireDate = new Date(nowDate.getTime() + 1000 * refreshTokenExpire);
         //秘钥是密码则省略
         return JWT.create()
                 .withHeader(header)
-                .withSubject(username)
+                .withSubject(userNumber)
                 .withExpiresAt(expireDate)
                 .sign(algorithm);
     }
@@ -115,19 +113,18 @@ public class JwtUtil implements InitializingBean {
 
     /**
      * 创建token并存入redis
-     * @param username
+     * @param userNumber
      * @return
      */
-    public TokenPair createTokenAndSaveToKy(String username){
-        final String accessToken = generateAccessToken(username);
-        final String refreshToken = generateRefreshToken(username);
-        final TokenPair tokenPair = new TokenPair(accessToken, refreshToken);
+    public String createTokenAndSaveToKy(String userNumber){
+        final String accessToken = generateAccessToken(userNumber);
+        final String refreshToken = generateRefreshToken(userNumber);
         //redis保存 方便鉴权
-        String hKey = RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN+username;
-        redisUtil.setObject(hKey, JsonUtil.object2StringSlice(tokenPair),refreshTokenExpire);
-        return tokenPair;
+        String hKey = RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN+ userNumber;
+        redisUtil.set(hKey, refreshToken, refreshTokenExpire);
+        return accessToken;
     }
     public String getSubject(HttpServletRequest request){
-        return getClaimsByToken(request.getHeader(getRefreshTokenHeader())).getSubject();
+        return getClaimsByToken(request.getHeader(getAccessTokenHeader())).getSubject();
     }
 }

@@ -21,9 +21,9 @@ public class StudentBo {
     /**
      * 学号
      */
-    @Pattern(regexp = RegConstant.STUDENT_NUMBER)
+    @Pattern(regexp = RegConstant.USER_NUMBER)
     @ExcelProperty("学号")
-    private String studentNumber;
+    private String userNumber;
     /**
      * 姓名
      */

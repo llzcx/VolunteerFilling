@@ -7,7 +7,10 @@ import java.io.Serializable;
  */
 public class TeacherVo implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    /**
+     * 工号
+     */
+    private String userNumber;
     /**
      * 姓名
      */

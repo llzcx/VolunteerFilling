@@ -9,7 +9,6 @@ import com.social.demo.dao.mapper.SchoolMapper;
 import com.social.demo.dao.mapper.SubjectMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IUserService;
-import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.dto.UserDtoByTeacher;
@@ -27,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -58,18 +58,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public TokenPair login(LoginDto loginDto) {
+    public String login(LoginDto loginDto) {
         //md5
         loginDto.setPassword(DigestUtil.md5Hex(loginDto.getPassword()));
-        final List<User> users = userMapper.selectByMap(MybatisPlusUtil.getMap("student_number", loginDto.getStudentNumber()
+        final List<User> users = userMapper.selectByMap(MybatisPlusUtil.getMap("user_number", loginDto.getUserNumber()
                 , "password", loginDto.getPassword()));
         if(users.size()>1){
             throw new SystemException(ResultCode.DATABASE_DATA_EXCEPTION);
-        }else if(users.size()==0){
+        }else if(users.isEmpty()){
             return null;
         }else{
             final User user = users.get(0);
-            return jwtUtil.createTokenAndSaveToKy(user.getUsername());
+            return jwtUtil.createTokenAndSaveToKy(user.getUserNumber());
         }
     }
 
@@ -120,5 +120,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public TeacherVo modifyPhone(HttpServletRequest request, String phone) {
         return null;
+    }
+
+    @Override
+    public List<User> getUserBySchoolAndTime(String school, LocalDateTime time) {
+        if (school.isEmpty() || school.equals("") || time == null){
+            throw new SystemException(ResultCode.NULL_POINT_EXCEPTION);
+        }
+        return userMapper.selectUserBySchoolAndTime(school, time);
     }
 }

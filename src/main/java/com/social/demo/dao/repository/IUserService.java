@@ -1,7 +1,6 @@
 package com.social.demo.dao.repository;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.dto.UserDtoByTeacher;
@@ -9,6 +8,9 @@ import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.StudentVo;
 import com.social.demo.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author 陈翔
@@ -31,7 +33,7 @@ public interface IUserService extends IService<User> {
      * @param loginDto
      * @return token 登录令牌
      */
-    TokenPair login(LoginDto loginDto);
+    String login(LoginDto loginDto);
 
     /**
      * 获取用户信息-学生
@@ -86,4 +88,12 @@ public interface IUserService extends IService<User> {
      * @return 修改后的学生信息
      */
     TeacherVo modifyPhone(HttpServletRequest request, String phone);
+
+    /**
+     * 根据目标学校和入学时间获取学生信息
+     * @param school
+     * @param time
+     * @return
+     */
+    List<User> getUserBySchoolAndTime(String school, LocalDateTime time);
 }

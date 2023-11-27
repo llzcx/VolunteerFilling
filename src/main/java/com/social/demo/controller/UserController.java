@@ -3,7 +3,6 @@ package com.social.demo.controller;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IUserService;
-import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -29,9 +28,9 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("/login")
-    public ApiResp<TokenPair> login(@Valid @RequestBody LoginDto loginDto) throws Exception {
-        final TokenPair tokenPair = userService.login(loginDto);
-        return ApiResp.judge(tokenPair!=null,tokenPair, ResultCode.PASSWORD_ERROR);
+    public ApiResp<String> login(@Valid @RequestBody LoginDto loginDto) throws Exception {
+        final String accessToken = userService.login(loginDto);
+        return ApiResp.judge(accessToken!=null, accessToken, ResultCode.PASSWORD_ERROR);
     }
 
     /**

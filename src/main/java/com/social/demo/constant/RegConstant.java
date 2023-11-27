@@ -35,7 +35,7 @@ public interface RegConstant {
      * 只能使用数字
      * 长度在2到16个字符之间
      */
-   String STUDENT_NUMBER = "[0-9]{2,16}$";
+   String USER_NUMBER = "[0-9]{2,16}$";
 
     /**
      * 微信号

@@ -16,7 +16,7 @@ public class StudentVo implements Serializable {
     /**
      * 学号
      */
-    private Long userNumber;
+    private String userNumber;
     /**
      * 民族
      */

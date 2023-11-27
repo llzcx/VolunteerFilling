@@ -5,6 +5,9 @@ import com.social.demo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * <p>
  * 用户信息表 Mapper 接口
@@ -21,6 +24,13 @@ public interface UserMapper extends BaseMapper<User> {
      * @param studentNumber
      * @return
      */
-    Long selectUserIdByUserName(@Param("studentNumber") String studentNumber);
+    Long selectUserIdByUserName(@Param("userNumber") String studentNumber);
 
+    /**
+     * 工具目标学校和入学时间获取学生信息
+     * @param school
+     * @param time
+     * @return
+     */
+    List<User> selectUserBySchoolAndTime(String school, LocalDateTime time);
 }

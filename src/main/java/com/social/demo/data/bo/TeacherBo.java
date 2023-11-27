@@ -18,7 +18,7 @@ import lombok.ToString;
 public class TeacherBo {
 
     @ExcelProperty("工号")
-    private String jobNumber;
+    private String userNumber;
 
     @ExcelProperty("姓名")
     private String username;

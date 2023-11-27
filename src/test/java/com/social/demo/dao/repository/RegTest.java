@@ -47,7 +47,7 @@ public class RegTest {
     @Test
     void studentNumber() throws Exception{
         String username = "2021401534";
-        if (username.matches(RegConstant.STUDENT_NUMBER)) {
+        if (username.matches(RegConstant.USER_NUMBER)) {
             System.out.println("格式正确");
         } else {
             System.out.println("格式不正确");
