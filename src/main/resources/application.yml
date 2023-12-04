@@ -43,10 +43,10 @@ aliyun:
 
 #JWT 双token
 jwt:
-    accessTokenHeader: ACCESSTOKEN
-    refreshTokenHeader: REFRESHTOKEN
-    accessTokenExpire: 1800 #（秒）30分钟
-    refreshTokenExpire: 172800 #（秒）2天
+    tokenHeader: Authorization
+    expire:
+        accessToken: 2592000 #（秒）30分钟
+        refreshToken: 2592000 #（秒）2天
     secret: abcdefghabcdefghabcdefghabcdefgh
 
 security:
