@@ -33,6 +33,22 @@ public class User implements Serializable {
      */
     private String userNumber;
     /**
+     * 姓名
+     */
+    private String username;
+    /**
+     * 性别
+     */
+    private String sex;
+    /**
+     * 身份证号码
+     */
+    private String idCard;
+    /**
+     * 政治面貌
+     */
+    private String politicsStatus;
+    /**
      * 民族
      */
     private String nation;
@@ -53,22 +69,6 @@ public class User implements Serializable {
      */
     private String plan;
     /**
-     * 父母电话
-     */
-    private String parentPhone;
-    /**
-     * 身份证号码
-     */
-    private String idCard;
-    /**
-     * 政治面貌
-     */
-    private String politicsStatus;
-    /**
-     * 姓名
-     */
-    private String username;
-    /**
      * 家庭地址
      */
     private String address;
@@ -77,19 +77,27 @@ public class User implements Serializable {
      */
     private String phone;
     /**
+     * 父母电话
+     */
+    private String parentPhone;
+    /**
+     * 入学年份
+     */
+    private Integer enrollmentYear;
+    /**
      * 密码
      */
     private String password;
     /**
-     * 选科id
+     * 组合id
      */
-    private Long chooseId;
+    private Long groupId;
     /**
-     * 性别
+     * 版本号
      */
-    private Boolean sex;
+    private int version;
     /**
-     * 入学年份
+     * 身份
      */
-    private LocalDateTime enrollmentYear;
+    private int identity;
 }

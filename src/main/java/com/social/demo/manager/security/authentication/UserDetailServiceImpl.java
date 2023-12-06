@@ -33,24 +33,25 @@ public class UserDetailServiceImpl implements UserDetailsService {
     SysRoleMapper sysRoleMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userNumber) throws UsernameNotFoundException {
         final User user =
-                userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("userNumber", username));
+                userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        return new AccountUserBo(user.getUserId(), user.getUsername(), user.getPassword(), getUserAuthority(username));
+        return new AccountUserBo(user.getUserId(), user.getUsername(), user.getPassword(), getUserAuthority(userNumber));
 
     }
 
     /**
      * 获取用户权限信息（角色、菜单权限）
-     * @param username
+     * @param userNumber
      * @return
      */
-    public List<GrantedAuthority> getUserAuthority(String username) {
+    public List<GrantedAuthority> getUserAuthority(String userNumber) {
+        if(true)return new ArrayList<>();
         // 根据userId查询用户的权限信息，这里假设从数据库中获取
-        List<String> authorities = sysRoleMapper.selectRoleListByUserName(username).stream().
+        List<String> authorities = sysRoleMapper.selectRoleListByUserName(userNumber).stream().
         map(SysRole::getRoleName).collect(Collectors.toList());
         // 将权限信息转换为 GrantedAuthority 对象列表
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.social.demo.dao.mapper.SubjectGroupMapper">
+
+
+    <select id="selectGroupId" resultType="java.lang.Long">
+        SELECT group_id FROM subject_group WHERE subjects = #{subjects}
+    </select>
+    <select id="selectSubjects" resultType="java.lang.String">
+        SELECT subjects FROM subject_group WHERE group_id = #{groupId}
+    </select>
+</mapper>

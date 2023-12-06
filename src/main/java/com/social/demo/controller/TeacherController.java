@@ -71,14 +71,14 @@ public class TeacherController {
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
-    /**
-     * 重置学生密码
-     * @param id 学生id
-     * @return 是否操作成功
-     */
-    @PatchMapping("/student/{id}")
-    public ApiResp<Boolean> reset(@PathVariable(value = "id")Long id){
-        Boolean reset = userService.reset(id);
-        return ApiResp.success(reset);
-    }
+//    /**
+//     * 重置学生密码
+//     * @param id 学生id
+//     * @return 是否操作成功
+//     */
+//    @PatchMapping("/student/{id}")
+//    public ApiResp<Boolean> reset(@PathVariable(value = "id")Long id){
+//        Boolean reset = userService.reset(id);
+//        return ApiResp.success(reset);
+//    }
 }

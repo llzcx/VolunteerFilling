@@ -60,6 +60,12 @@ public class ApiResp<T> implements Serializable {
         this.data = data;
     }
 
+    public ApiResp(boolean success, ResultCode resultEnum, String s) {
+        this.success = success;
+        this.code = success ? ResultCode.SUCCESS.getCode() : (resultEnum == null ? ResultCode.COMMON_FAIL.getCode() : resultEnum.getCode());
+        this.msg = success ? ResultCode.SUCCESS.getMessage() : (resultEnum == null ? ResultCode.COMMON_FAIL.getMessage() : s + resultEnum.getMessage());
+    }
+
     /**
      * 简化控制器if控制返回
      * @param value 条件
@@ -72,6 +78,22 @@ public class ApiResp<T> implements Serializable {
             return ApiResp.success(object);
         }else{
             return ApiResp.fail(resultEnum);
+        }
+    }
+
+    /**
+     * 简化控制器if控制返回
+     * @param value 条件
+     * @param objectA 条件成功则返回的数据
+     * @param s 条件失败则返回的数据
+     * @param resultEnum 失败返回的错误码
+     * @return
+     */
+    public static ApiResp judge(Boolean value, Object objectA, String s, ResultCode resultEnum){
+        if(value){
+            return ApiResp.success(objectA);
+        }else{
+            return ApiResp.fail(resultEnum, s);
         }
     }
 
@@ -93,5 +115,9 @@ public class ApiResp<T> implements Serializable {
 
     public static ApiResp fail(String msg) {
         return new ApiResp(false, msg);
+    }
+
+    public static ApiResp fail(ResultCode resultEnum, String s) {
+        return new ApiResp(false, resultEnum, s);
     }
 }

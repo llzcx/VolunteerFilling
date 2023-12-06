@@ -37,6 +37,10 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         FilterInvocation fi = new FilterInvocation(servletRequest, servletResponse, filterChain);
+        if(true){
+            fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
+            return;
+        }
         log.info("------------------进入权限过滤器------------------");
         /**
          * 仿照OncePerRequestFilter，解决Filter执行两次的问题

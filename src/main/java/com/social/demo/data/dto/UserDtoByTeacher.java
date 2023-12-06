@@ -1,8 +1,5 @@
 package com.social.demo.data.dto;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.social.demo.entity.Subject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -67,7 +64,7 @@ public class UserDtoByTeacher {
     /**
      * 选科id
      */
-    private List<Subject> subjects;
+    private List<String> subjects;
     /**
      * 性别
      */

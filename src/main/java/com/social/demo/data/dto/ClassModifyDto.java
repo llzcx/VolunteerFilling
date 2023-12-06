@@ -4,21 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 /**
  * @author 杨世博
+ * @date 2023/12/4 15:48
+ * @description ClassVo
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SchoolDto implements Serializable {
+public class ClassModifyDto {
     /**
-     * 院校编码
+     * 班级id
      */
-    private String number;
+    private Long classId;
     /**
-     * 学校名
+     * 工号
      */
-    private String name;
+    private String userNumber;
+    /**
+     * 班级名
+     */
+    private String className;
 }

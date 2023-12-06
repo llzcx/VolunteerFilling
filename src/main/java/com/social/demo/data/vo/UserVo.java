@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author 杨世博
+ * @date 2023/12/4 21:37
+ * @description UserVo
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeacherVo implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class UserVo {
     /**
-     * 工号
+     * 学号
      */
     private String userNumber;
     /**
@@ -23,19 +24,19 @@ public class TeacherVo implements Serializable {
      */
     private String username;
     /**
-     * 性别
+     * 身份证号码
      */
-    private String sex;
+    private String idCard;
     /**
-     * 政治面貌
+     * 用户身份
      */
-    private String politicsStatus;
+    private String role;
     /**
-     * 民族
+     * 班级id
      */
-    private String nation;
+    private Long className;
     /**
-     * 联系电话
+     * 最近操作时间
      */
-    private String phone;
+    private LocalDateTime updateTime;
 }

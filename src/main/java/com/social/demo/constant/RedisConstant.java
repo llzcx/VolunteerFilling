@@ -19,6 +19,11 @@ public interface RedisConstant {
     String FORGET_CODE = "FORGET_CODE:";
 
     /**
+     * token黑名单
+     */
+    String TOKEN_BLACKLIST_PREFIX = "TOKEN_BLACKLIST_PREFIX:";
+
+    /**
      * 手机验证验证码有效期五分钟
      */
     Integer PHONE_CODE_EXPIRE =  5 * 60;

@@ -32,7 +32,7 @@ public class RegTest {
      */
     @Test
     void password() throws Exception{
-        String password = "Password12@";
+        String password = "02102    8@Ysb";
         if (password.matches(RegConstant.PASSWORD)) {
             System.out.println("格式正确");
         } else {

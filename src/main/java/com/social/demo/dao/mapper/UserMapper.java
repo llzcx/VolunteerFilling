@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -24,7 +25,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param studentNumber
      * @return
      */
-    Long selectUserIdByUserName(@Param("userNumber") String studentNumber);
+    Long selectUserIdByUserNumber(@Param("userNumber") String studentNumber);
 
     /**
      * 工具目标学校和入学时间获取学生信息
@@ -33,4 +34,17 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> selectUserBySchoolAndTime(String school, LocalDateTime time);
+
+    /**
+     * 获取用户的选课
+     * @param userId 用户id
+     * @return 选课
+     */
+    Set<String> selectStudentSubjects(Long userId);
+
+    /**
+     * 查找不是班主任的老师
+     * @return
+     */
+    List<User> selectTeacherNotClass();
 }

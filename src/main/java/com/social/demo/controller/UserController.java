@@ -1,14 +1,23 @@
 package com.social.demo.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IUserService;
+import com.social.demo.data.bo.LoginBo;
+import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
+import com.social.demo.data.dto.StudentDto;
+import com.social.demo.data.dto.TeacherDto;
+import com.social.demo.data.vo.ClassTeacherVo;
+import com.social.demo.data.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author 陈翔
@@ -28,18 +37,100 @@ public class UserController {
      * @throws Exception
      */
     @PostMapping("/login")
-    public ApiResp<String> login(@Valid @RequestBody LoginDto loginDto) throws Exception {
-        final String accessToken = userService.login(loginDto);
-        return ApiResp.judge(accessToken!=null, accessToken, ResultCode.PASSWORD_ERROR);
+    public ApiResp<LoginBo> login(@Valid @RequestBody LoginDto loginDto) throws Exception {
+        final LoginBo login = userService.login(loginDto);
+        return ApiResp.judge(login !=null, login, ResultCode.PASSWORD_ERROR);
+    }
+
+    /**
+     * 刷新accessToken
+     * @param request
+     * @return
+     */
+    @GetMapping("/refresh")
+    public ApiResp<TokenPair> refresh(HttpServletRequest request){
+        TokenPair tokenPair = userService.refresh(request);
+        return ApiResp.success(tokenPair);
     }
 
     /**
      * 退出登录
      * @throws Exception
      */
-    @PostMapping("/loginOut")
+    @GetMapping("/loginOut")
     public ApiResp<String> loginOut(HttpServletRequest request) throws Exception {
         userService.loginOut(request);
         return ApiResp.success();
+    }
+
+    /**
+     * 批量上传学生信息
+     * @param students 学生信息
+     * @return 上传成功的学生信息
+     */
+    @PostMapping("/students")
+    public ApiResp<String> importStudents(@RequestBody List<StudentDto> students){
+        String s = userService.importStudents(students);
+        return ApiResp.judge(s == null,"上传成功",s , ResultCode.USER_IS_EXISTS);
+    }
+
+    /**
+     * 批量上传老师信息
+     * @param teachers 老师信息
+     * @return 上传成功的老师信息
+     */
+    @PostMapping("/teachers")
+    public ApiResp<String> importTeacher(@RequestBody List<TeacherDto> teachers){
+        String s = userService.importTeachers(teachers);
+        return ApiResp.judge(s == null,"上传成功",s , ResultCode.USER_IS_EXISTS);
+    }
+
+    /**
+     * 搜索用户
+     * @param username
+     * @param role
+     * @param current
+     * @param size
+     * @return
+     */
+    @GetMapping
+    public ApiResp<IPage<UserVo>> getUser(@RequestParam("username")String username,
+                                          @RequestParam("role")String role,
+                                          @RequestParam("current")Long current,
+                                          @RequestParam("size")Long size){
+        IPage<UserVo> user = userService.getUser(username, role, current, size);
+        return ApiResp.judge(user != null, user, ResultCode.USER_NOT_EXISTS);
+    }
+
+    /**
+     * 重置密码
+     * @param userNumbers
+     * @return
+     */
+    @PutMapping("/reset")
+    public ApiResp<String> reset(@RequestBody String[] userNumbers){
+        userService.reset(userNumbers);
+        return ApiResp.success("操作成功");
+    }
+
+    /**
+     * 删除用户
+     * @param userNumbers
+     * @return
+     */
+    @DeleteMapping
+    public ApiResp<String> deleteUser(@RequestBody String[] userNumbers){
+        String s = userService.deleteUser(userNumbers);
+        return ApiResp.judge( s == null, "操作成功",s , ResultCode.USER_HAVE_CLASS);
+    }
+
+    /**
+     * 获取老师列表
+     * @return
+     */
+    @GetMapping("/teachers")
+    public ApiResp<List<ClassTeacherVo>> getClassTeachers(){
+        List<ClassTeacherVo> teachers = userService.getTeachers();
+        return ApiResp.success(teachers);
     }
 }

@@ -7,11 +7,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.RedisConstant;
+import com.social.demo.data.bo.TokenPair;
 import com.social.demo.util.RedisUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -39,9 +41,10 @@ public class JwtUtil implements InitializingBean {
     @Autowired
     RedisUtil redisUtil;
 
-    private String accessTokenHeader;
-    private String refreshTokenHeader;
+    private String tokenHeader;
+    @Value("${jwt.expire.accessToken}")
     private Long accessTokenExpire;
+    @Value("${jwt.expire.refreshToken}")
     private Long refreshTokenExpire;
     private String secret;
 
@@ -107,7 +110,20 @@ public class JwtUtil implements InitializingBean {
             // Token 未过期
             return false;
         }
+    }
 
+    public Date getExpirationData(String token){
+        return getClaimsByToken(token).getExpiresAt();
+    }
+
+    /**
+     * 根据 刷新令牌 获取 访问令牌
+     *
+     * @param refreshToken
+     */
+    public String getAccessTokenByRefresh(String refreshToken) {
+        Object value = redisUtil.get(refreshToken);
+        return value == null ? null : String.valueOf(value);
     }
 
 
@@ -116,15 +132,69 @@ public class JwtUtil implements InitializingBean {
      * @param userNumber
      * @return
      */
-    public String createTokenAndSaveToKy(String userNumber){
+    public TokenPair createTokenAndSaveToKy(String userNumber){
         final String accessToken = generateAccessToken(userNumber);
         final String refreshToken = generateRefreshToken(userNumber);
-        //redis保存 方便鉴权
-        String hKey = RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN+ userNumber;
-        redisUtil.set(hKey, refreshToken, refreshTokenExpire);
-        return accessToken;
+        Date refreshException = getClaimsByToken(refreshToken).getExpiresAt();
+        Long time = (refreshException.getTime() - System.currentTimeMillis()) / 1000 + 100;
+        redisUtil.set(RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN + refreshToken, accessToken, time);
+        return new TokenPair(accessToken, refreshToken);
     }
     public String getSubject(HttpServletRequest request){
-        return getClaimsByToken(request.getHeader(getAccessTokenHeader())).getSubject();
+        return getClaimsByToken(request.getHeader(getTokenHeader())).getSubject();
+    }
+
+    /**
+     * 从Redis中获取refreshToken
+     * @param userNumber
+     * @return
+     */
+    public TokenPair getTokenForRedis(String userNumber){
+        TokenPair tokenPair = new TokenPair();
+        tokenPair.setAccessToken(redisUtil.get(RedisConstant.SOCIAL+RedisConstant.ACCESS_TOKEN+ userNumber));
+        tokenPair.setRefreshToken(redisUtil.get(RedisConstant.SOCIAL+RedisConstant.REFRESH_TOKEN+ userNumber));
+        return tokenPair;
+    }
+
+    /**
+     * 删除Redis中的refreshToken
+     * @param refreshToken
+     * @return
+     */
+    public Boolean delTokenForRedis(String refreshToken){
+        return redisUtil.del(RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN+ refreshToken);
+    }
+
+
+    /**
+     * 添加至黑名单
+     *
+     * @param token
+     * @param expireTime
+     */
+    public void addBlacklist(String token, Date expireTime) {
+        Long expireTimeLong = (expireTime.getTime() - System.currentTimeMillis()) / 1000 + 100;
+        redisUtil.set(getBlacklistPrefix(token), "1", expireTimeLong);
+    }
+
+    /**
+     * 校验是否存在黑名单
+     *
+     * @param token
+     * @return true 存在 false不存在
+     */
+    public Boolean checkBlacklist(String token) {
+        String exists = redisUtil.get(getBlacklistPrefix(token));
+        return exists != null;
+    }
+
+    /**
+     * 获取黑名单前缀
+     *
+     * @param token
+     * @return
+     */
+    public String getBlacklistPrefix(String token) {
+        return RedisConstant.TOKEN_BLACKLIST_PREFIX + token;
     }
 }

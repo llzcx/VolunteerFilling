@@ -1,5 +1,6 @@
 package com.social.demo.dao.repository.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
@@ -10,6 +11,8 @@ import com.social.demo.entity.School;
 import com.social.demo.util.MybatisPlusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author 杨世博
@@ -27,16 +30,16 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
         if (school != null){
             throw new SystemException(ResultCode.SCHOOL_ALREADY_EXISTS);
         } else {
-            insert = schoolMapper.insert(new School(schoolDto.getNumber(), schoolDto.getName()));
+            insert = schoolMapper.insert(new School(Long.valueOf(schoolDto.getNumber()), schoolDto.getName()));
         }
 
         return insert > 0;
     }
 
     @Override
-    public Boolean modifySchool(SchoolDto schoolDto) {
-        int update = schoolMapper.update(new School(schoolDto.getNumber(), schoolDto.getName()),
-                MybatisPlusUtil.queryWrapperEq("number", schoolDto.getNumber()));
+    public Boolean modifySchool(School school) {
+        int update = schoolMapper.update(new School(school.getNumber(), school.getName()),
+                MybatisPlusUtil.queryWrapperEq("school_id", school.getSchoolId()));
         return update > 0;
     }
 
@@ -47,7 +50,21 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
     }
 
     @Override
-    public School getSchool(String schoolName) {
-        return schoolMapper.selectOne(MybatisPlusUtil.queryWrapperEq("name", schoolName));
+    public List<School> getSchool(String schoolName) {
+        QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
+        schoolQueryWrapper.like("name", schoolName);
+        return schoolMapper.selectList(schoolQueryWrapper);
+    }
+
+    @Override
+    public Boolean judgeSchoolName(String schoolName) {
+        QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
+        schoolQueryWrapper.eq(schoolName != null,"name", schoolName);
+        List<School> schools = schoolMapper.selectList(schoolQueryWrapper);
+        if (!schools.isEmpty()){
+            throw new SystemException(ResultCode.IS_EXISTS);
+        }else {
+            return true;
+        }
     }
 }

@@ -9,4 +9,12 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SchoolMapper extends BaseMapper<School> {
+    /**
+     * 通过学校名获取学校编号
+     * @param schoolName 学校名
+     * @return 返回学校编号
+     */
+    Long selectSchoolNumberByName(String schoolName);
+
+    String selectNameBySchoolNumber(Long schoolNumber);
 }

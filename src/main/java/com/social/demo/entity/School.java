@@ -1,5 +1,7 @@
 package com.social.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class School {
     /**
+     *
+     */
+    @TableId(value = "school_id", type = IdType.AUTO)
+    private Long schoolId;
+    /**
      * 院校编码
      */
     private Long number;
@@ -21,4 +28,9 @@ public class School {
      * 学校名额
      */
     private String name;
+
+    public School(Long number, String name) {
+        this.number = number;
+        this.name = name;
+    }
 }

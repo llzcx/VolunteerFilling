@@ -3,8 +3,11 @@ package com.social.demo.manager.security.authentication;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.social.demo.common.ResultCode;
-import com.social.demo.constant.RedisConstant;
+import com.social.demo.common.SystemException;
+import com.social.demo.constant.RequestConstant;
 import com.social.demo.dao.mapper.UserMapper;
+import com.social.demo.data.bo.TokenPair;
+import com.social.demo.manager.security.exception.CustomAccessDeniedException;
 import com.social.demo.manager.security.exception.CustomAuthenticationException;
 import com.social.demo.util.RedisUtil;
 import jakarta.servlet.FilterChain;
@@ -42,56 +45,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        final String accessToken = request.getHeader(jwtUtil.getAccessTokenHeader());
-
-        log.debug("token：\nAccessToken:{}",accessToken);
+        final String token = request.getHeader(jwtUtil.getTokenHeader());
+        log.debug("token：\nToken:{}",token);
         // 这里如果没有jwt，继续往后走，因为后面还有鉴权管理器等去判断是否拥有身份凭证，所以是可以放行的
         // 没有jwt相当于匿名访问，若有一些接口是需要权限的，则不能访问这些接口
-        if (StrUtil.isBlankOrUndefined(accessToken)) {
+        if (StrUtil.isBlankOrUndefined(token)) {
             log.debug("匿名请求，放行");
             chain.doFilter(request, response);
             return;
         }
         log.debug("非匿名请求");
-        //检查accessToken
-        final DecodedJWT accessTokenDecode = jwtUtil.getClaimsByToken(accessToken);
-        if (accessTokenDecode == null) {
+        //检查token
+        final DecodedJWT tokenDecode = jwtUtil.getClaimsByToken(token);
+        if (tokenDecode == null) {
             //token无效直接返回token错误
             throw new CustomAuthenticationException(ResultCode.TOKEN_EXCEPTION);
         }
-        final boolean accessTokenExpired = jwtUtil.isTokenExpired(accessTokenDecode);
-        log.debug("过期情况：accessTokenExpired:{}",accessTokenExpired);
+        final boolean accessTokenExpired = jwtUtil.isTokenExpired(tokenDecode);
 
-        //从redis中获取refreshToken
-        //先从accessToken中获取用户信息
-        String userNumber = jwtUtil.getSubject(request);
-        String hKey = RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN+ userNumber;
-        String refreshToken = redisUtil.get(hKey);
-        if (refreshToken == null){
-            throw new CustomAuthenticationException(ResultCode.TOKEN_EXCEPTION);
-        }
-        final DecodedJWT refreshTokenDecode = jwtUtil.getClaimsByToken(refreshToken);
-        final boolean refreshTokenExpired = jwtUtil.isTokenExpired(refreshTokenDecode);
-
-        if(!refreshTokenExpired){
-            //refreshToken没有过期
-            final String userNumberFromRefreshToken = refreshTokenDecode.getSubject();
-
-            if(accessTokenExpired){
-                //accessToken过期，将刷新的token返回给前端
-                response.setHeader(jwtUtil.getAccessTokenHeader(), jwtUtil.generateAccessToken(userNumberFromRefreshToken));
-            }
-            // 构建UsernamePasswordAuthenticationToken,这里密码为null，是因为提供了正确的JWT,实现自动登录
-            UsernamePasswordAuthenticationToken user =
-                    new UsernamePasswordAuthenticationToken
-                            (userNumberFromRefreshToken, null,
-                                    userDetailService.getUserAuthority(userNumberFromRefreshToken));
-            SecurityContextHolder.getContext().setAuthentication(user);
-            chain.doFilter(request, response);
+        if(accessTokenExpired){
+            //token过期
+            throw new SystemException(ResultCode.TOKEN_TIME_OUT);
         }else{
-            //refreshToken过期直接抛异常
-            throw new CustomAuthenticationException(ResultCode.TOKEN_TIME_OUT);
+            //accessToken没有过期则检查是否加入黑名单
+            if (jwtUtil.checkBlacklist(token)){
+                throw new CustomAuthenticationException(ResultCode.TOKEN_EXCEPTION);
+            }
         }
+        // 构建UsernamePasswordAuthenticationToken,这里密码为null，是因为提供了正确的JWT,实现自动登录
+        UsernamePasswordAuthenticationToken user =
+                new UsernamePasswordAuthenticationToken
+                        (jwtUtil.getSubject(request), null,
+                                userDetailService.getUserAuthority(jwtUtil.getSubject(request)));
+        SecurityContextHolder.getContext().setAuthentication(user);
+        chain.doFilter(request, response);
     }
 }
 

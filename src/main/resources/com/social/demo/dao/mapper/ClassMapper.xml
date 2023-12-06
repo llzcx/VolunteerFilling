@@ -3,4 +3,13 @@
 <mapper namespace="com.social.demo.dao.mapper.ClassMapper">
 
 
+    <select id="selectClassIdByName" resultType="java.lang.Long">
+        SELECT class_id FROM `class` WHERE class_name = #{className}
+    </select>
+    <select id="selectNameByClassId" resultType="java.lang.String">
+        SELECT class_name FROM `class` WHERE class_id = #{classId}
+    </select>
+    <select id="judge" resultType="java.lang.Long">
+        SELECT class_id FROM `class` WHERE class_name = #{className} AND class_id != #{classId}
+    </select>
 </mapper>

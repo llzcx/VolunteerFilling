@@ -5,9 +5,11 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,7 +19,7 @@ import java.io.StringWriter;
  * @author 陈翔
  */
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionHandlerConfig {
 
     /**

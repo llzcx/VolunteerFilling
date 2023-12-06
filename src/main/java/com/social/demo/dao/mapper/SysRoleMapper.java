@@ -15,10 +15,10 @@ import java.util.List;
 public interface SysRoleMapper extends BaseMapper<SysRole> {
     /**
      * 通过用户name获取身份列表
-     * @param username
+     * @param userNumber
      * @return
      */
-    List<SysRole> selectRoleListByUserName(@Param("userNumber")String username);
+    List<SysRole> selectRoleListByUserName(@Param("userNumber")String userNumber);
 
 
 

@@ -8,6 +8,8 @@ import com.social.demo.entity.School;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 学校接口
  *
@@ -33,12 +35,12 @@ public class SchoolController {
 
     /**
      * 修改院校信息
-     * @param schoolDto 院校信息
+     * @param school 院校信息
      * @return
      */
     @PutMapping
-    public ApiResp<Boolean> modifySchool(@RequestBody SchoolDto schoolDto){
-        Boolean modifySchool = schoolService.modifySchool(schoolDto);
+    public ApiResp<Boolean> modifySchool(@RequestBody School school){
+        Boolean modifySchool = schoolService.modifySchool(school);
         return ApiResp.judge(modifySchool, modifySchool, ResultCode.SCHOOL_NOT_EXISTS);
     }
 
@@ -48,7 +50,7 @@ public class SchoolController {
      * @return
      */
     @DeleteMapping
-    public ApiResp<Boolean> deleteSchool(@RequestParam("number")Long number){
+    public ApiResp<Boolean> deleteSchool(@RequestBody Long number){
         Boolean deleteSchool = schoolService.deleteSchool(number);
         return ApiResp.judge(deleteSchool, deleteSchool, ResultCode.SCHOOL_NOT_EXISTS);
     }
@@ -59,8 +61,20 @@ public class SchoolController {
      * @return 院校信息
      */
     @GetMapping
-    public ApiResp<School> getSchool(@RequestParam("schoolName")String schoolName){
-        School school = schoolService.getSchool(schoolName);
+    public ApiResp<List<School>> getSchool(@RequestParam(value = "schoolName", required = false)String schoolName){
+        List<School> school = schoolService.getSchool(schoolName);
         return ApiResp.judge(school != null, school, ResultCode.SCHOOL_NOT_EXISTS);
+    }
+
+    /**
+     * 判断学校是否已存在
+     * @param schoolName
+     * @return
+     */
+    @GetMapping("/exists")
+    public ApiResp<Boolean> judge(@RequestParam("schoolName") String schoolName){
+        System.out.println(schoolName);
+        Boolean b = schoolService.judgeSchoolName(schoolName);
+        return ApiResp.success(b);
     }
 }

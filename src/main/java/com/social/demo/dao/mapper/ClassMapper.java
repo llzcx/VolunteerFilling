@@ -9,4 +9,14 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ClassMapper extends BaseMapper<Class> {
+    /**
+     * 根据班级名获取班级id
+     * @param className 班级名
+     * @return 班级id
+     */
+    Long selectClassIdByName(String className);
+
+    String selectNameByClassId(Long classId);
+
+    Long judge(Long classId, String className);
 }

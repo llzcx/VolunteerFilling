@@ -44,9 +44,12 @@ public enum ResultCode {
     USER_NOT_AUTHENTICATED(2012,"用户未认证"),
     USER_GENDER_MISMATCH(2013,"用户性别不符合"),
     SCHOOL_ALREADY_EXISTS(2014,"学校编码或学校名已存在"),
-    SCHOOL_NOT_EXISTS(2014,"学校不存在"),
-
-
+    SCHOOL_NOT_EXISTS(2015,"学校不存在"),
+    USER_NOT_EXISTS(2016, "用户不存在"),
+    USER_IS_CLASS_TEACHER(2017, "该老师已经是班主任了"),
+    IS_EXISTS(2018, "已存在"),
+    USER_IS_EXISTS(2019, "用户已存在"),
+    USER_HAVE_CLASS(2020, "该老师是班主任，请先将班主任职务去除"),
 
 
         /*接口异常*/
@@ -54,9 +57,9 @@ public enum ResultCode {
     NULL_POINT_EXCEPTION(3002,"空指针异常"),
     ENCODING_ANOMALY(3003,"系统编码错误"),
     DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
-    UPLOAD_ERROR(3005,"上传失败"),
+    UPLOAD_ERROR(3005,"上传失败");
 
-    ;
+
     private Integer code;
     private String message;
 

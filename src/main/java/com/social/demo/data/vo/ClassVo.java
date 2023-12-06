@@ -1,25 +1,32 @@
-package com.social.demo.entity;
+package com.social.demo.data.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * 班级
- *
  * @author 杨世博
+ * @date 2023/12/5 16:20
+ * @description ClassVo
  */
 @Data
-public class Class {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClassVo {
     /**
      * 班级id
      */
-    @TableId(value = "class_id", type = IdType.AUTO)
     private Long classId;
     /**
-     * 班主任id
+     * 工号
      */
-    private Long userId;
+    private String userNumber;
+    /**
+     * 班主任名
+     */
+    private String username;
     /**
      * 班级名
      */
@@ -32,4 +39,8 @@ public class Class {
      * 年份
      */
     private Integer year;
+    /**
+     * 班主任联系方式
+     */
+    private String phone;
 }

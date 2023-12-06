@@ -1,11 +1,14 @@
 package com.social.demo.dao.repository;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.social.demo.data.dto.LoginDto;
-import com.social.demo.data.dto.UserDtoByStudent;
-import com.social.demo.data.dto.UserDtoByTeacher;
+import com.social.demo.data.bo.LoginBo;
+import com.social.demo.data.bo.TokenPair;
+import com.social.demo.data.dto.*;
+import com.social.demo.data.vo.ClassTeacherVo;
 import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.StudentVo;
+import com.social.demo.data.vo.UserVo;
 import com.social.demo.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,9 +25,8 @@ public interface IUserService extends IService<User> {
      * 退出登录
      *
      * @param request
-     * @return
      */
-    Boolean loginOut(HttpServletRequest request);
+    void loginOut(HttpServletRequest request);
 
 
     /**
@@ -33,7 +35,7 @@ public interface IUserService extends IService<User> {
      * @param loginDto
      * @return token 登录令牌
      */
-    String login(LoginDto loginDto);
+    LoginBo login(LoginDto loginDto);
 
     /**
      * 获取用户信息-学生
@@ -69,10 +71,10 @@ public interface IUserService extends IService<User> {
     /**
      * 重置学生密码
      *
-     * @param id 学生id
+     * @param userNumbers 学号
      * @return 是否操作成功
      */
-    Boolean reset(Long id);
+    Boolean reset(String[] userNumbers);
 
     /**
      * 获取用户信息-老师
@@ -96,4 +98,42 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<User> getUserBySchoolAndTime(String school, LocalDateTime time);
+
+    /**
+     * 批量上传学生信息
+     *
+     * @param students
+     * @return
+     */
+    String importStudents(List<StudentDto> students);
+
+    /**
+     * 刷新token
+     * @param request
+     * @return
+     */
+    TokenPair refresh(HttpServletRequest request);
+
+    /**
+     * 批量上传老师信息
+     *
+     * @param teachers
+     * @return
+     */
+    String importTeachers(List<TeacherDto> teachers);
+
+    /**
+     * 获取用户信息(暂未实现用户角色查询)
+     *
+     * @param username   用户姓名
+     * @param role       用户角色
+     * @param current
+     * @param size
+     * @return
+     */
+    IPage<UserVo> getUser(String username, String role, Long current, Long size);
+
+    String deleteUser(String[] userNumbers);
+
+    List<ClassTeacherVo> getTeachers();
 }
