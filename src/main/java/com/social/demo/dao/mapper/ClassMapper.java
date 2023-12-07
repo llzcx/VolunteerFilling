@@ -19,4 +19,6 @@ public interface ClassMapper extends BaseMapper<Class> {
     String selectNameByClassId(Long classId);
 
     Long judge(Long classId, String className);
+
+    String selectNameByTeacherNumber(Long userId);
 }

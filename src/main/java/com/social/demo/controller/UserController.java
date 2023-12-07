@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
+ * 用户接口
+ *
  * @author 陈翔
  */
 @RestController
@@ -132,5 +134,18 @@ public class UserController {
     public ApiResp<List<ClassTeacherVo>> getClassTeachers(){
         List<ClassTeacherVo> teachers = userService.getTeachers();
         return ApiResp.success(teachers);
+    }
+
+    /**
+     * 用户修改密码
+     * @param request
+     * @param password 密码
+     * @return
+     */
+    @PutMapping("/password")
+    public ApiResp<String> modifyPassword(HttpServletRequest request,
+                                          @RequestBody String password){
+        Boolean b = userService.modifyPassword(request, password);
+        return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 }

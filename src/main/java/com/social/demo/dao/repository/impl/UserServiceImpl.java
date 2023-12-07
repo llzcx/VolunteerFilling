@@ -83,12 +83,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public StudentVo getInformationOfStudent(HttpServletRequest request) {
-        return null;
+        String userNumber = jwtUtil.getSubject(request);
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        StudentVo studentVo = new StudentVo();
+        BeanUtils.copyProperties(user, studentVo);
+        studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(user.getSchoolNumber()));
+        studentVo.setClassName(classMapper.selectNameByClassId(user.getClassId()));
+        studentVo.setSubjects(subjectGroupMapper.selectSubjects(user.getGroupId()));
+        return studentVo;
     }
 
     @Override
-    public StudentVo modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent) {
-        return null;
+    public Boolean modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent) {
+        String userNumber = jwtUtil.getSubject(request);
+        User user = new User();
+        BeanUtils.copyProperties(userDtoByStudent, user);
+        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        return update > 0;
     }
 
     @Override
@@ -135,13 +146,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public StudentVo getInformationOfTeacher(HttpServletRequest request) {
-        return null;
+    public TeacherVo getInformationOfTeacher(HttpServletRequest request) {
+        TeacherVo teacherVo = new TeacherVo();
+        String userNumber = jwtUtil.getSubject(request);
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        BeanUtils.copyProperties(user, teacherVo);
+        teacherVo.setClassName(classMapper.selectNameByTeacherNumber(user.getUserId()));
+        return teacherVo;
     }
 
     @Override
-    public TeacherVo modifyPhone(HttpServletRequest request, String phone) {
-        return null;
+    public Boolean modifyPhone(HttpServletRequest request, String phone) {
+        String userNumber = jwtUtil.getSubject(request);
+        User user = new User();
+        user.setPhone(phone);
+        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        return update > 0;
     }
 
     @Override
@@ -317,5 +337,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             teacherVos.add(classTeacherVo);
         }
         return teacherVos;
+    }
+
+    @Override
+    public Boolean modifyPassword(HttpServletRequest request, String password) {
+        String userNumber = jwtUtil.getSubject(request);
+        User user = new User();
+        user.setPassword(DigestUtil.md5Hex(password));
+        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        return update > 0;
     }
 }

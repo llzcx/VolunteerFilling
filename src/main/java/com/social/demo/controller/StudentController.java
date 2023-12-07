@@ -24,8 +24,6 @@ public class StudentController {
     IUserService userService;
 
     /**
-     * ps 暂时无法从Token中获取用户id
-     *
      * 学生获取个人信息
      * @param request
      * @return 学生个人信息
@@ -40,12 +38,12 @@ public class StudentController {
      * 学生修改个人信息（收件信息）
      * @param request
      * @param userDtoByStudent 学生提交的修改信息
-     * @return 学生个人信息
+     * @return 是否修改成功
      */
     @PutMapping("/information")
-    public ApiResp<StudentVo> modifyInformation(HttpServletRequest request,
+    public ApiResp<Boolean> modifyInformation(HttpServletRequest request,
                                                 @RequestBody UserDtoByStudent userDtoByStudent){
-        StudentVo student = userService.modifyInformation(request, userDtoByStudent);
-        return ApiResp.judge(student != null, student, ResultCode.DATABASE_DATA_EXCEPTION);
+        Boolean b = userService.modifyInformation(request, userDtoByStudent);
+        return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 }
