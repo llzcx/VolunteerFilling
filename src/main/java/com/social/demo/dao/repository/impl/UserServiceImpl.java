@@ -1,6 +1,8 @@
 package com.social.demo.dao.repository.impl;
 
 import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -23,6 +25,7 @@ import com.social.demo.data.vo.StudentVo;
 import com.social.demo.data.vo.UserVo;
 import com.social.demo.entity.Class;
 import com.social.demo.entity.School;
+import com.social.demo.entity.SubjectGroup;
 import com.social.demo.entity.User;
 import com.social.demo.manager.security.authentication.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
@@ -34,6 +37,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -51,13 +55,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     SchoolMapper schoolMapper;
 
     @Autowired
+    SubjectGroupMapper subjectGroupMapper;
+
+    @Autowired
     ClassMapper classMapper;
 
     @Autowired
     JwtUtil jwtUtil;
-
-    @Autowired
-    SubjectGroupMapper subjectGroupMapper;
 
     @Override
     public void loginOut(HttpServletRequest request) {
@@ -97,7 +101,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         School school = schoolMapper.selectOne(MybatisPlusUtil.queryWrapperEq("number", user.getSchoolNumber()));
-        Set<String> subjects = userMapper.selectStudentSubjects(user.getUserId());
+        SubjectGroup subjectGroup = subjectGroupMapper.selectSubjects(user.getGroupId());
+        JSONArray jsonArray = JSONUtil.parseArray(subjectGroup.getSubjects());
+        List<String> subjects = jsonArray.toList(String.class) ;
         Class aClass = classMapper.selectOne(MybatisPlusUtil.queryWrapperEq("class_id", user.getClassId()));
         studentVo.setSchool(school.getName());
         studentVo.setSubjects(subjects);
@@ -145,7 +151,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public List<User> getUserBySchoolAndTime(String school, LocalDateTime time) {
+    public List<User> getUserBySchoolAndTime(String school, Integer time) {
         if (school.isEmpty() || school.equals("") || time == null){
             throw new SystemException(ResultCode.NULL_POINT_EXCEPTION);
         }

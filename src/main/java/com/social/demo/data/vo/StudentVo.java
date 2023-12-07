@@ -1,10 +1,10 @@
 package com.social.demo.data.vo;
 
+import com.social.demo.entity.SubjectGroup;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author 杨世博
@@ -64,7 +64,7 @@ public class StudentVo implements Serializable {
     /**
      * 选课
      */
-    private Set<String> subjects;
+    private List<String> subjects;
     /**
      * 性别
      */

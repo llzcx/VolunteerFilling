@@ -1,15 +1,18 @@
 package com.social.demo.entity;
 
+import lombok.Data;
+
 /**
  * 专业
  *
- * @author 杨世博
+ * @author 周威宇
  */
-public class MajorLimit {
+@Data
+public class Major {
     /**
      * 专业id
      */
-    private Long id;
+    private Long majorId;
     /**
      * 地区选择id
      */
@@ -17,7 +20,7 @@ public class MajorLimit {
     /**
      * 院校编码
      */
-    private Long schoolNumber;
+    private String schoolName;
     /**
      * 专业名称
      */
@@ -29,5 +32,5 @@ public class MajorLimit {
     /**
      * 选科id
      */
-    private Long chooseId;
+    private String chooseId;
 }

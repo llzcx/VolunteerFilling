@@ -97,7 +97,7 @@ public interface IUserService extends IService<User> {
      * @param time
      * @return
      */
-    List<User> getUserBySchoolAndTime(String school, LocalDateTime time);
+    List<User> getUserBySchoolAndTime(String school, Integer time);
 
     /**
      * 批量上传学生信息

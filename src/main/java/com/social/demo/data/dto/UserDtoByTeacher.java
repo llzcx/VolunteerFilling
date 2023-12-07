@@ -1,5 +1,6 @@
 package com.social.demo.data.dto;
 
+import com.social.demo.entity.SubjectGroup;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,7 +65,7 @@ public class UserDtoByTeacher {
     /**
      * 选科id
      */
-    private List<String> subjects;
+    private List<SubjectGroup> subjects;
     /**
      * 性别
      */

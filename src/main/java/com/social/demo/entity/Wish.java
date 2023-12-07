@@ -1,5 +1,7 @@
 package com.social.demo.entity;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 /**
@@ -7,6 +9,7 @@ import java.time.LocalDateTime;
  *
  * @author 杨世博
  */
+@Data
 public class Wish {
     /**
      * 志愿填报id
@@ -29,15 +32,7 @@ public class Wish {
      */
     private Long third;
     /**
-     * 填报类型
+     * 时间段id
      */
-    private Boolean type;
-    /**
-     * 考试填报时间
-     */
-    private LocalDateTime startTime;
-    /**
-     * 结束填报时间
-     */
-    private LocalDateTime endTime;
+    private Long timeId;
 }

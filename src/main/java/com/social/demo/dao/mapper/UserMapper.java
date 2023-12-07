@@ -33,7 +33,7 @@ public interface UserMapper extends BaseMapper<User> {
      * @param time
      * @return
      */
-    List<User> selectUserBySchoolAndTime(String school, LocalDateTime time);
+    List<User> selectUserBySchoolAndTime(String school, Integer time);
 
     /**
      * 获取用户的选课
