@@ -12,4 +12,7 @@
     <select id="judge" resultType="java.lang.Long">
         SELECT class_id FROM `class` WHERE class_name = #{className} AND class_id != #{classId}
     </select>
+    <select id="selectNameByTeacherNumber" resultType="java.lang.String">
+        SELECT class_name FROM `class` WHERE user_id = #{userId}
+    </select>
 </mapper>

@@ -46,11 +46,12 @@ public interface IUserService extends IService<User> {
 
     /**
      * 修改个人信息-学生
+     *
      * @param request
      * @param userDtoByStudent 用户修改后的数据
-     * @return 用户修改后的个人信息
+     * @return 是否修改成功
      */
-    StudentVo modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent);
+    Boolean modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent);
 
     /**
      * 老师获取学生个人信息
@@ -78,18 +79,20 @@ public interface IUserService extends IService<User> {
 
     /**
      * 获取用户信息-老师
+     *
      * @param request
      * @return 老师用户信息
      */
-    StudentVo getInformationOfTeacher(HttpServletRequest request);
+    TeacherVo getInformationOfTeacher(HttpServletRequest request);
 
     /**
      * 老师修改电话号码
+     *
      * @param request
-     * @param phone 电话号码
+     * @param phone   电话号码
      * @return 修改后的学生信息
      */
-    TeacherVo modifyPhone(HttpServletRequest request, String phone);
+    Boolean modifyPhone(HttpServletRequest request, String phone);
 
     /**
      * 根据目标学校和入学时间获取学生信息
@@ -136,4 +139,6 @@ public interface IUserService extends IService<User> {
     String deleteUser(String[] userNumbers);
 
     List<ClassTeacherVo> getTeachers();
+
+    Boolean modifyPassword(HttpServletRequest request, String password);
 }

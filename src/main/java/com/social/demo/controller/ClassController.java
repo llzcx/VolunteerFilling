@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
+ * 班级管理接口
+ *
  * @author 杨世博
  * @date 2023/12/4 15:40
  * @description 班级管理接口

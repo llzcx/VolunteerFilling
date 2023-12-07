@@ -31,6 +31,10 @@ public class TeacherVo implements Serializable {
      */
     private String politicsStatus;
     /**
+     * 负责班级名
+     */
+    private String className;
+    /**
      * 民族
      */
     private String nation;

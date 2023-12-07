@@ -25,39 +25,26 @@ public class TeacherController {
     IUserService userService;
 
     /**
-     * ps 暂时无法从Token中获取用户id
-     *
      * 老师查看个人信息
      * @param request
      * @return 老师的个人信息
      */
     @GetMapping("/information")
-    public ApiResp<StudentVo> getInformation(HttpServletRequest request){
-        StudentVo user = userService.getInformationOfTeacher(request);
+    public ApiResp<TeacherVo> getInformation(HttpServletRequest request){
+        TeacherVo user = userService.getInformationOfTeacher(request);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 老师修改电话号码
      * @param phone 电话号码
-     * @return 老师的个人信息
+     * @return
      */
     @PutMapping("/phone")
-    public ApiResp<TeacherVo> modifyPhone(HttpServletRequest request,
+    public ApiResp<String> modifyPhone(HttpServletRequest request,
                                                 @RequestBody String phone){
-        TeacherVo teacher = userService.modifyPhone(request, phone);
-        return ApiResp.judge(teacher != null, teacher, ResultCode.DATABASE_DATA_EXCEPTION);
-    }
-
-    /**
-     * 老师获取学生个人信息
-     * @param number 学生学号
-     * @return 学生个人信息
-     */
-    @GetMapping("/student")
-    public ApiResp<StudentVo> getStudent(@RequestParam("number")Long number){
-        StudentVo user = userService.getStudent(number);
-        return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
+        Boolean teacher = userService.modifyPhone(request, phone);
+        return ApiResp.judge(teacher, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**

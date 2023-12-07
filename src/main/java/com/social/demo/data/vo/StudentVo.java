@@ -34,7 +34,7 @@ public class StudentVo implements Serializable {
      */
     private String province;
     /**
-     * 计划
+     * 计划性质
      */
     private String plan;
     /**
