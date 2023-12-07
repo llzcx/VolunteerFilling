@@ -25,7 +25,7 @@ public class School {
      */
     private Long number;
     /**
-     * 学校名额
+     * 学校名称
      */
     private String name;
 

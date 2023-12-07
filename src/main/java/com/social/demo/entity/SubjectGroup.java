@@ -1,5 +1,7 @@
 package com.social.demo.entity;
 
+import lombok.Data;
+
 import java.util.List;
 import java.util.Set;
 
@@ -8,6 +10,7 @@ import java.util.Set;
  * @date 2023/12/4 14:34
  * @description 科目组合
  */
+@Data
 public class SubjectGroup {
     /**
      * 组合id

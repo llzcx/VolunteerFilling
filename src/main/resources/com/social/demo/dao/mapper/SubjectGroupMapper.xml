@@ -6,7 +6,7 @@
     <select id="selectGroupId" resultType="java.lang.Long">
         SELECT group_id FROM subject_group WHERE subjects = #{subjects}
     </select>
-    <select id="selectSubjects" resultType="java.lang.String">
-        SELECT subjects FROM subject_group WHERE group_id = #{groupId}
+    <select id="selectSubjects" resultType="com.social.demo.entity.SubjectGroup">
+        SELECT * FROM subject_group WHERE group_id = #{groupId}
     </select>
 </mapper>

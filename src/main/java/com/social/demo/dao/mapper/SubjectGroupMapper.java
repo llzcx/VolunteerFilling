@@ -11,5 +11,5 @@ import java.util.Set;
 public interface SubjectGroupMapper extends BaseMapper<SubjectGroup> {
     Long selectGroupId(String subjects);
 
-    Set<String> selectSubjects(Long groupId);
+    SubjectGroup selectSubjects(Long groupId);
 }

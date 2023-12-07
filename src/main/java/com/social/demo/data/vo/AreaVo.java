@@ -1,8 +1,9 @@
-package com.social.demo.entity;
+package com.social.demo.data.vo;
 
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -11,7 +12,7 @@ import java.sql.Timestamp;
  * @author 周威宇
  */
 @Data
-public class Area {
+public class AreaVo {
     /**
      * 地区id
      */
@@ -23,7 +24,7 @@ public class Area {
     /**
      * 包含省份
      */
-    private String includingProvinces;
+    private List<String> includingProvinces;
     /**
      * 修改时间
      */
