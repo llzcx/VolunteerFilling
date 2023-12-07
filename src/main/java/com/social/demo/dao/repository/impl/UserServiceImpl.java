@@ -22,7 +22,6 @@ import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.StudentVo;
 import com.social.demo.data.vo.UserVo;
 import com.social.demo.entity.Class;
-import com.social.demo.entity.School;
 import com.social.demo.entity.User;
 import com.social.demo.manager.security.authentication.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
@@ -84,13 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public StudentVo getInformationOfStudent(HttpServletRequest request) {
         String userNumber = jwtUtil.getSubject(request);
-        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
-        StudentVo studentVo = new StudentVo();
-        BeanUtils.copyProperties(user, studentVo);
-        studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(user.getSchoolNumber()));
-        studentVo.setClassName(classMapper.selectNameByClassId(user.getClassId()));
-        studentVo.setSubjects(subjectGroupMapper.selectSubjects(user.getGroupId()));
-        return studentVo;
+        return getStudent(userNumber);
     }
 
     @Override
@@ -102,27 +95,31 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         return update > 0;
     }
 
+
     @Override
-    public StudentVo getStudent(Long number) {
+    public StudentVo getStudent(String number){
         User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", number));
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
-        School school = schoolMapper.selectOne(MybatisPlusUtil.queryWrapperEq("number", user.getSchoolNumber()));
-        Set<String> subjects = userMapper.selectStudentSubjects(user.getUserId());
-        Class aClass = classMapper.selectOne(MybatisPlusUtil.queryWrapperEq("class_id", user.getClassId()));
-        studentVo.setSchool(school.getName());
-        studentVo.setSubjects(subjects);
-        studentVo.setClassName(aClass.getClassName());
-        studentVo.setSex(user.getSex());
+        studentVo.setSubjects(subjectGroupMapper.selectSubjects(user.getGroupId()));
+        studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(user.getSchoolNumber()));
+        studentVo.setClassName(classMapper.selectNameByClassId(user.getClassId()));
         return studentVo;
     }
 
     @Override
-    public StudentVo modifyStudent(UserDtoByTeacher userDtoByTeacher) {
-
-
-
-        return null;
+    public Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher) {
+        String userNumber = userDtoByTeacher.getUserNumber();
+        userDtoByTeacher.setUserNumber(null);
+        User user = new User();
+        BeanUtils.copyProperties(userDtoByTeacher, user);
+        System.out.println(schoolMapper.selectSchoolNumberByName(userDtoByTeacher.getSchoolName()));
+        user.setSchoolNumber(schoolMapper.selectSchoolNumberByName(userDtoByTeacher.getSchoolName()));
+        System.out.println(JSONUtil.toJsonStr(userDtoByTeacher.getSubjects()));
+        System.out.println(subjectGroupMapper.selectGroupId(JSONUtil.toJsonStr(userDtoByTeacher.getSubjects())));
+        user.setGroupId(subjectGroupMapper.selectGroupId(JSONUtil.toJsonStr(userDtoByTeacher.getSubjects())));
+        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        return update > 0;
     }
 
     @Override
@@ -201,26 +198,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }
         return null;
     }
-
-//    private List<StudentVo> getStudent(){
-//
-//        List<StudentVo> studentVos = new ArrayList<>();
-//        for (Long userId : userIds) {
-//            User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId));
-//            StudentVo studentVo = new StudentVo();
-//            BeanUtils.copyProperties(user, studentVo);
-//            String className = classMapper.selectNameByClassId(user.getClassId());
-//            studentVo.setClassName(className);
-//            String schoolName = schoolMapper.selectNameBySchoolNumber(user.getSchoolNumber());
-//            studentVo.setSchool(schoolName);
-//            Set<String> subjects = subjectGroupMapper.selectSubjects(user.getGroupId());
-//            studentVo.setSubjects(subjects);
-//
-//            studentVos.add(studentVo);
-//        }
-//
-//        return studentVos;
-//    }
 
     @Override
     public TokenPair refresh(HttpServletRequest request) {

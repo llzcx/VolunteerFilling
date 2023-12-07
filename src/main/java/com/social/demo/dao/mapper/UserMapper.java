@@ -36,13 +36,6 @@ public interface UserMapper extends BaseMapper<User> {
     List<User> selectUserBySchoolAndTime(String school, LocalDateTime time);
 
     /**
-     * 获取用户的选课
-     * @param userId 用户id
-     * @return 选课
-     */
-    Set<String> selectStudentSubjects(Long userId);
-
-    /**
      * 查找不是班主任的老师
      * @return
      */

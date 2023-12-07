@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author 杨世博
@@ -16,31 +17,15 @@ public class UserDtoByTeacher {
     /**
      * 学号
      */
-    private Long userNumber;
+    private String userNumber;
     /**
-     * 民族
+     * 姓名
      */
-    private Boolean nation;
+    private String username;
     /**
-     * 班级名
+     * 性别
      */
-    private String className;
-    /**
-     * 目标院校
-     */
-    private String school;
-    /**
-     * 来源省份
-     */
-    private String province;
-    /**
-     * 计划
-     */
-    private String plan;
-    /**
-     * 父母电话
-     */
-    private String parentPhone;
+    private String sex;
     /**
      * 身份证号码
      */
@@ -50,9 +35,21 @@ public class UserDtoByTeacher {
      */
     private String politicsStatus;
     /**
-     * 姓名
+     * 民族
      */
-    private String username;
+    private String nation;
+    /**
+     * 目标院校的院校编码
+     */
+    private String schoolName;
+    /**
+     * 来源省份
+     */
+    private String province;
+    /**
+     * 计划
+     */
+    private String plan;
     /**
      * 家庭地址
      */
@@ -62,11 +59,11 @@ public class UserDtoByTeacher {
      */
     private String phone;
     /**
-     * 选科id
+     * 父母电话
      */
-    private List<String> subjects;
+    private String parentPhone;
     /**
-     * 性别
+     * 选课
      */
-    private String sex;
+    private String[] subjects;
 }

@@ -59,7 +59,7 @@ public interface IUserService extends IService<User> {
      * @param number 学号
      * @return 学生个人信息
      */
-    StudentVo getStudent(Long number);
+    StudentVo getStudent(String number);
 
     /**
      * 修改学生个人信息
@@ -67,7 +67,7 @@ public interface IUserService extends IService<User> {
      * @param userDtoByTeacher 老师上传的学生修改信息
      * @return 学生个人信息
      */
-    StudentVo modifyStudent(UserDtoByTeacher userDtoByTeacher);
+    Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher);
 
     /**
      * 重置学生密码

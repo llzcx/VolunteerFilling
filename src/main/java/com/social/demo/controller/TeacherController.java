@@ -46,26 +46,4 @@ public class TeacherController {
         Boolean teacher = userService.modifyPhone(request, phone);
         return ApiResp.judge(teacher, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
-
-    /**
-     * 老师修改学生个人信息
-     * @param userDtoByTeacher 修改的学生信息
-     * @return 学生个人信息
-     */
-    @PutMapping("/student")
-    public ApiResp<StudentVo> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher){
-        StudentVo user = userService.modifyStudent(userDtoByTeacher);
-        return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
-    }
-
-//    /**
-//     * 重置学生密码
-//     * @param id 学生id
-//     * @return 是否操作成功
-//     */
-//    @PatchMapping("/student/{id}")
-//    public ApiResp<Boolean> reset(@PathVariable(value = "id")Long id){
-//        Boolean reset = userService.reset(id);
-//        return ApiResp.success(reset);
-//    }
 }

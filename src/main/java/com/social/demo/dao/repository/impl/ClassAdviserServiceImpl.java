@@ -1,12 +1,9 @@
 package com.social.demo.dao.repository.impl;
 
-import com.social.demo.common.ApiResp;
-import com.social.demo.common.ResultCode;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.dao.repository.IClassAdviserService;
-import com.social.demo.data.vo.StudentVo;
+import com.social.demo.data.vo.ClassMemberVo;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author 杨世博
@@ -16,5 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Service
 public class ClassAdviserServiceImpl implements IClassAdviserService {
 
-
+    @Override
+    public IPage<ClassMemberVo> getStudents(Long classId, String userNumber, String username, Integer role, Integer current, Integer size) {
+        return null;
+    }
 }

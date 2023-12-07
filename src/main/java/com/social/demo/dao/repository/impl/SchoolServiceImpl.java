@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author 杨世博
@@ -52,7 +53,7 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
     @Override
     public List<School> getSchool(String schoolName) {
         QueryWrapper<School> schoolQueryWrapper = new QueryWrapper<>();
-        schoolQueryWrapper.like("name", schoolName);
+        schoolQueryWrapper.like(schoolName != null,"name", schoolName);
         return schoolMapper.selectList(schoolQueryWrapper);
     }
 
