@@ -58,6 +58,16 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
         return areaMapper.selectList(wrapper);
     }
     /**
+     * 查询一个地区
+     * @return
+     */
+    @Override
+    public Area getArea1(Long areaId){
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("area_id",areaId);
+        return areaMapper.selectOne(wrapper);
+    }
+    /**
      * 修改地区
      * @param area
      * @return

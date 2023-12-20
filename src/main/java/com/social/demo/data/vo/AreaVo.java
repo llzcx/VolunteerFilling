@@ -29,4 +29,12 @@ public class AreaVo {
      * 修改时间
      */
     private Timestamp updateTime;
+    /**
+     * 科目范围
+     */
+    private List<String> subjectScope;
+    /**
+     * 选科数量
+     */
+    private Integer subjectNumber;
 }

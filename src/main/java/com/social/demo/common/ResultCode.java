@@ -50,6 +50,7 @@ public enum ResultCode {
     IS_EXISTS(2018, "已存在"),
     USER_IS_EXISTS(2019, "用户已存在"),
     USER_HAVE_CLASS(2020, "该老师是班主任，请先将班主任职务去除"),
+    SUBJECT_HAVE_CLASS(2021, "该科目已经存在"),
 
 
         /*接口异常*/

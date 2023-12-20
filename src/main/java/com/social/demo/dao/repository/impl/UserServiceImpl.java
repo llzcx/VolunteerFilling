@@ -3,11 +3,12 @@ package com.social.demo.dao.repository.impl;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.PropertiesConstant;
@@ -20,8 +21,8 @@ import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.*;
 import com.social.demo.data.vo.ClassTeacherVo;
-import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.StudentVo;
+import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.UserVo;
 import com.social.demo.entity.Class;
 import com.social.demo.entity.School;
@@ -37,8 +38,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -62,6 +62,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Autowired
     JwtUtil jwtUtil;
+
+
 
     @Override
     public void loginOut(HttpServletRequest request) {
@@ -93,7 +95,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         BeanUtils.copyProperties(user, studentVo);
         studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(user.getSchoolNumber()));
         studentVo.setClassName(classMapper.selectNameByClassId(user.getClassId()));
-        studentVo.setSubjects(subjectGroupMapper.selectSubjects(user.getGroupId()));
+        SubjectGroup subject = subjectGroupMapper.selectSubjects(user.getGroupId());
+        List<String> stringList =new ArrayList<>();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            stringList = mapper.readValue(subject.getSubjects(), new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        studentVo.setSubjects(stringList);
         return studentVo;
     }
 
@@ -112,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         School school = schoolMapper.selectOne(MybatisPlusUtil.queryWrapperEq("number", user.getSchoolNumber()));
-        SubjectGroup subjectGroup = subjectGroupMapper.selectSubjects(user.getGroupId());
+        SubjectGroup subjectGroup = (SubjectGroup) subjectGroupMapper.selectSubjects(user.getGroupId());
         JSONArray jsonArray = JSONUtil.parseArray(subjectGroup.getSubjects());
         List<String> subjects = jsonArray.toList(String.class) ;
         Class aClass = classMapper.selectOne(MybatisPlusUtil.queryWrapperEq("class_id", user.getClassId()));

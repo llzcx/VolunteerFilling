@@ -19,5 +19,9 @@ public class SubjectGroup {
     /**
      * 学科
      */
-    private Set<String> subjects;
+    private String subjects;
+    /**
+     * 哈希值
+     */
+    private Integer hashcode;
 }

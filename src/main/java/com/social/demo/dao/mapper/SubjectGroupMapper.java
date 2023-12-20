@@ -5,11 +5,13 @@ import com.social.demo.entity.SubjectGroup;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-import java.util.Set;
 
+/**
+ * 周威宇
+ */
 @Mapper
 public interface SubjectGroupMapper extends BaseMapper<SubjectGroup> {
     Long selectGroupId(String subjects);
-
+    List<String> selectSubjectGroups();
     SubjectGroup selectSubjects(Long groupId);
 }

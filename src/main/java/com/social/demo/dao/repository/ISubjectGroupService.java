@@ -14,10 +14,11 @@ import java.util.List;
 public interface ISubjectGroupService extends IService<SubjectGroup> {
     /**
      * 添加学科组合
-     * @param subjectGroup
+     * @param subjectScope
+     * @param subjectNumber
      * @return
      */
-    Boolean addSubjectGroup(SubjectGroup subjectGroup);
+    Boolean addSubjectGroup(List<String>subjectScope,Integer subjectNumber);
 
     /**
      * 查询所有学科组合
