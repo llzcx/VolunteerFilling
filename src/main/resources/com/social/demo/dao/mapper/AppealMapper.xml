@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.social.demo.dao.mapper.AppealMapper">
+
+
+    <select id="selectAppealPage" resultType="com.social.demo.entity.Appeal">
+        SELECT a.* FROM appeal AS a, user AS u
+        WHERE
+            a.user_id = u.user_id
+        AND a.class_id = #{classId}
+        <if test="username != null AND username != ''">
+            AND a.user_id IN (SELECT user_id FROM user WHERE username = CONCAT("%",#{username},"%"))
+        </if>
+        <if test="userNumber != null AND userNumber != ''">
+            AND a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
+        </if>
+        <if test="state != null AND state != ''">
+            AND state = #{state}
+        </if>
+        LIMIT #{number1}, #{number2}
+    </select>
+
+    <select id="selectAppealCount" resultType="java.lang.Integer">
+        SELECT COUNT(a.user_id) FROM appeal AS a, user AS u
+        WHERE
+        a.user_id = u.user_id
+        AND a.class_id = #{classId}
+        <if test="username != null AND username != ''">
+            AND a.user_id IN (SELECT user_id FROM user WHERE username = CONCAT("%",#{username},"%"))
+        </if>
+        <if test="userNumber != null AND userNumber != ''">
+            AND a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
+        </if>
+        <if test="state != null AND state != ''">
+            AND state = #{state}
+        </if>
+    </select>
+    <select id="selectStudentAppealPage" resultType="com.social.demo.entity.Appeal">
+        SELECT a.* FROM appeal AS a, user AS u
+        WHERE
+        a.user_id = u.user_id
+        AND
+        a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
+        <if test="state != null AND state != ''">
+            AND state = #{state}
+        </if>
+        LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectStudentAppealCount" resultType="java.lang.Integer">
+        SELECT COUNT(a.user_id) FROM appeal AS a, user AS u
+        WHERE
+        a.user_id = u.user_id
+        AND a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
+        <if test="state != null AND state != ''">
+            AND state = #{state}
+        </if>
+    </select>
+    <select id="selectUserId" resultType="java.lang.Long">
+        SELECT user_id FROM appeal WHERE appeal_id = #{appealId}
+    </select>
+    <select id="selectClassId" resultType="java.lang.Long">
+        SELECT class_id FROM appeal WHERE appeal_id = #{appealId}
+    </select>
+</mapper>

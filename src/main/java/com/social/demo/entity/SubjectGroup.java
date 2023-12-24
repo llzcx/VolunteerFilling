@@ -19,5 +19,5 @@ public class SubjectGroup {
     /**
      * 学科
      */
-    private Set<String> subjects;
+    private List<String> subjects;
 }

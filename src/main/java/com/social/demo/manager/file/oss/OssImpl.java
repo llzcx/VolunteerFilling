@@ -5,6 +5,7 @@ import com.aliyun.oss.OSSClient;
 import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.file.oss.config.OssPropertiesConfig;
 import com.social.demo.util.TimeUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,12 +20,13 @@ public class OssImpl implements UploadFile {
 
     /**
      * 阿里云上传文件
+     *
      * @param file
      * @return
      * @throws Exception
      */
     @Override
-    public String upload(MultipartFile file)  throws Exception{
+    public String upload(MultipartFile file, String filesName, String filename)  throws Exception{
         String endpoint = OssPropertiesConfig.END_POINT;
         String accessKeyId = OssPropertiesConfig.ACCESS_KEY_ID;
         String accessKeySecret = OssPropertiesConfig.ACCESS_KEY_SECRET;
@@ -60,5 +62,10 @@ public class OssImpl implements UploadFile {
         //关闭OSSClient
         ossClient.shutdown();
         return url;
+    }
+
+    @Override
+    public Boolean download(HttpServletResponse response, String filesName, String filename) throws Exception {
+        return null;
     }
 }

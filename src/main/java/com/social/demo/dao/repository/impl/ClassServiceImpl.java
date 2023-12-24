@@ -82,9 +82,15 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         classVoIPage.setTotal(classIPage.getTotal());
         List<ClassVo> classVoList = new ArrayList<>();
         for (Class aClass : classIPage.getRecords()) {
+
+            System.out.println(aClass);
+
             ClassVo classVo = new ClassVo();
             BeanUtils.copyProperties(aClass, classVo);
             User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", aClass.getUserId()));
+
+            System.out.println(user);
+
             if (user == null){
                 throw new SystemException(ResultCode.DATABASE_DATA_EXCEPTION);
             }

@@ -1,29 +1,52 @@
 package com.social.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 综测
  *
  * @author 杨世博
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Appraisal {
     /**
      * 综测id
      */
-    private Long id;
+    @TableId(value = "appraisal_id", type = IdType.AUTO)
+    private Long appraisalId;
     /**
      * 用户id
      */
     private Long userId;
     /**
-     * 年份
-     */
-    private String year;
-    /**
      * 月份
      */
-    private String month;
+    @TableField(value = "`month`")
+    private Integer month;
     /**
      * 综测总分
      */
     private Integer score;
+    /**
+     * 签名
+     */
+    private String signature;
+
+    public Appraisal(Long userId, Integer month, Integer score) {
+        this.userId = userId;
+        this.month = month;
+        this.score = score;
+    }
+
+    public Appraisal(Long userId, Integer month) {
+        this.userId = userId;
+        this.month = month;
+    }
 }

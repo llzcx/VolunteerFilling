@@ -11,6 +11,8 @@ import com.social.demo.data.vo.StudentVo;
 import com.social.demo.data.vo.UserVo;
 import com.social.demo.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -141,4 +143,8 @@ public interface IUserService extends IService<User> {
     List<ClassTeacherVo> getTeachers();
 
     Boolean modifyPassword(HttpServletRequest request, String password);
+
+    void uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception;
+
+    void downloadHeadshot(HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

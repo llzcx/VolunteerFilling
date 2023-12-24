@@ -1,13 +1,13 @@
 package com.social.demo.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.social.demo.data.bo.StudentBo;
+import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -40,4 +40,16 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> selectTeacherNotClass();
+
+    String selectUserNameByUserNumber(String number);
+
+    List<StudentBo> selectClassStudents(Long classId, Integer number1, Integer number2);
+
+    Integer selectClassStudentCount(Long classId);
+
+    String selectHeadshot(String userNumber);
+
+    List<ClassUserVo> selectClassUserNumbers(Long classId, String userNumber, String username, Integer role, Integer rank, Integer month, Integer number1, Integer number2);
+
+    void updateClassIdentity(String userNumber, Integer identity);
 }

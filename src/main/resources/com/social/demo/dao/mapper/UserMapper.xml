@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.social.demo.dao.mapper.UserMapper">
+    <update id="updateClassIdentity">
+        UPDATE user SET identity = #{identity} WHERE user_number = #{userNumber}
+    </update>
 
     <select id="selectUserIdByUserNumber" resultType="java.lang.Long">
         select user_id from user where user.user_number = #{userNumber}
@@ -18,6 +21,43 @@
         SELECT * FROM user WHERE identity = 1 AND user_id != all(
             SELECT user_id FROM class
             )
+    </select>
+    <select id="selectUserNameByUserNumber" resultType="java.lang.String">
+        SELECT username FROM user WHERE user_number = #{number}
+    </select>
+    <select id="selectClassStudents" resultType="com.social.demo.data.bo.StudentBo">
+        SELECT u.user_id, u.username, u.user_number FROM user AS u, student AS s WHERE
+        u.user_id = s.user_id
+        AND s.class_id = #{classId}
+        LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectClassStudentCount" resultType="java.lang.Integer">
+        SELECT COUNT(s.user_id) FROM user AS u, student AS s WHERE
+        u.user_id = s.user_id
+        AND s.class_id = #{classId}
+    </select>
+    <select id="selectHeadshot" resultType="java.lang.String">
+        SELECT headshot FROM user WHERE user_number = #{userNumber}
+    </select>
+    <select id="selectClassUserNumbers" resultType="com.social.demo.data.vo.ClassUserVo">
+        SELECT u.user_number, u.username, u.identity, a.score FROM user AS u, student AS s, appraisal AS a
+        WHERE u.user_id = s.user_id AND u.user_id = a.user_id
+        <if test="username!=null and username!=''">
+            AND u.username LIKE CONCAT("%",#{username},"%")
+        </if>
+        <if test="classId != null">
+            AND s.class_id = #{classId}
+        </if>
+        <if test="month != null">
+            AND a.month = #{month}
+        </if>
+        <if test="rank == -1">
+            ORDER BY score
+        </if>
+        <if test="rank == 1">
+            ORDER BY score desc
+        </if>
+        LIMIT #{number1}, #{number2}
     </select>
 
 </mapper>

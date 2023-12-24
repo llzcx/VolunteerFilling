@@ -12,10 +12,12 @@ import com.social.demo.data.dto.TeacherDto;
 import com.social.demo.data.vo.ClassTeacherVo;
 import com.social.demo.data.vo.UserVo;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -96,8 +98,8 @@ public class UserController {
      * @return
      */
     @GetMapping
-    public ApiResp<IPage<UserVo>> getUser(@RequestParam("username")String username,
-                                          @RequestParam("role")String role,
+    public ApiResp<IPage<UserVo>> getUser(@RequestParam(value = "username", required = false)String username,
+                                          @RequestParam(value = "role", required = false)String role,
                                           @RequestParam("current")Long current,
                                           @RequestParam("size")Long size){
         IPage<UserVo> user = userService.getUser(username, role, current, size);
@@ -137,15 +139,20 @@ public class UserController {
     }
 
     /**
-     * 用户修改密码
+     * 上传头像
      * @param request
-     * @param password 密码
+     * @param file
      * @return
      */
-    @PutMapping("/password")
-    public ApiResp<String> modifyPassword(HttpServletRequest request,
-                                          @RequestBody String password){
-        Boolean b = userService.modifyPassword(request, password);
-        return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
+    @PostMapping("/headshot")
+    public ApiResp<String> uploadHeadshot(HttpServletRequest request,
+                                          @RequestBody MultipartFile file) throws Exception {
+        userService.uploadHeadshot(request, file);
+        return ApiResp.success("上传成功");
+    }
+
+    @GetMapping("/headshot")
+    public void downloadHeadshot(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        userService.downloadHeadshot(request, response);
     }
 }

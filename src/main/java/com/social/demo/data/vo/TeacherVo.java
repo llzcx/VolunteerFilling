@@ -31,10 +31,6 @@ public class TeacherVo implements Serializable {
      */
     private String politicsStatus;
     /**
-     * 负责班级名
-     */
-    private String className;
-    /**
      * 民族
      */
     private String nation;
@@ -42,4 +38,9 @@ public class TeacherVo implements Serializable {
      * 联系电话
      */
     private String phone;
+    /**
+     * 班级名称
+     * 当其为空时，表示为普通老师
+     */
+    private String className;
 }

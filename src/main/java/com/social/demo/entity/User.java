@@ -1,12 +1,21 @@
 package com.social.demo.entity;
 
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -20,6 +29,8 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("user")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,7 +40,7 @@ public class User implements Serializable {
     @TableId(value = "user_id", type = IdType.AUTO)
     private Long userId;
     /**
-     * 学号
+     * 学号/工号
      */
     private String userNumber;
     /**
@@ -41,10 +52,6 @@ public class User implements Serializable {
      */
     private String sex;
     /**
-     * 身份证号码
-     */
-    private String idCard;
-    /**
      * 政治面貌
      */
     private String politicsStatus;
@@ -53,51 +60,29 @@ public class User implements Serializable {
      */
     private String nation;
     /**
-     * 班级id
-     */
-    private Long classId;
-    /**
-     * 目标院校的院校编码
-     */
-    private Long schoolNumber;
-    /**
-     * 来源省份
-     */
-    private String province;
-    /**
-     * 计划
-     */
-    private String plan;
-    /**
-     * 家庭地址
-     */
-    private String address;
-    /**
      * 联系电话
      */
     private String phone;
-    /**
-     * 父母电话
-     */
-    private String parentPhone;
-    /**
-     * 入学年份
-     */
-    private Integer enrollmentYear;
     /**
      * 密码
      */
     private String password;
     /**
-     * 组合id
+     * 创建时间
      */
-    private Long groupId;
+    private LocalDateTime created;
     /**
-     * 版本号
+     * 最近修改时间
      */
-    private int version;
+    private LocalDateTime lastDdlTime;
+
     /**
-     * 身份
+     * 角色-测试
      */
-    private int identity;
+    private Integer identity;
+
+    /**
+     * 证件照
+     */
+    private String headshot;
 }

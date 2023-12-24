@@ -42,7 +42,7 @@ public enum ResultCode {
     USERNAME_HAS_ALREADY_BEEN_USED(2010,"用户名已经被使用"),
     CODE_TIME_OUT(2011,"验证码过期"),
     USER_NOT_AUTHENTICATED(2012,"用户未认证"),
-    USER_GENDER_MISMATCH(2013,"用户性别不符合"),
+    ROLE_NOT_EXISTS(2013,"角色名不存在"),
     SCHOOL_ALREADY_EXISTS(2014,"学校编码或学校名已存在"),
     SCHOOL_NOT_EXISTS(2015,"学校不存在"),
     USER_NOT_EXISTS(2016, "用户不存在"),
@@ -50,6 +50,11 @@ public enum ResultCode {
     IS_EXISTS(2018, "已存在"),
     USER_IS_EXISTS(2019, "用户已存在"),
     USER_HAVE_CLASS(2020, "该老师是班主任，请先将班主任职务去除"),
+    APPRAISAL_NOT_EXISTS(2021, "该综测记录不存在"),
+    HEADSHOT_NOT_EXISTS(2022, "证件照不存在"),
+    USER_NOT_MATCH_DATA(2023, "用户与数据不一致"),
+    CLASS_NOT_MATCH_DATA(2024, "班级与数据不一致"),
+
 
 
         /*接口异常*/

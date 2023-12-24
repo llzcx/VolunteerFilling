@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface SysRoleMapper extends BaseMapper<SysRole> {
     /**
-     * 通过用户name获取身份列表
+     * 通过用户userNumber获取身份列表
      * @param userNumber
      * @return
      */

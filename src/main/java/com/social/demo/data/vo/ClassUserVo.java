@@ -4,17 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 /**
  * @author 杨世博
- * @date 2023/12/4 21:37
- * @description UserVo
+ * @date 2023/12/21 21:59
+ * @description ClassUserVo
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserVo {
+public class ClassUserVo {
     /**
      * 学号
      */
@@ -24,11 +22,13 @@ public class UserVo {
      */
     private String username;
     /**
-     * 用户身份
+     * 职位
+     * 1 - 学生
+     * 2 - 综测小组成员
      */
-    private String role;
+    private Integer identity;
     /**
-     * 最近操作时间
+     * 该月综测分
      */
-    private LocalDateTime lastDdlTime;
+    private Integer score;
 }

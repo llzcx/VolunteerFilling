@@ -1,6 +1,6 @@
 package com.social.demo.data.vo;
 
-import com.social.demo.entity.SubjectGroup;
+import com.social.demo.data.bo.ConsigneeBo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -69,4 +69,9 @@ public class StudentVo implements Serializable {
      * 性别
      */
     private String sex;
+
+    /**
+     * 收获信息
+     */
+    private ConsigneeBo consignee;
 }

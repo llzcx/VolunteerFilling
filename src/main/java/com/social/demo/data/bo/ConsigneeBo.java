@@ -1,31 +1,25 @@
 package com.social.demo.data.bo;
 
-import com.alibaba.excel.annotation.ExcelProperty;
 import com.social.demo.constant.RegConstant;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
  * @author 杨世博
- * @date 2023/11/20 14:13
+ * @date 2023/12/13 21:40
+ * @description ConsigneeVo
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class StudentBo {
-    /**
-     * 学号
-     */
-    private Long userId;
-    /**
-     * 姓名
-     */
+@NoArgsConstructor
+public class ConsigneeBo {
+    @NotNull
     private String username;
-    /**
-     * 学号
-     */
-    private String userNumber;
+    @Pattern(regexp=RegConstant.PHONE)
+    private String phone;
+    @NotNull
+    private String address;
 }

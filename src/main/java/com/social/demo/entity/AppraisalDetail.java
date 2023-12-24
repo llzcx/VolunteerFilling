@@ -1,15 +1,26 @@
 package com.social.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 综测详细
  *
  * @author 杨世博
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppraisalDetail {
     /**
      * 综测详细id
      */
-    private Long id;
+    @TableId(value = "appraisal_detail_id", type = IdType.AUTO)
+    private Long appraisalDetailId;
     /**
      * 综测id
      */
@@ -17,17 +28,18 @@ public class AppraisalDetail {
     /**
      * 类别：德育、美育......
      */
-    private Boolean classes;
+    private Integer classes;
     /**
-     * 类型：加分、减分
+     * 加分
      */
-    private Boolean type;
+    private Integer bonusPoints;
     /**
-     * 分数
+     * 减分
      */
-    private Integer score;
+    private Integer subtractPoints;
     /**
      * 说明
      */
+    @TableField(value = "`explain`")
     private String explain;
 }

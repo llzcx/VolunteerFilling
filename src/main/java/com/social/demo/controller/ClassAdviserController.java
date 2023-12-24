@@ -3,11 +3,14 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.dao.repository.IAppealService;
+import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IClassAdviserService;
 import com.social.demo.dao.repository.IUserService;
+import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
-import com.social.demo.data.vo.ClassMemberVo;
-import com.social.demo.data.vo.StudentVo;
+import com.social.demo.data.vo.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,24 +32,31 @@ public class ClassAdviserController {
     @Autowired
     IUserService userService;
 
+    @Autowired
+    IAppraisalService appraisalService;
+
+    @Autowired
+    IAppealService appealService;
+
     /**
      * 班级成员列表
-     * @param classId 班级id
      * @param userNumber 学号
      * @param username 姓名
      * @param role 班级职称
+     * @param rank 是否感觉综测排名排序 -1-倒叙 0-不排序 1-排序
      * @param current 当前页数
      * @param size 每页大小
      * @return 班级成员列表
      */
     @GetMapping("/students")
-    public ApiResp<IPage<ClassMemberVo>> getStudents(@RequestParam("classId") Long classId,
-                                                     @RequestParam("userNumber")String userNumber,
-                                                     @RequestParam("username")String username,
-                                                     @RequestParam("role")Integer role,
+    public ApiResp<IPage<ClassUserVo>> getStudents(HttpServletRequest request,
+                                                     @RequestParam(value = "userNumber", required = false)String userNumber,
+                                                     @RequestParam(value = "username", required = false)String username,
+                                                     @RequestParam(value = "role", required = false)Integer role,
+                                                     @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
-        IPage<ClassMemberVo> classMemberVoIPage = classAdviserService.getStudents(classId, userNumber, username, role, current, size);
+        IPage<ClassUserVo> classMemberVoIPage = classAdviserService.getStudents(request, userNumber, username, role, rank, current, size);
         return ApiResp.success(classMemberVoIPage);
     }
 
@@ -70,5 +80,81 @@ public class ClassAdviserController {
     public ApiResp<String> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher){
         Boolean b = userService.modifyStudent(userDtoByTeacher);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
+    }
+
+    /**
+     * 重置学生密码
+     * @param userNumbers
+     * @return
+     */
+    @PutMapping("/reset")
+    public ApiResp<String> reset(@RequestBody String[] userNumbers){
+        userService.reset(userNumbers);
+        return ApiResp.success("操作成功");
+    }
+
+    /**
+     * 获取分页获取学生综测信息
+     * @param name 学生姓名
+     * @param userNumber 学号
+     * @param month 月份
+     * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
+     * @param current 当前页码
+     * @param size 每页大小
+     * @return
+     */
+    @GetMapping("/appraisal")
+    public ApiResp<IPage<AppraisalToOtherVo>> getAppraisals(HttpServletRequest request,
+                                                            @RequestParam(value = "name", required = false)String name,
+                                                            @RequestParam(value = "userNumber", required = false)String userNumber,
+                                                            @RequestParam("month")Integer month,
+                                                            @RequestParam("identity")Integer rank,
+                                                            @RequestParam("current")Integer current,
+                                                            @RequestParam("size")Integer size){
+        IPage<AppraisalToOtherVo> appraisals = appraisalService.getAppraisalsToTeacher(request, name, userNumber, month, rank, current, size);
+        return ApiResp.success(appraisals);
+    }
+
+    /**
+     * 修改班级成员身份
+     * @param identityDto
+     * @return
+     */
+    @PutMapping("/modify-identity")
+    public ApiResp<String> modifyIdentity(@RequestBody IdentityDto[] identityDto){
+        classAdviserService.modifyIdentity(identityDto);
+        return ApiResp.success("修改成功");
+    }
+
+    /**
+     * 获取班级内的申诉
+     * @param username 姓名
+     * @param userNumber 学号
+     * @param state 状态 0-待处理 1-已处理 2-已取消
+     * @param current
+     * @param size
+     * @return
+     */
+    @GetMapping("/appeals")
+    public ApiResp<IPage<AppealVo>> getAppeals(HttpServletRequest request,
+                                               @RequestParam(value = "username", required = false)String username,
+                                               @RequestParam(value = "userNumber", required = false)String userNumber,
+                                               @RequestParam(value = "state", required = false)Integer state,
+                                               @RequestParam("current")Integer current,
+                                               @RequestParam("size")Integer size){
+        IPage<AppealVo> appealVoIPage = appealService.getAppeals(request, username, userNumber, state, current, size);
+        return ApiResp.success(appealVoIPage);
+    }
+
+    /**
+     * 处理申诉
+     * @param appealId
+     * @return
+     */
+    @PutMapping("/appeal")
+    public ApiResp<String> disposeAppeal(HttpServletRequest request,
+                                         @RequestBody Long appealId){
+        Boolean aBoolean = appealService.disposeAppeal(request, appealId);
+        return ApiResp.judge(aBoolean, "操作成功", ResultCode.CLASS_NOT_MATCH_DATA);
     }
 }

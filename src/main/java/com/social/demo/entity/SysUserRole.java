@@ -23,4 +23,12 @@ public class SysUserRole {
 
     @TableField("role_id")
     private Long roleId;
+
+    public SysUserRole() {
+    }
+
+    public SysUserRole(Long userId, Long roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
 }
