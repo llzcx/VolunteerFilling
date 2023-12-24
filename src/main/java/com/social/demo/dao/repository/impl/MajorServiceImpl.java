@@ -1,6 +1,8 @@
 package com.social.demo.dao.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.dao.mapper.AreaMapper;
 import com.social.demo.dao.mapper.MajorMapper;
@@ -18,17 +20,16 @@ import java.util.List;
  * @author 周威宇
  */
 @Service
-public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements IMajorService {
+public class MajorServiceImpl extends ServiceImpl<MajorMapper,Major> implements IMajorService {
     @Autowired
     MajorMapper majorMapper;
     /**
      *添加专业
      */
     @Override
-    public  Boolean addMajor(Major major){
+    public  Boolean addMajor(List<Major> majors){
         boolean insertSuccess;
-        int insertResult = majorMapper.insert(major);
-        insertSuccess = insertResult > 0;
+        insertSuccess = this.saveBatch(majors);
         return insertSuccess;
     }
 
@@ -37,21 +38,44 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper, Major> implements
      * @return
      */
     @Override
-    public List<Major> getMajors(){
+    public IPage<Major> getMajors(String name,Long current, Long size){
         QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
-        return majorMapper.selectList(queryWrapper);
+        queryWrapper.like("name",name);
+        return majorMapper.selectPage(new Page<>(current,size),queryWrapper);
+    }
+    /**
+     * 查询一个学校的专业
+     */
+    @Override
+    public IPage<Major> getSchoolMajors(Long schoolId,Long current, Long size){
+        QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("school_id",schoolId);
+        return majorMapper.selectPage(new Page<>(current,size),queryWrapper);
     }
 
+    /**
+     * 查询学院专业
+     * @param college
+     * @return
+     */
+    @Override
+    public IPage<Major> getCollegeMajors(String college,Long current, Long size){
+        QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("college",college);
+        return majorMapper.selectPage(new Page<>(current,size),queryWrapper);
+    }
     /**
      * 修改专业
      * @param major
      * @return
      */
     @Override
-    public Boolean modifyMajor(Major major){
+    public Major modifyMajor(Major major){
         int update = majorMapper.update( major,
                 MybatisPlusUtil.queryWrapperEq("major_id",major.getMajorId()));
-        return update > 0;
+        QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("major_id",major.getMajorId());
+        return  majorMapper.selectOne(queryWrapper);
     }
 
 }

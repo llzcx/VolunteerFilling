@@ -9,4 +9,7 @@
     <select id="selectSubjects" resultType="com.social.demo.entity.SubjectGroup">
         SELECT * FROM subject_group WHERE group_id = #{groupId}
     </select>
+    <select id="selectSubjectGroups" resultType="java.lang.String">
+        SELECT subjects FROM subject_group
+    </select>
 </mapper>

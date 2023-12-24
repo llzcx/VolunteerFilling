@@ -28,4 +28,13 @@ public class Area {
      * 修改时间
      */
     private Timestamp updateTime;
+    /**
+     * 科目范围
+     */
+    private String subjectScope;
+    /**
+     * 选科数量
+     */
+    private Integer subjectNumber;
+
 }

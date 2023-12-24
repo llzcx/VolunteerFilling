@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author 陈翔
@@ -23,7 +25,16 @@ public class JsonUtil {
         }
 
     }
-
+    public static  <T> List<T> ListJson(String json, Class<T> elementType) {
+        List<T> items = new ArrayList<>();
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            items = mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(List.class, elementType));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
 
     public static <T> T deserialize(String json, Class<T> valueType) throws IOException {
         return OBJECT_MAPPER.readValue(json, valueType);

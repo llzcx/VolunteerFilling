@@ -23,6 +23,11 @@ public interface IAreaService extends IService<Area> {
      */
     List<Area> getAreas();
     /**
+     * 查询一个地区
+     * @return
+     */
+    Area getArea1(Long areaId);
+    /**
      * 查询地区
      * @return
      */

@@ -14,13 +14,9 @@ public class Major {
      */
     private Long majorId;
     /**
-     * 地区选择id
-     */
-    private Long areaChooseId;
-    /**
      * 院校编码
      */
-    private String schoolName;
+    private Long schoolId;
     /**
      * 专业名称
      */
@@ -30,7 +26,12 @@ public class Major {
      */
     private String college;
     /**
-     * 选科id
+     * 选科规则
      */
-    private String chooseId;
+    private String subjectRule;
+    /**
+     * 招生人数
+     */
+    private Integer enrollmentNumber;
+
 }
