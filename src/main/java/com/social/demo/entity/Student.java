@@ -1,5 +1,6 @@
 package com.social.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,4 +58,12 @@ public class Student {
      * 身份证号码
      */
     private String idCard;
+    /**
+     * 填报状态
+     * 0-未填报
+     * 1-填报中
+     * 2-已填报
+     */
+    @TableField(value = "`state`")
+    private Integer state;
 }
