@@ -3,13 +3,11 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
-import com.social.demo.dao.mapper.AppealMapper;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.dto.AppraisalDto;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.data.vo.AppraisalToOtherVo;
-import com.social.demo.data.vo.AppraisalVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,12 +33,12 @@ public class AppraisalTeamController {
     /**
      * 综测小组获取学生综测
      * @param request
-     * @param name
-     * @param userNumber
-     * @param month
-     * @param rank
-     * @param current
-     * @param size
+     * @param name 学生姓名
+     * @param userNumber 学号
+     * @param month 月份
+     * @param rank 排序类型： 0 -不排、 -1从小到大 1从大到小
+     * @param current 当前页码
+     * @param size 每页数
      * @return
      */
     @GetMapping
@@ -69,11 +67,11 @@ public class AppraisalTeamController {
     /**
      * 综测小组获取学生申诉
      * @param request
-     * @param username
-     * @param userNumber
-     * @param state
-     * @param current
-     * @param size
+     * @param username 学生姓名
+     * @param userNumber 学号
+     * @param state 状态
+     * @param current 当前页码
+     * @param size 每页数量
      * @return
      */
     @GetMapping("/appeals")
@@ -89,7 +87,7 @@ public class AppraisalTeamController {
 
     /**
      * 处理申诉
-     * @param appealId
+     * @param appealId 申述id
      * @return
      */
     @PutMapping("/appeal")

@@ -46,7 +46,7 @@ public class SchoolController {
 
     /**
      * 删除院校
-     * @param number
+     * @param number 院校编码
      * @return
      */
     @DeleteMapping
@@ -68,7 +68,7 @@ public class SchoolController {
 
     /**
      * 判断学校是否已存在
-     * @param schoolName
+     * @param schoolName 学校名
      * @return
      */
     @GetMapping("/exists")

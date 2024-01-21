@@ -24,7 +24,7 @@ public class TimeUtil {
      */
     public static LocalDateTime convertStringToTimestamp(String dateString) throws DateTimeParseException {
         // 定义日期格式
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         // 解析日期字符串为 LocalDateTime 对象
         return LocalDateTime.parse(dateString, formatter);

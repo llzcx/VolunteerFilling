@@ -8,15 +8,6 @@
         WHERE
             a.user_id = u.user_id
         AND a.class_id = #{classId}
-        <if test="username != null AND username != ''">
-            AND a.user_id IN (SELECT user_id FROM user WHERE username = CONCAT("%",#{username},"%"))
-        </if>
-        <if test="userNumber != null AND userNumber != ''">
-            AND a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
-        </if>
-        <if test="state != null AND state != ''">
-            AND state = #{state}
-        </if>
         LIMIT #{number1}, #{number2}
     </select>
 
@@ -25,23 +16,14 @@
         WHERE
         a.user_id = u.user_id
         AND a.class_id = #{classId}
-        <if test="username != null AND username != ''">
-            AND a.user_id IN (SELECT user_id FROM user WHERE username = CONCAT("%",#{username},"%"))
-        </if>
-        <if test="userNumber != null AND userNumber != ''">
-            AND a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
-        </if>
-        <if test="state != null AND state != ''">
-            AND state = #{state}
-        </if>
     </select>
     <select id="selectStudentAppealPage" resultType="com.social.demo.entity.Appeal">
         SELECT a.* FROM appeal AS a, user AS u
         WHERE
         a.user_id = u.user_id
         AND
-        a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
-        <if test="state != null AND state != ''">
+        a.user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber})
+        <if test="state != null">
             AND state = #{state}
         </if>
         LIMIT #{number1}, #{number2}
@@ -50,8 +32,8 @@
         SELECT COUNT(a.user_id) FROM appeal AS a, user AS u
         WHERE
         a.user_id = u.user_id
-        AND a.user_id IN (SELECT user_id FROM user WHERE user_number = CONCAT("%",#{userNumber},"%"))
-        <if test="state != null AND state != ''">
+        AND a.user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber})
+        <if test="state != null">
             AND state = #{state}
         </if>
     </select>

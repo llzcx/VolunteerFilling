@@ -123,6 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
+        studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getGroupId()).getSubjects(), String.class));
         studentVo.setSubjects(JsonUtil.ListJson(subjectGroupMapper.selectSubjects(student.getGroupId()).getSubjects(),String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(student.getSchoolNumber()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
@@ -229,7 +230,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 //        SysRole sysRole = sysRoleMapper.selectOne(MybatisPlusUtil.queryWrapperEq("role_name", PropertiesConstant.IDENTITY_STUDENT));
         for (User user : users) {
             userMapper.insert(user);
-//            sysUserRoleMapper.insert(new SysUserRole(user.getUserId(), sysRole.getId()));
+//            sysUserRoleMapper.insert(new SysUserRole(user.getClassUserId(), sysRole.getId()));
         }
         for (Student student : students) {
             studentMapper.insert(student);
@@ -270,7 +271,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 //        SysRole sysRole = sysRoleMapper.selectOne(MybatisPlusUtil.queryWrapperEq("role_name", PropertiesConstant.IDENTITY_TEACHER));
         for (User user : users) {
             userMapper.insert(user);
-//            sysUserRoleMapper.insert(new SysUserRole(user.getUserId(), sysRole.getId()));
+//            sysUserRoleMapper.insert(new SysUserRole(user.getClassUserId(), sysRole.getId()));
         }
         return null;
     }

@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
-import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IUserService;
-import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.data.vo.StudentVo;
@@ -78,7 +76,7 @@ public class StudentController {
      */
     @GetMapping("/appeal")
     public ApiResp<IPage<AppealVo>> getAppeal(HttpServletRequest request,
-                                              @RequestParam("state")Integer state,
+                                              @RequestParam(value = "state", required = false)Integer state,
                                               @RequestParam("current")Integer current,
                                               @RequestParam("size")Integer size){
         IPage<AppealVo> appeals = appealService.getAppealsToStudent(request, state, current, size);
@@ -88,13 +86,13 @@ public class StudentController {
     /**
      * 学生申诉
      * @param request
-     * @param appealDto
+     * @param appeal 申述内容
      * @return
      */
     @PostMapping("/appeal")
     public ApiResp<String> submitAppeal(HttpServletRequest request,
-                                        @RequestBody AppealDto appealDto){
-        appealService.submitAppeal(request, appealDto);
+                                        @RequestBody String appeal){
+        appealService.submitAppeal(request, appeal);
         return ApiResp.success("上传成功");
     }
 

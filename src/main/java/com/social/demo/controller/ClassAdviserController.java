@@ -43,7 +43,7 @@ public class ClassAdviserController {
      * @param userNumber 学号
      * @param username 姓名
      * @param role 班级职称
-     * @param rank 是否感觉综测排名排序 -1-倒叙 0-不排序 1-排序
+     * @param rank 是否根据综测排名排序 -1-倒叙 0-不排序 1-排序
      * @param current 当前页数
      * @param size 每页大小
      * @return 班级成员列表
@@ -52,8 +52,8 @@ public class ClassAdviserController {
     public ApiResp<IPage<ClassUserVo>> getStudents(HttpServletRequest request,
                                                      @RequestParam(value = "userNumber", required = false)String userNumber,
                                                      @RequestParam(value = "username", required = false)String username,
-                                                     @RequestParam(value = "role", required = false)Integer role,
-                                                     @RequestParam("rank")Integer rank,
+                                                     @RequestParam(value = "role", required = false)String role,
+                                                     @RequestParam(value = "rank")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
         IPage<ClassUserVo> classMemberVoIPage = classAdviserService.getStudents(request, userNumber, username, role, rank, current, size);
@@ -84,7 +84,7 @@ public class ClassAdviserController {
 
     /**
      * 重置学生密码
-     * @param userNumbers
+     * @param userNumbers 学号
      * @return
      */
     @PutMapping("/reset")
@@ -128,27 +128,21 @@ public class ClassAdviserController {
 
     /**
      * 获取班级内的申诉
-     * @param username 姓名
-     * @param userNumber 学号
-     * @param state 状态 0-待处理 1-已处理 2-已取消
-     * @param current
-     * @param size
+     * @param current 当前页码
+     * @param size 每页数量
      * @return
      */
     @GetMapping("/appeals")
     public ApiResp<IPage<AppealVo>> getAppeals(HttpServletRequest request,
-                                               @RequestParam(value = "username", required = false)String username,
-                                               @RequestParam(value = "userNumber", required = false)String userNumber,
-                                               @RequestParam(value = "state", required = false)Integer state,
                                                @RequestParam("current")Integer current,
                                                @RequestParam("size")Integer size){
-        IPage<AppealVo> appealVoIPage = appealService.getAppeals(request, username, userNumber, state, current, size);
+        IPage<AppealVo> appealVoIPage = appealService.getAppeals(request, current, size);
         return ApiResp.success(appealVoIPage);
     }
 
     /**
      * 处理申诉
-     * @param appealId
+     * @param appealId 申述id
      * @return
      */
     @PutMapping("/appeal")

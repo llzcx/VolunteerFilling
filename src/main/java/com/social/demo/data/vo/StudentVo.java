@@ -1,5 +1,6 @@
 package com.social.demo.data.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.social.demo.data.bo.ConsigneeBo;
 import lombok.Data;
 

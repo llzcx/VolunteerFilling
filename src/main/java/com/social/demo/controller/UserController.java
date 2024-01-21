@@ -91,10 +91,10 @@ public class UserController {
 
     /**
      * 搜索用户
-     * @param username
-     * @param role
-     * @param current
-     * @param size
+     * @param username 用户名
+     * @param role 身份
+     * @param current 当前页码
+     * @param size 每页大小
      * @return
      */
     @GetMapping
@@ -108,7 +108,7 @@ public class UserController {
 
     /**
      * 重置密码
-     * @param userNumbers
+     * @param userNumbers 被重置密码用户学号
      * @return
      */
     @PutMapping("/reset")
@@ -119,7 +119,7 @@ public class UserController {
 
     /**
      * 删除用户
-     * @param userNumbers
+     * @param userNumbers 被删除用户学号
      * @return
      */
     @DeleteMapping
@@ -141,7 +141,7 @@ public class UserController {
     /**
      * 上传头像
      * @param request
-     * @param file
+     * @param file 文件
      * @return
      */
     @PostMapping("/headshot")
@@ -154,5 +154,18 @@ public class UserController {
     @GetMapping("/headshot")
     public void downloadHeadshot(HttpServletRequest request, HttpServletResponse response) throws Exception {
         userService.downloadHeadshot(request, response);
+    }
+
+    /**
+     * 修改密码
+     * @param request
+     * @param password
+     * @return
+     */
+    @PutMapping("/password")
+    public ApiResp<String> modifyPassword(HttpServletRequest request,
+                                          @RequestBody String password){
+        Boolean b = userService.modifyPassword(request, password);
+        return ApiResp.judge(b, "修改成功", ResultCode.PARAM_NOT_VALID);
     }
 }

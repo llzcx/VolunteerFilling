@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.dao.mapper.ClassMapper;
+import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassService;
 import com.social.demo.data.dto.ClassDto;
@@ -35,6 +36,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    StudentMapper studentMapper;
+
     @Override
     public Boolean create(ClassDto classDto) {
         Long userId = getTeacherId(classDto.getUserNumber());
@@ -56,6 +60,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         }else {
             return true;
         }
+    }
+
+    @Override
+    public Long[] getClassUserId(String classId) {
+        return studentMapper.getUserIdByClassId(classId);
     }
 
     private Long getTeacherId(String userNumber){

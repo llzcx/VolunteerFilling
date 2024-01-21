@@ -9,7 +9,6 @@ import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IAppealService;
-import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.entity.Appeal;
 import com.social.demo.entity.User;
@@ -48,10 +47,10 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
     StudentMapper studentMapper;
 
     @Override
-    public IPage<AppealVo> getAppeals(HttpServletRequest request, String username, String userNumber, Integer state, Integer current, Integer size) {
+    public IPage<AppealVo> getAppeals(HttpServletRequest request, Integer current, Integer size) {
         String teacherNumber = jwtUtil.getSubject(request);
         Long classId = classMapper.selectClassIdByTeacherNumber(teacherNumber);
-        return getAppealVoPage(classId, username, userNumber, state, current, size);
+        return getAppealVoPage(classId, current, size);
     }
 
     @Override
@@ -76,20 +75,20 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
     }
 
     @Override
-    public void submitAppeal(HttpServletRequest request, AppealDto appealDto) {
+    public void submitAppeal(HttpServletRequest request, String appeal) {
         String userNumber = jwtUtil.getSubject(request);
         Long userId = userMapper.selectUserIdByUserNumber(userNumber);
         Long classId = studentMapper.selectClassIdByUserNumber(userNumber);
-        Appeal appeal = new Appeal(userId, classId, appealDto.getContent(), appealDto.getCreated(),
-                PropertiesConstant.APPEAL_STATE_PENDING, appealDto.getCreated());
-        int insert = appealMapper.insert(appeal);
+        Appeal newAppeal = new Appeal(userId, classId, appeal, TimeUtil.now(),
+                PropertiesConstant.APPEAL_STATE_PENDING, TimeUtil.now());
+        int insert = appealMapper.insert(newAppeal);
     }
 
     @Override
     public IPage<AppealVo> getAppealsByTeam(HttpServletRequest request, String username, String userNumber, Integer state, Integer current, Integer size) {
         String number = jwtUtil.getSubject(request);
         Long classId = studentMapper.selectClassIdByUserNumber(number);
-        return getAppealVoPage(classId, username, userNumber, state, current, size);
+        return getAppealVoPage(classId, current, size);
     }
 
     @Override
@@ -120,8 +119,8 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
         return disposeAppeal(classId, appealId);
     }
 
-    private IPage<AppealVo> getAppealVoPage(Long classId, String username, String userNumber, Integer state, Integer current, Integer size){
-        List<Appeal> appeals = appealMapper.selectAppealPage(classId, username, userNumber, state, (current-1) * size, size);
+    private IPage<AppealVo> getAppealVoPage(Long classId, Integer current, Integer size){
+        List<Appeal> appeals = appealMapper.selectAppealPage(classId, (current-1) * size, size);
         List<AppealVo> appealVos = new ArrayList<>();
         for (Appeal appeal : appeals) {
             User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", appeal.getUserId()));
@@ -134,7 +133,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
         IPage<AppealVo> appealVoIPage = new Page<>(current, size);
         appealVoIPage.setRecords(appealVos);
-        Integer count = appealMapper.selectAppealCount(classId, username, userNumber, state);
+        Integer count = appealMapper.selectAppealCount(classId);
         appealVoIPage.setTotal(count);
         return appealVoIPage;
     }

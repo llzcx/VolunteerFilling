@@ -42,7 +42,10 @@
     <select id="selectClassUserNumbers" resultType="com.social.demo.data.vo.ClassUserVo">
         SELECT u.user_number, u.username, u.identity, a.score FROM user AS u, student AS s, appraisal AS a
         WHERE u.user_id = s.user_id AND u.user_id = a.user_id
-        <if test="username!=null and username!=''">
+        <if test="userNumber!=null and userNumber!='' and role != 'null'">
+            AND u.user_number LIKE CONCAT("%",#{userNumber},"%")
+        </if>
+        <if test="username!=null and username!='' and role != 'null'">
             AND u.username LIKE CONCAT("%",#{username},"%")
         </if>
         <if test="classId != null">
@@ -50,6 +53,9 @@
         </if>
         <if test="month != null">
             AND a.month = #{month}
+        </if>
+        <if test="role != null and role !='' and role != 'null'">
+            AND u.identity = #{role}
         </if>
         <if test="rank == -1">
             ORDER BY score
