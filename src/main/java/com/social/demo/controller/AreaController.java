@@ -82,8 +82,8 @@ public class AreaController {
         Boolean deleteArea = null;
         for(int i=0;i<areaIds.size();i++){
             deleteArea = areaService.deleteArea(areaIds.get(i));
-        }
 
+            }
         return ApiResp.success(deleteArea);
     }
     public Area AreaVoArea(AreaVo areaVo){

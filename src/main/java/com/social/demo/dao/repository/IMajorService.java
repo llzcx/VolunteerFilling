@@ -25,24 +25,34 @@ public interface IMajorService extends IService<Major> {
      * 查询专业
      * @return
      */
-    IPage<Major> getMajors(String name,Long current, Long size);
+    IPage<Major> getMajors(Long schoolId,String name,Long current, Long size);
     /**
      * 查询一个学校的专业
      */
     IPage<Major> getSchoolMajors(Long schoolId, Long current, Long size);
-
+    /**
+     * 查询一个学校的所有专业
+     */
+    List<Major> getSchoolMajor(Long schoolId);
     /**
      * 查询一个学院的专业
      * @param college
      * @return
      */
-    IPage<Major> getCollegeMajors(String college,Long current, Long size);
+    IPage<Major> getCollegeMajors(Long schoolId,String college,Long current, Long size);
     /**
      * 修改专业
      * @param major
      * @return
      */
     Major modifyMajor(Major major);
+
+    /**
+     * 删除专业
+     * @param majorId
+     * @return
+     */
+    Boolean deleteMajor(Long majorId);
 
 
 }

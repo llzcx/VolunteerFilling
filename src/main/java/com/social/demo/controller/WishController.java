@@ -2,10 +2,13 @@ package com.social.demo.controller;
 
 import com.social.demo.common.ApiResp;
 import com.social.demo.dao.repository.IWishService;
+import com.social.demo.data.vo.MajorVo;
 import com.social.demo.entity.Wish;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 志愿接口
@@ -23,7 +26,6 @@ public class WishController {
      */
     @PostMapping("/addWish")
     public ApiResp<Boolean> addWise(@RequestBody Wish wish){
-        wish.setUserId(10L);
         return ApiResp.success(wishService.addWish(wish));
     }
     /**
@@ -40,5 +42,16 @@ public class WishController {
     @GetMapping("selectWish")
     public ApiResp<Wish> selectWish(){
         return ApiResp.success(wishService.selectWish(10L));
+    }
+
+    /**
+     * 查看学生专业范围
+     * @param schoolId
+     * @param groupId
+     * @return
+     */
+    @GetMapping("selectStudentMajor")
+    public ApiResp<List<MajorVo>> selectStudentMajor(@RequestParam("schoolId")Long schoolId,@RequestParam("groupId")Integer groupId){
+
     }
 }

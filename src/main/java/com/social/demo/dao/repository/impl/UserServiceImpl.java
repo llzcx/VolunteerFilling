@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.PropertiesConstant;
@@ -122,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
-        studentVo.setSubjects(subjectGroupMapper.selectSubjects(student.getGroupId()).getSubjects());
+        studentVo.setSubjects(JsonUtil.ListJson(subjectGroupMapper.selectSubjects(student.getGroupId()).getSubjects(),String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(student.getSchoolNumber()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
         ConsigneeBo consigneeBo = new ConsigneeBo();

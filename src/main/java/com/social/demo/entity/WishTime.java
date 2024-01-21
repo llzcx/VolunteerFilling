@@ -1,5 +1,6 @@
 package com.social.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -22,17 +23,19 @@ public class WishTime {
     /**
      * 开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
     /**
      * 结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
     /**
-    * 是否正在填报
-    */
-    private Boolean state;
-    /**
-     * 学校名称
+     * 学校编码
      */
-    private String school;
+    private Long schoolId;
+    /**
+     * 入学年份
+     */
+    private Integer ago;
 }

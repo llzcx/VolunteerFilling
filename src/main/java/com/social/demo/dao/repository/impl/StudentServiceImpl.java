@@ -26,14 +26,14 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     SchoolMapper schoolMapper;
 
     @Override
-    public Boolean modifyState(String schoolName, Integer year, Integer state) {
-        Long schoolNumber = schoolMapper.selectSchoolNumberByName(schoolName);
+    public Boolean modifyState(Long schoolId, Integer year, Integer state) {
+        String schoolNumber = schoolMapper.selectNameBySchoolNumber(schoolId);
         if (schoolNumber == null){
             throw new SystemException(ResultCode.SCHOOL_NOT_EXISTS);
         }
         Student student = new Student();
         student.setState(state);
-        int update = studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("school_number", schoolNumber, "year", year));
+        int update = studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("school_number", schoolId, "enrollment_year", year));
         return update > 0;
     }
 }

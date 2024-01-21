@@ -54,6 +54,7 @@ public enum ResultCode {
     HEADSHOT_NOT_EXISTS(2022, "证件照不存在"),
     USER_NOT_MATCH_DATA(2023, "用户与数据不一致"),
     CLASS_NOT_MATCH_DATA(2024, "班级与数据不一致"),
+    SUBJECT_HAVE_CLASS(2025,"科目已存在"),
 
 
 
