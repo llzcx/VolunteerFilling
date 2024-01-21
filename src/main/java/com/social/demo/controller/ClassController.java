@@ -26,7 +26,7 @@ public class ClassController {
 
     /**
      * 创建班级
-     * @param classDto
+     * @param classDto 班级消息
      * @return
      */
     @PostMapping
@@ -38,7 +38,9 @@ public class ClassController {
 
     /**
      * 获取班级
-     * @param year
+     * @param year 年份
+     * @param current 当前页码
+     * @param size 每页大小
      * @return
      */
     @GetMapping
@@ -51,7 +53,7 @@ public class ClassController {
 
     /**
      * 删除班级
-     * @param classIds
+     * @param classIds 班级id
      * @return
      */
     @DeleteMapping
@@ -62,7 +64,7 @@ public class ClassController {
 
     /**
      * 修改班级信息
-     * @param classModifyDto
+     * @param classModifyDto 班级信息
      * @return
      */
     @PutMapping
@@ -74,7 +76,7 @@ public class ClassController {
 
     /**
      * 判断班级是否已存在
-     * @param className
+     * @param className 班级名
      * @return
      */
     @GetMapping("/exists")

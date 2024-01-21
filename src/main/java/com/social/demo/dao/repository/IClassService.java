@@ -22,4 +22,11 @@ public interface IClassService extends IService<Class> {
     Boolean modify(ClassModifyDto classModifyDto);
 
     Boolean judgeClassName(String className);
+
+    /**
+     * 根据班级id获取班级所有学生id
+     * @param classId
+     * @return
+     */
+    Long[] getClassUserId(String classId);
 }

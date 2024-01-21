@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 班级消息
  * @author 杨世博
  * @date 2023/12/4 15:48
  * @description ClassVo

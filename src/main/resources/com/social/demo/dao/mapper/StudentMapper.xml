@@ -5,4 +5,7 @@
     <select id="selectClassIdByUserNumber" resultType="java.lang.Long">
         SELECT class_id FROM student WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{number})
     </select>
+    <select id="getUserIdByClassId">
+        SELECT user_id FROM student WHERE class_id = #{classId}
+    </select>
 </mapper>

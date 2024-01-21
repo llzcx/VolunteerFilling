@@ -13,6 +13,9 @@ public interface PropertiesConstant {
     //身份：综测成员
     Integer IDENTITY_APPRAISAL_TEAM = 2;
 
+    //身份：班主任
+    Integer IDENTITY_CLASS_ADVISER = 3;
+
     //文件前缀-综测用户签名
     String APPRAISAL = "appraisal";
 

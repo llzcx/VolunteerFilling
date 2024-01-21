@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
+ * 综测提交消息
  * @author 杨世博
  * @date 2023/12/20 20:04
  * @description AppraisalDto

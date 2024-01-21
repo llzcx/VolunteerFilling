@@ -1,7 +1,6 @@
 package com.social.demo.controller;
 
 import com.social.demo.common.ApiResp;
-import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.vo.AppraisalVo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,7 +40,7 @@ public class AppraisalController {
 
     /**
      * 上传电子签名
-     * @param file
+     * @param file 上传的签名文件
      * @param request
      * @return
      */
@@ -54,7 +53,10 @@ public class AppraisalController {
 
     /**
      * 获取个人某月的综测签名
-     * @return
+     * @param month 月份
+     * @param request
+     * @param response
+     * @throws Exception
      */
     @GetMapping("/signature")
     public void downloadSignature(@RequestParam("month") Integer month,
@@ -65,7 +67,10 @@ public class AppraisalController {
 
     /**
      * 获取其他用户某月的综测签名
-     * @return
+     * @param month 月份
+     * @param userNumber 学号
+     * @param response
+     * @throws Exception
      */
     @GetMapping("/other/signature")
     public void downloadSignatureOther(@RequestParam("month") Integer month,

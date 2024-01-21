@@ -8,9 +8,9 @@ import java.util.List;
 
 @Mapper
 public interface AppealMapper extends BaseMapper<Appeal> {
-    List<Appeal> selectAppealPage(Long classId, String username, String userNumber, Integer state, Integer number1, Integer number2);
+    List<Appeal> selectAppealPage(Long classId, Integer number1, Integer number2);
 
-    Integer selectAppealCount(Long classId, String username, String userNumber, Integer state);
+    Integer selectAppealCount(Long classId);
 
     List<Appeal> selectStudentAppealPage(String userNumber, Integer state, Integer number1, Integer number2);
 

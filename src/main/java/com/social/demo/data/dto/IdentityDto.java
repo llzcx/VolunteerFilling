@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * 学生身份消息
+ *
  * @author 杨世博
  * @date 2023/12/21 22:28
  * @description IdentityVo

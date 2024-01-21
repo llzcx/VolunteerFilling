@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface IClassAdviserService {
 
-    IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, Integer role, Integer rank, Integer current, Integer size);
+    IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, String role, Integer rank, Integer current, Integer size);
 
     void modifyIdentity(IdentityDto[] identityDto);
 }

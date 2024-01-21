@@ -41,8 +41,14 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     AppraisalDetailMapper appraisalDetailMapper;
 
     @Override
-    public IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, Integer role,
+    public IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, String role,
                                           Integer rank, Integer current, Integer size) {
+        System.out.println(userNumber);
+        System.out.println(username);
+        System.out.println(role);
+        System.out.println(rank);
+        System.out.println(current);
+        System.out.println(size);
         String number = jwtUtil.getSubject(request);
         Long classId = classMapper.selectClassIdByTeacherNumber(number);
         List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, TimeUtil.now().getMonthValue(), (current-1)*size, size);
