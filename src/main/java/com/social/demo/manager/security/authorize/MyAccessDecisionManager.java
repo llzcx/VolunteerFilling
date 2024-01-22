@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
+ * 在此方法的decide之前已经执行了CustomSecurityMetadataSource（获取访问当前路径需要什么身份）类和DynamicSecurityFilter(调用decide)
  * @author 陈翔
  */
 public class MyAccessDecisionManager implements AccessDecisionManager {

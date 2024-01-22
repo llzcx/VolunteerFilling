@@ -1,11 +1,14 @@
 package com.social.demo.controller.auth;
 
 import com.social.demo.common.ApiResp;
+import com.social.demo.common.Identity;
+import com.social.demo.constant.PropertiesConstant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.event.PaintEvent;
 import java.util.Set;
 
 /**
@@ -22,6 +25,7 @@ public class SysApiController {
      * @return
      */
     @GetMapping("")
+    @Identity(PropertiesConstant.IDENTITY_STUDENT)
     public ApiResp<Object> listApis(){
         return ApiResp.success();
     }
