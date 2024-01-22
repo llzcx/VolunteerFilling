@@ -1,5 +1,6 @@
 package com.social.demo.dao.repository;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.entity.Wish;
 import com.social.demo.entity.WishTime;
@@ -24,11 +25,23 @@ public interface IWishTimeService extends IService<WishTime> {
      */
     Boolean modifyWishTime(WishTime wishTime);
     /**
-     * 搜索志愿时间
-     * @param ago 查询年份
+     * 按照学校编码搜索志愿时间
+     * @param schoolId 学校编码
      * @return
      */
-    List<WishTime> selectWishTime(Integer ago);
+    IPage<WishTime> selectWishTime(Integer schoolId, Long current, Long size);
+    /**
+     * 按照入学时间搜索志愿时间
+     * @param schoolId 学校编码
+     * @return
+     */
+    IPage<WishTime> selectWishTime1(Integer schoolId,Integer ago, Long current, Long size);
 
+    /**
+     * 删除志愿时间
+     * @param id
+     * @return
+     */
+    Boolean deleteWishTime(Long id);
 
 }

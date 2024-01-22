@@ -35,6 +35,7 @@ public class MajorController {
     @PostMapping("/addMajor")
     public ApiResp<Boolean> addMajor(@RequestBody List<MajorVo> majorVos){
           List<Major> majors = new ArrayList<>();
+
         for (MajorVo majorVo : majorVos) {
             Major major = MajorVoMajor(majorVo);
             majors.add(major);
@@ -50,20 +51,29 @@ public class MajorController {
     @PutMapping("/modifyMajor")
     public ApiResp<MajorVo> modifyMajor(@RequestBody MajorVo majorVo){
         if(majorVo.getSubjectRule()!=null){
-            majorVo =  SubjectScopeCount(majorVo);
+            majorVo = SubjectScopeCount(majorVo);
         }
         Major major = MajorVoMajor(majorVo);
         major = majorService.modifyMajor(major);
         MajorVo majorVo1 = MajorMajorVo(major);
         return ApiResp.success(majorVo1);
     }
+
     /**
      *查看学校专业
      */
     @GetMapping("/selectSchoolMajor")
-    public ApiResp<IPage<MajorVo>> selectSchoolMajor(@RequestParam("schoolId")Long schoolId, @RequestParam("current")Long current, @RequestParam("size")Long size){
-          IPage<Major> majors = majorService.getSchoolMajors(schoolId,current,size);
-          List<MajorVo> majorVos = new ArrayList<>();
+    public ApiResp<IPage<MajorVo>> selectSchoolMajor(@RequestParam("schoolId")Long schoolId,@RequestParam("type") String type,
+                                                     @RequestParam("word") String word,@RequestParam("current")Long current,
+                                                     @RequestParam("size")Long size){
+        new Page<>();
+        IPage<Major> majors = switch (type) {
+            case "" -> majorService.getSchoolMajors(schoolId, current, size);
+            case "学院" -> majorService.getCollegeMajors(schoolId, word, current, size);
+            case "专业名称" -> majorService.getMajors(schoolId, word, current, size);
+            default -> new Page<>();
+        };
+        List<MajorVo> majorVos = new ArrayList<>();
           for(Major major:majors.getRecords()){
               MajorVo majorVo = MajorMajorVo(major);
               majorVos.add(majorVo);
@@ -77,42 +87,27 @@ public class MajorController {
           return ApiResp.success(majorVoIPage);
     }
     /**
-     *查看学院专业
+     *查看学校专业
      */
-    @GetMapping("/selectCollegeMajor")
-    public ApiResp<IPage<MajorVo>> selectCollegeMajor(@RequestParam("college")String college,@RequestParam("current")Long current,@RequestParam("size")Long size){
-        IPage<Major> majors = majorService.getCollegeMajors(college,current,size);
+    @GetMapping("/selectSchoolMajor1")
+    public ApiResp<List<MajorVo>> selectSchoolMajor1(@RequestParam("schoolId")Long schoolId){
+        List<Major> majors = majorService.getSchoolMajor(schoolId);
         List<MajorVo> majorVos = new ArrayList<>();
-        for(Major major:majors.getRecords()){
+        for(Major major:majors){
             MajorVo majorVo = MajorMajorVo(major);
             majorVos.add(majorVo);
         }
-        IPage<MajorVo> majorVoIPage = new Page<>();
-        majorVoIPage.setRecords(majorVos);
-        majorVoIPage.setCurrent(current);
-        majorVoIPage.setSize(size);
-        majorVoIPage.setTotal(majors.getTotal());
-        majorVoIPage.setPages(majors.getPages());
-        return ApiResp.success(majorVoIPage);
+        return ApiResp.success(majorVos);
     }
     /**
-     *搜索专业
+     * 删除专业
+     * @param majorId
+     * @return
      */
-    @GetMapping("/selectMajor")
-    public ApiResp<IPage<MajorVo>> selectMajor(@RequestParam("name")String name,@RequestParam("current")Long current,@RequestParam("size")Long size){
-        IPage<Major> majors = majorService.getMajors(name,current,size);
-        List<MajorVo> majorVos = new ArrayList<>();
-        for(Major major:majors.getRecords()){
-            MajorVo majorVo = MajorMajorVo(major);
-            majorVos.add(majorVo);
-        }
-        IPage<MajorVo> majorVoIPage = new Page<>();
-        majorVoIPage.setRecords(majorVos);
-        majorVoIPage.setCurrent(current);
-        majorVoIPage.setSize(size);
-        majorVoIPage.setTotal(majors.getTotal());
-        majorVoIPage.setPages(majors.getPages());
-        return ApiResp.success(majorVoIPage);
+    @DeleteMapping("/deleteMajor")
+    public ApiResp<Boolean> deleteMajor(@RequestParam("MajorId")Long majorId) {
+        Boolean deleteArea = majorService.deleteMajor(majorId);
+        return ApiResp.success(deleteArea);
     }
     public  MajorVo MajorMajorVo(Major major){
         MajorVo majorVo =new MajorVo();
@@ -139,6 +134,7 @@ public class MajorController {
     public MajorVo SubjectScopeCount(MajorVo majorVo){
         List<SubjectRuleVo> subjectRuleVos = majorVo.getSubjectRule();
         for (SubjectRuleVo subjectRuleVo : subjectRuleVos) {
+            Area area = areaService.getArea1(subjectRuleVo.getAreaId());
             List<List<String>> subjectScopes = new ArrayList<>();
             backtrack(subjectRuleVo.getOptionalSubjects().getOptionalSubjectScope(),
                     subjectRuleVo.getOptionalSubjects().getSubjectNumber(),0,new ArrayList<>(), subjectScopes);
@@ -146,24 +142,33 @@ public class MajorController {
             for(List<String> subjectScope:subjectScopes){
                 subjectScope.addAll(subjectRuleVo.getRequiredSubjects());
                 List<List<String>> subjectScopes1 = new ArrayList<>();
-                System.out.println(subjectRuleVo.getAreaId());
-                Area area = areaService.getArea1(subjectRuleVo.getAreaId());
                 int number = area.getSubjectNumber()-subjectScope.size();
                 List<String>subjectScope2 = JsonUtil.ListJson(area.getSubjectScope(),String.class);
                 subjectScope2.removeAll(subjectScope);
                 backtrack(subjectScope2,number,0,new ArrayList<>(),subjectScopes1);
-                for(List<String> subject:subjectScopes1){
-                    List<String> subjectScope1=new ArrayList<>();
-                    subjectScope1.addAll(subjectScope);
-                    subjectScope1.addAll(subject);
+                if(subjectScopes1.isEmpty()){
                     int hashCode = 0;
-                    for (String string : subjectScope1){
+                    for (String string : subjectScope){
                         hashCode += string.hashCode();
                     }
                     if(!hashCodes.contains(hashCode)){
                         hashCodes.add(hashCode);
                     }
+                }else {
+                    for(List<String> subject:subjectScopes1){
+                        List<String> subjectScope1=new ArrayList<>();
+                        subjectScope1.addAll(subjectScope);
+                        subjectScope1.addAll(subject);
+                        int hashCode = 0;
+                        for (String string : subjectScope1){
+                            hashCode += string.hashCode();
+                        }
+                        if(!hashCodes.contains(hashCode)){
+                            hashCodes.add(hashCode);
+                        }
+                    }
                 }
+
                 subjectRuleVo.setSubjectGroups(hashCodes);
             }
         }

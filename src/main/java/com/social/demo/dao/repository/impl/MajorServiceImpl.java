@@ -38,10 +38,20 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper,Major> implements 
      * @return
      */
     @Override
-    public IPage<Major> getMajors(String name,Long current, Long size){
+    public IPage<Major> getMajors(Long schoolId,String name,Long current, Long size){
         QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("school_id",schoolId);
         queryWrapper.like("name",name);
         return majorMapper.selectPage(new Page<>(current,size),queryWrapper);
+    }
+    /**
+     * 查询一个学校的专业
+     */
+    @Override
+    public List<Major> getSchoolMajor(Long schoolId){
+        QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("school_id",schoolId);
+        return majorMapper.selectList(queryWrapper);
     }
     /**
      * 查询一个学校的专业
@@ -52,15 +62,15 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper,Major> implements 
         queryWrapper.eq("school_id",schoolId);
         return majorMapper.selectPage(new Page<>(current,size),queryWrapper);
     }
-
     /**
      * 查询学院专业
      * @param college
      * @return
      */
     @Override
-    public IPage<Major> getCollegeMajors(String college,Long current, Long size){
+    public IPage<Major> getCollegeMajors(Long schoolId,String college,Long current, Long size){
         QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("school_id",schoolId);
         queryWrapper.like("college",college);
         return majorMapper.selectPage(new Page<>(current,size),queryWrapper);
     }
@@ -77,5 +87,14 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper,Major> implements 
         queryWrapper.eq("major_id",major.getMajorId());
         return  majorMapper.selectOne(queryWrapper);
     }
-
+    /**
+     * 删除专业
+     * @param majorId
+     * @return
+     */
+    @Override
+    public Boolean deleteMajor(Long majorId){
+        int delete = majorMapper.delete(MybatisPlusUtil.queryWrapperEq("major_id", majorId));
+        return delete > 0;
+    }
 }
