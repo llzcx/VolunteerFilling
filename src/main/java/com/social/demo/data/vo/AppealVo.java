@@ -33,6 +33,10 @@ public class AppealVo {
      */
     private String content;
     /**
+     * 类型
+     */
+    private Boolean type;
+    /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -38,6 +38,14 @@ public class Appraisal {
      * 签名
      */
     private String signature;
+    /**
+     * 内容
+     */
+    private String content;
+    /**
+     * 每类分数合计
+     */
+    private String total;
 
     public Appraisal(Long userId, Integer month, Integer score) {
         this.userId = userId;

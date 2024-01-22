@@ -13,5 +13,5 @@ import java.util.List;
 public interface SubjectGroupMapper extends BaseMapper<SubjectGroup> {
     Long selectGroupId(String subjects);
     List<String> selectSubjectGroups();
-    SubjectGroup selectSubjects(Long groupId);
+    SubjectGroup selectSubjects(Integer hashcode);
 }

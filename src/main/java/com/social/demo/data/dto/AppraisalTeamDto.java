@@ -1,4 +1,4 @@
-package com.social.demo.data.vo;
+package com.social.demo.data.dto;
 
 /**
  * 综测分组信息

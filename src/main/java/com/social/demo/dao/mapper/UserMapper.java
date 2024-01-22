@@ -52,4 +52,6 @@ public interface UserMapper extends BaseMapper<User> {
     List<ClassUserVo> selectClassUserNumbers(Long classId, String userNumber, String username, String role, Integer rank, Integer month, Integer number1, Integer number2);
 
     void updateClassIdentity(String userNumber, Integer identity);
+
+    String selectUserNumberByUserId(Long userId);
 }

@@ -8,15 +8,24 @@ import java.util.List;
 
 @Mapper
 public interface AppealMapper extends BaseMapper<Appeal> {
-    List<Appeal> selectAppealPage(Long classId, Integer number1, Integer number2);
 
     Integer selectAppealCount(Long classId);
 
-    List<Appeal> selectStudentAppealPage(String userNumber, Integer state, Integer number1, Integer number2);
+    List<Appeal> selectStudentAppeal(Long userId, Integer state);
 
     Integer selectStudentAppealCount(String userNumber, Integer state);
 
     Long selectUserId(Long appealId);
 
     Long selectClassId(Long appealId);
+
+    List<Appeal> selectClassAppeals(Long classId, Boolean type, Integer state);
+
+    int deleteAppeal(String userNumber, Long appealId);
+
+    int selectAppealWithAppealId(String userNumber, Long appealId);
+
+    int selectAppealsByClassId(Long classId, Long appealId);
+
+    void deleteAppealByClassId(Long classId, Long appealId);
 }

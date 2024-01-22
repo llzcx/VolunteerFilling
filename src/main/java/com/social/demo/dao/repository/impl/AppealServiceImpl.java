@@ -1,7 +1,5 @@
 package com.social.demo.dao.repository.impl;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.AppealMapper;
@@ -47,16 +45,9 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
     StudentMapper studentMapper;
 
     @Override
-    public IPage<AppealVo> getAppeals(HttpServletRequest request, Integer current, Integer size) {
-        String teacherNumber = jwtUtil.getSubject(request);
-        Long classId = classMapper.selectClassIdByTeacherNumber(teacherNumber);
-        return getAppealVoPage(classId, current, size);
-    }
-
-    @Override
-    public IPage<AppealVo> getAppealsToStudent(HttpServletRequest request, Integer state, Integer current, Integer size) {
-        String userNumber = jwtUtil.getSubject(request);
-        List<Appeal> appeals = appealMapper.selectStudentAppealPage(userNumber, state, (current-1) * size, size);
+    public List<AppealVo> getAppealsToStudent(HttpServletRequest request, Integer state) {
+        Long userId = jwtUtil.getSubject(request);
+        List<Appeal> appeals = appealMapper.selectStudentAppeal(userId, state);
         List<AppealVo> appealVos = new ArrayList<>();
         for (Appeal appeal : appeals) {
             User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", appeal.getUserId()));
@@ -66,36 +57,23 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
             appealVo.setUserNumber(user.getUserNumber());
             appealVos.add(appealVo);
         }
-
-        IPage<AppealVo> appealVoIPage = new Page<>(current, size);
-        appealVoIPage.setRecords(appealVos);
-        Integer count = appealMapper.selectStudentAppealCount(userNumber, state);
-        appealVoIPage.setTotal(count);
-        return appealVoIPage;
+        return appealVos;
     }
 
     @Override
     public void submitAppeal(HttpServletRequest request, String appeal) {
-        String userNumber = jwtUtil.getSubject(request);
-        Long userId = userMapper.selectUserIdByUserNumber(userNumber);
-        Long classId = studentMapper.selectClassIdByUserNumber(userNumber);
+        Long userId = jwtUtil.getSubject(request);
+        Long classId = studentMapper.selectClassIdByUserId(userId);
         Appeal newAppeal = new Appeal(userId, classId, appeal, TimeUtil.now(),
                 PropertiesConstant.APPEAL_STATE_PENDING, TimeUtil.now());
         int insert = appealMapper.insert(newAppeal);
     }
 
     @Override
-    public IPage<AppealVo> getAppealsByTeam(HttpServletRequest request, String username, String userNumber, Integer state, Integer current, Integer size) {
-        String number = jwtUtil.getSubject(request);
-        Long classId = studentMapper.selectClassIdByUserNumber(number);
-        return getAppealVoPage(classId, current, size);
-    }
-
-    @Override
     public Boolean quashAppeal(HttpServletRequest request, Long appealId) {
-        String userNumber = jwtUtil.getSubject(request);
+        Long myUserId = jwtUtil.getSubject(request);
         Long userId = appealMapper.selectUserId(appealId);
-        if (!userMapper.selectUserIdByUserNumber(userNumber).equals(userId)){
+        if (!myUserId.equals(userId)){
             return false;
         }
         Appeal appeal = new Appeal();
@@ -107,35 +85,82 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public Boolean disposeAppeal(HttpServletRequest request, Long appealId) {
-        String userNumber = jwtUtil.getSubject(request);
-        Long classId = classMapper.selectClassIdByTeacherNumber(userNumber);
+        Long userId = jwtUtil.getSubject(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         return disposeAppeal(classId, appealId);
     }
 
     @Override
     public Boolean disposeAppealByTeam(HttpServletRequest request, Long appealId) {
-        String userNumber = jwtUtil.getSubject(request);
-        Long classId = studentMapper.selectClassIdByUserNumber(userNumber);
+        Long userId = jwtUtil.getSubject(request);
+        Long classId = studentMapper.selectClassIdByUserId(userId);
         return disposeAppeal(classId, appealId);
     }
 
-    private IPage<AppealVo> getAppealVoPage(Long classId, Integer current, Integer size){
-        List<Appeal> appeals = appealMapper.selectAppealPage(classId, (current-1) * size, size);
-        List<AppealVo> appealVos = new ArrayList<>();
+    @Override
+    public Boolean deleteAppeals(HttpServletRequest request, Long[] appealIds) {
+        Long userId = jwtUtil.getSubject(request);
+        String userNumber = userMapper.selectUserNumberByUserId(userId);
+        for (Long appealId : appealIds) {
+            int flag = appealMapper.selectAppealWithAppealId(userNumber, appealId);
+            if (flag <= 0){
+                return false;
+            }
+        }
+        for (Long appealId : appealIds) {
+            appealMapper.deleteAppeal(userNumber, appealId);
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean deleteAppealsByTeacher(HttpServletRequest request, Long[] appealIds) {
+        Long classId = classMapper.selectClassIdByTeacherUserId(jwtUtil.getSubject(request));
+        for (Long appealId : appealIds) {
+            int flag = appealMapper.selectAppealsByClassId(classId, appealId);
+            if (flag <= 0){
+                return false;
+            }
+        }
+        for (Long appealId : appealIds) {
+            appealMapper.deleteAppealByClassId(classId, appealId);
+        }
+        return true;
+    }
+
+    @Override
+    public List<AppealVo> getAppealByTeacher(HttpServletRequest request, Integer state) {
+        Long userId = jwtUtil.getSubject(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
+        return getAppeals(classId, true, state);
+    }
+
+    @Override
+    public List<AppealVo> getAppealByTeam(HttpServletRequest request, Integer state) {
+        Long userId = jwtUtil.getSubject(request);
+        Long classId = studentMapper.selectClassIdByUserId(userId);
+        return getAppeals(classId, false, state);
+    }
+
+    /**
+     * 获取学生申述
+     * @param classId 班级
+     * @param type 申述类型 0-综测 1-志愿
+     * @param state 申述状态 0-待处理 1-已完成 2-已取消
+     * @return
+     */
+    private List<AppealVo> getAppeals(Long classId, Boolean type, Integer state){
+        List<Appeal> appeals = appealMapper.selectClassAppeals(classId, type, state);
+        List<AppealVo> list = new ArrayList<>();
         for (Appeal appeal : appeals) {
-            User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", appeal.getUserId()));
+            User user = userMapper.selectById(appeal.getUserId());
             AppealVo appealVo = new AppealVo();
             BeanUtils.copyProperties(appeal, appealVo);
-            appealVo.setUsername(user.getUsername());
             appealVo.setUserNumber(user.getUserNumber());
-            appealVos.add(appealVo);
+            appealVo.setUsername(user.getUsername());
+            list.add(appealVo);
         }
-
-        IPage<AppealVo> appealVoIPage = new Page<>(current, size);
-        appealVoIPage.setRecords(appealVos);
-        Integer count = appealMapper.selectAppealCount(classId);
-        appealVoIPage.setTotal(count);
-        return appealVoIPage;
+        return list;
     }
 
     private Boolean disposeAppeal(Long classId, Long appealId){

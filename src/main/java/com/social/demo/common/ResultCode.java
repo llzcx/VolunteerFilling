@@ -60,8 +60,8 @@ public enum ResultCode {
     HEADSHOT_NOT_EXISTS(2022, "证件照不存在"),
     USER_NOT_MATCH_DATA(2023, "用户与数据不一致"),
     CLASS_NOT_MATCH_DATA(2024, "班级与数据不一致"),
-    SUBJECT_HAVE_CLASS(2025,"科目已存在"),
-
+    SUBJECT_HAVE_CLASS(2025, "科目已存在"),
+    NOT_DELETE_UNFINISHED(2026, "无法删除待处理申述，请先取消或处理"),
 
 
         /*接口异常*/

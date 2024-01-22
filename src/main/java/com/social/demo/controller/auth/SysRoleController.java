@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 权限-角色与用户操作
@@ -44,8 +43,8 @@ public class SysRoleController {
      */
     @GetMapping
     public ApiResp<List<SysRole>> getRole(HttpServletRequest request) {
-        final String username = jwtUtil.getSubject(request);
-        final List<SysRole> list = sysRoleService.getRoleByUserId(username);
+        final Long userId = jwtUtil.getSubject(request);
+        final List<SysRole> list = sysRoleService.getRoleByUserId(userId);
         return ApiResp.success(list);
     }
 

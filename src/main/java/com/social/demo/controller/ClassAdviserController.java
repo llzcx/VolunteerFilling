@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 班主任接口
  *
@@ -97,47 +99,51 @@ public class ClassAdviserController {
      * 获取分页获取学生综测信息
      * @param name 学生姓名
      * @param userNumber 学号
-     * @param month 月份
+     * @param month 月份，不输入即为本月
      * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
      * @param current 当前页码
      * @param size 每页大小
      * @return
      */
     @GetMapping("/appraisal")
-    public ApiResp<IPage<AppraisalToOtherVo>> getAppraisals(HttpServletRequest request,
+    public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                             @RequestParam(value = "name", required = false)String name,
                                                             @RequestParam(value = "userNumber", required = false)String userNumber,
                                                             @RequestParam("month")Integer month,
                                                             @RequestParam("identity")Integer rank,
                                                             @RequestParam("current")Integer current,
                                                             @RequestParam("size")Integer size){
-        IPage<AppraisalToOtherVo> appraisals = appraisalService.getAppraisalsToTeacher(request, name, userNumber, month, rank, current, size);
+        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, name, userNumber, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
 
-    /**
-     * 修改班级成员身份
-     * @param identityDto
-     * @return
-     */
-    @PutMapping("/modify-identity")
-    public ApiResp<String> modifyIdentity(@RequestBody IdentityDto[] identityDto){
-        classAdviserService.modifyIdentity(identityDto);
-        return ApiResp.success("修改成功");
-    }
+//    /**
+//     * 修改班级成员身份
+//     * @param identityDto
+//     * @return
+//     */
+//    @PutMapping("/modify-identity")
+//    public ApiResp<String> modifyIdentity(@RequestBody IdentityDto[] identityDto){
+//        classAdviserService.modifyIdentity(identityDto);
+//        return ApiResp.success("修改成功");
+//    }
+
+
+//    @GetMapping
+//    public ApiResp<> getAppraisalTeam(){
+//
+//    }
 
     /**
      * 获取班级内的申诉
-     * @param current 当前页码
-     * @param size 每页数量
+     * @param state 申述状态 0-待处理 1-已处理 2-已取消
      * @return
      */
     @GetMapping("/appeals")
-    public ApiResp<IPage<AppealVo>> getAppeals(HttpServletRequest request,
-                                               @RequestParam("current")Integer current,
-                                               @RequestParam("size")Integer size){
-        IPage<AppealVo> appealVoIPage = appealService.getAppeals(request, current, size);
-        return ApiResp.success(appealVoIPage);
+    public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request,
+                                                      @RequestParam(value = "state",required = false) Integer state){
+        List<AppealVo> appealVos = appealService.getAppealByTeacher(request, state);
+        return ApiResp.success(appealVos);
     }
 
     /**
@@ -150,5 +156,18 @@ public class ClassAdviserController {
                                          @RequestBody Long appealId){
         Boolean aBoolean = appealService.disposeAppeal(request, appealId);
         return ApiResp.judge(aBoolean, "操作成功", ResultCode.CLASS_NOT_MATCH_DATA);
+    }
+
+    /**
+     * 删除已完成申述
+     * @param request
+     * @param appealId
+     * @return
+     */
+    @DeleteMapping("/appeal")
+    public ApiResp<String> deleteAppeals(HttpServletRequest request,
+                                         @RequestBody Long[] appealId){
+        Boolean b = appealService.deleteAppealsByTeacher(request, appealId);
+        return ApiResp.judge(b, "删除成功", ResultCode.NOT_DELETE_UNFINISHED);
     }
 }

@@ -15,5 +15,7 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
     Integer selectTotal(Long classId, String name, String userNumber, Integer month, Integer rank);
 
 
-    Appraisal selectAppraisalByUserNumber(String userNumber, Integer month);
+    Appraisal selectAppraisalByUserId(Long userId, Integer month);
+
+    Long selectAppraisalId(String userNumber, Integer month);
 }

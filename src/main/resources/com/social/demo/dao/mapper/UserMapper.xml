@@ -65,5 +65,8 @@
         </if>
         LIMIT #{number1}, #{number2}
     </select>
+    <select id="selectUserNumberByUserId" resultType="java.lang.String">
+        SELECT user_number FROM user WHERE user_id = #{userId}
+    </select>
 
 </mapper>
