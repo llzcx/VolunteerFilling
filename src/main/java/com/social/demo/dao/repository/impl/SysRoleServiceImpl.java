@@ -29,8 +29,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>  imp
     SysUserRoleMapper sysUserRoleMapper;
 
     @Override
-    public List<SysRole> getRoleByUserId(String userName) {
-        return sysRoleMapper.selectRoleListByUserName(userName);
+    public List<SysRole> getRoleByUserId(Long userId) {
+        return sysRoleMapper.selectRoleListByUserId(userId);
     }
 
     @Override

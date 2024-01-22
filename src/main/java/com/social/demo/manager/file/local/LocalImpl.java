@@ -46,7 +46,7 @@ public class LocalImpl implements UploadFile {
         File uploadFile = new File(path + filesName + "\\" + fileName);
         //将临时文件转存到指定磁盘位置
         file.transferTo(uploadFile);
-        return fileName;
+        return "/image/" + fileName;
     }
 
     @Override

@@ -23,7 +23,6 @@ import com.social.demo.manager.security.authentication.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -90,39 +89,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             return null;
         }else{
             final User user = users.get(0);
-            return new LoginBo(jwtUtil.createTokenAndSaveToKy(user.getUserNumber()),
+            return new LoginBo(jwtUtil.createTokenAndSaveToKy(user.getUserId()),
                     user.getIdentity().toString());//获取角色 后续需修改
         }
     }
 
     @Override
     public StudentVo getInformationOfStudent(HttpServletRequest request) {
-        String userNumber = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getSubject(request);
+        String userNumber = userMapper.selectUserNumberByUserId(userId);
         return getStudent(userNumber);
     }
 
     @Override
     public Boolean modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent) {
 
-        String userNumber = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getSubject(request);
         User user = new User();
         user.setPhone(userDtoByStudent.getPhone());
-        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         Consignee consignee = new Consignee();
         BeanUtils.copyProperties(userDtoByStudent.getConsigneeBo(), consignee);
-        consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
+        consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return true;
     }
 
 
     @Override
-    public StudentVo getStudent(String number){
-        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", number));
+    public StudentVo getStudent(String userNumber){
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
         Student student = studentMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", user.getUserId()));
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
-        studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getGroupId()).getSubjects(), String.class));
+        studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(student.getSchoolNumber()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
         ConsigneeBo consigneeBo = new ConsigneeBo();
@@ -140,7 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         Student student = new Student();
         BeanUtils.copyProperties(userDtoByTeacher, student);
         student.setSchoolNumber(schoolMapper.selectSchoolNumberByName(userDtoByTeacher.getSchoolName()));
-        student.setGroupId(subjectGroupMapper.selectGroupId(JSONUtil.toJsonStr(userDtoByTeacher.getSubjects())));
+        student.setHashcode(JSONUtil.toJsonStr(userDtoByTeacher.getSubjects()).hashCode());
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
         studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
         return true;
@@ -169,8 +169,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public TeacherVo getInformationOfTeacher(HttpServletRequest request) {
         TeacherVo teacherVo = new TeacherVo();
-        String userNumber = jwtUtil.getSubject(request);
-        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        Long userId = jwtUtil.getSubject(request);
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId));
         BeanUtils.copyProperties(user, teacherVo);
         String className = classMapper.selectClassNameByTeacherUserId(user.getUserId());
         teacherVo.setClassName(className);
@@ -179,10 +179,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public Boolean modifyPhone(HttpServletRequest request, String phone) {
-        String userNumber = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getSubject(request);
         User user = new User();
         user.setPhone(phone);
-        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return update > 0;
     }
 
@@ -217,8 +217,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             user.setIdentity(PropertiesConstant.IDENTITY_STUDENT);
             student.setEnrollmentYear(TimeUtil.now().getYear());
             Set<String> strings = new HashSet<>(Arrays.asList(studentDto.getSubjects()));
-            Long groupId = subjectGroupMapper.selectGroupId(JSONUtil.toJsonStr(strings));
-            student.setGroupId(groupId);
+            student.setHashcode(JSONUtil.toJsonStr(strings).hashCode());
             students.add(student);
 
             if (!JudgeUser(studentDto.getUserNumber())){
@@ -358,26 +357,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public Boolean modifyPassword(HttpServletRequest request, String password) {
-        String userNumber = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getSubject(request);
         User user = new User();
         user.setPassword(DigestUtil.md5Hex(password));
-        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return update > 0;
     }
 
     @Override
-    public void uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
-        String userNumber = jwtUtil.getSubject(request);
-        String upload = uploadFile.upload(file, PropertiesConstant.USERS, PropertiesConstant.USER + "-" + userNumber);
+    public String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
+        Long userId = jwtUtil.getSubject(request);
+        String upload = uploadFile.upload(file, PropertiesConstant.USERS, PropertiesConstant.USER + "-" + userId);
         User user = new User();
         user.setHeadshot(upload);
-        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
-    }
-
-    @Override
-    public void downloadHeadshot(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String userNumber = jwtUtil.getSubject(request);
-        String headshot = userMapper.selectHeadshot(userNumber);
-        uploadFile.download(response, PropertiesConstant.USERS, headshot);
+        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
+        return upload;
     }
 }

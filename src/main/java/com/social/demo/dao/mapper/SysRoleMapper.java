@@ -5,6 +5,7 @@ import com.social.demo.entity.SysRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -21,7 +22,5 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     List<SysRole> selectRoleListByUserName(@Param("userNumber")String userNumber);
 
 
-
-
-
+    List<SysRole> selectRoleListByUserId(Long userId);
 }

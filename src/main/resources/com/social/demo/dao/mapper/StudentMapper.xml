@@ -8,4 +8,7 @@
     <select id="getUserIdByClassId">
         SELECT user_id FROM student WHERE class_id = #{classId}
     </select>
+    <select id="selectClassIdByUserId" resultType="java.lang.Long">
+        SELECT class_id FROM student WHERE user_id = #{userId}
+    </select>
 </mapper>

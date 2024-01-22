@@ -50,12 +50,12 @@ public enum ResultCode {
     IS_EXISTS(2018, "已存在"),
     USER_IS_EXISTS(2019, "用户已存在"),
     USER_HAVE_CLASS(2020, "该老师是班主任，请先将班主任职务去除"),
-    APPRAISAL_NOT_EXISTS(2021, "该综测记录不存在"),
+    APPRAISAL_NOT_EXISTS(2021, "该月综测暂无"),
     HEADSHOT_NOT_EXISTS(2022, "证件照不存在"),
     USER_NOT_MATCH_DATA(2023, "用户与数据不一致"),
     CLASS_NOT_MATCH_DATA(2024, "班级与数据不一致"),
     SUBJECT_HAVE_CLASS(2025, ""),
-
+    NOT_DELETE_UNFINISHED(2026, "无法删除待处理申述，请先取消或处理"),
 
 
         /*接口异常*/

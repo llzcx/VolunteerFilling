@@ -2,7 +2,6 @@ package com.social.demo.dao.repository.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.social.demo.dao.mapper.AppraisalDetailMapper;
 import com.social.demo.dao.mapper.AppraisalMapper;
 import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.UserMapper;
@@ -37,20 +36,11 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     @Autowired
     AppraisalMapper appraisalMapper;
 
-    @Autowired
-    AppraisalDetailMapper appraisalDetailMapper;
-
     @Override
     public IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, String role,
                                           Integer rank, Integer current, Integer size) {
-        System.out.println(userNumber);
-        System.out.println(username);
-        System.out.println(role);
-        System.out.println(rank);
-        System.out.println(current);
-        System.out.println(size);
-        String number = jwtUtil.getSubject(request);
-        Long classId = classMapper.selectClassIdByTeacherNumber(number);
+        Long userId = jwtUtil.getSubject(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, TimeUtil.now().getMonthValue(), (current-1)*size, size);
         Integer total = userMapper.selectClassStudentCount(classId);
         if (userList.isEmpty()){

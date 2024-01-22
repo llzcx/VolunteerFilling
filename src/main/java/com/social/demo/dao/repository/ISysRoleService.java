@@ -11,10 +11,10 @@ import java.util.List;
 public interface ISysRoleService extends IService<SysRole> {
     /**
      * 通过用户id获取身份列表
-     * @param username
-     * @return
+     *
+     * @param userId@return
      */
-    List<SysRole> getRoleByUserId(String username);
+    List<SysRole> getRoleByUserId(Long userId);
 
 
     /**

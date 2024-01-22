@@ -4,14 +4,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
+import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.vo.AppealVo;
+import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.data.vo.StudentVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 学生接口
@@ -28,6 +32,9 @@ public class StudentController {
 
     @Autowired
     IAppealService appealService;
+
+    @Autowired
+    IAppraisalService appraisalService;
 
     /**
      * 学生获取个人信息
@@ -70,16 +77,12 @@ public class StudentController {
      * 学生获取申诉
      * @param request
      * @param state 状态 0-待处理 1-已处理 2-已取消
-     * @param current
-     * @param size
      * @return
      */
     @GetMapping("/appeal")
-    public ApiResp<IPage<AppealVo>> getAppeal(HttpServletRequest request,
-                                              @RequestParam(value = "state", required = false)Integer state,
-                                              @RequestParam("current")Integer current,
-                                              @RequestParam("size")Integer size){
-        IPage<AppealVo> appeals = appealService.getAppealsToStudent(request, state, current, size);
+    public ApiResp<List<AppealVo>> getAppeal(HttpServletRequest request,
+                                             @RequestParam(value = "state", required = false)Integer state){
+        List<AppealVo> appeals = appealService.getAppealsToStudent(request, state);
         return ApiResp.success(appeals);
     }
 
@@ -107,5 +110,42 @@ public class StudentController {
                                        @RequestBody Long appealId){
         Boolean aBoolean = appealService.quashAppeal(request, appealId);
         return ApiResp.judge(aBoolean, "撤销成功", ResultCode.USER_NOT_MATCH_DATA);
+    }
+
+    /**
+     * 删除已完成申述
+     * @param request
+     * @param appealId
+     * @return
+     */
+    @DeleteMapping("/appeal")
+    public ApiResp<String> deleteAppeals(HttpServletRequest request,
+                                        @RequestBody Long[] appealId){
+        Boolean b = appealService.deleteAppeals(request, appealId);
+        return ApiResp.judge(b, "删除成功", ResultCode.NOT_DELETE_UNFINISHED);
+    }
+
+    /**
+     * 获取本月学生个人的综测情况
+     * @param request
+     * @return
+     */
+    @GetMapping("/this")
+    public ApiResp<AppraisalVo> getAppraisalThisMonth(HttpServletRequest request){
+        AppraisalVo appraisal = appraisalService.getAppraisalThisMonth(request);
+        return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
+    }
+
+    /**
+     * 获取学生个人的综测情况
+     * @param request
+     * @param month 月份
+     * @return
+     */
+    @GetMapping
+    public ApiResp<AppraisalVo> getAppraisal(HttpServletRequest request,
+                                             Integer month){
+        AppraisalVo appraisal = appraisalService.getAppraisal(request, month);
+        return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
     }
 }

@@ -18,4 +18,7 @@
     <select id="selectClassIdByTeacherNumber" resultType="java.lang.Long">
         SELECT class_id FROM `class` WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{teacherNumber})
     </select>
+    <select id="selectClassIdByTeacherUserId" resultType="java.lang.Long">
+        SELECT class_id FROM `class` WHERE user_id = #{userId}
+    </select>
 </mapper>

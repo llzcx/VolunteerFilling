@@ -54,34 +54,34 @@ public class JwtUtil implements InitializingBean {
     }
     /**
      * 生成AccessTokenJWT
-     * @param userNumber 用户名
+     * @param userId
      * @return
      */
-    public String generateAccessToken(String userNumber) {
+    public String generateAccessToken(Long userId) {
         Date nowDate = new Date();
         //设置token过期时间
         Date expireDate = new Date(nowDate.getTime() + 1000 * accessTokenExpire);
         //秘钥是密码则省略
         return JWT.create()
                 .withHeader(header)
-                .withSubject(userNumber)
+                .withClaim("userId", userId)
                 .withExpiresAt(expireDate)
                 .sign(algorithm);
     }
 
     /**
      * 生成refreshTokenJWT
-     * @param userNumber
+     * @param userId
      * @return
      */
-    public String generateRefreshToken(String userNumber) {
+    public String generateRefreshToken(Long userId) {
         Date nowDate = new Date();
         //设置token过期时间
         Date expireDate = new Date(nowDate.getTime() + 1000 * refreshTokenExpire);
         //秘钥是密码则省略
         return JWT.create()
                 .withHeader(header)
-                .withSubject(userNumber)
+                .withClaim("userId", userId)
                 .withExpiresAt(expireDate)
                 .sign(algorithm);
     }
@@ -129,19 +129,19 @@ public class JwtUtil implements InitializingBean {
 
     /**
      * 创建token并存入redis
-     * @param userNumber
+     * @param userId
      * @return
      */
-    public TokenPair createTokenAndSaveToKy(String userNumber){
-        final String accessToken = generateAccessToken(userNumber);
-        final String refreshToken = generateRefreshToken(userNumber);
+    public TokenPair createTokenAndSaveToKy(Long userId){
+        final String accessToken = generateAccessToken(userId);
+        final String refreshToken = generateRefreshToken(userId);
         Date refreshException = getClaimsByToken(refreshToken).getExpiresAt();
         Long time = (refreshException.getTime() - System.currentTimeMillis()) / 1000 + 100;
         redisUtil.set(RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN + refreshToken, accessToken, time);
         return new TokenPair(accessToken, refreshToken);
     }
-    public String getSubject(HttpServletRequest request){
-        return getClaimsByToken(request.getHeader(getTokenHeader())).getSubject();
+    public Long getSubject(HttpServletRequest request){
+        return getClaimsByToken(request.getHeader(getTokenHeader())).getClaim("userId").asLong();
     }
 
     /**

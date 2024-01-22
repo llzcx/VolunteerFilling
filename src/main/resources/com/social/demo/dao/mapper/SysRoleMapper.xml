@@ -8,5 +8,11 @@
         right join (select * from sys_user_role where user_id = (select user_id from user where user_number = #{userNumber}))
             ur on sys_role.id = ur.role_id
     </select>
+    <select id="selectRoleListByUserId" resultType="com.social.demo.entity.SysRole">
+        select *
+        from sys_role
+                 right join (select * from sys_user_role where user_id = #{userId})
+            ur on sys_role.id = ur.role_id
+    </select>
 
 </mapper>

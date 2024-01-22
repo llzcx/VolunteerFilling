@@ -51,9 +51,9 @@ public class Student {
      */
     private Integer enrollmentYear;
     /**
-     * 组合id
+     * 组合哈希
      */
-    private Long groupId;
+    private Integer hashcode;
     /**
      * 身份证号码
      */

@@ -39,19 +39,19 @@ public class UserDetailServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        return new AccountUserBo(user.getUserId(), user.getUsername(), user.getPassword(), getUserAuthority(userNumber));
+        return new AccountUserBo(user.getUserId(), user.getUsername(), user.getPassword(), getUserAuthority(user.getUserId()));
 
     }
 
     /**
      * 获取用户权限信息（角色、菜单权限）
-     * @param userNumber
+     * @param userId
      * @return
      */
-    public List<GrantedAuthority> getUserAuthority(String userNumber) {
+    public List<GrantedAuthority> getUserAuthority(Long userId) {
         if(true)return new ArrayList<>();
         // 根据userId查询用户的权限信息，这里假设从数据库中获取
-        List<String> authorities = sysRoleMapper.selectRoleListByUserName(userNumber).stream().
+        List<String> authorities = sysRoleMapper.selectRoleListByUserId(userId).stream().
         map(SysRole::getRoleName).collect(Collectors.toList());
         // 将权限信息转换为 GrantedAuthority 对象列表
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();

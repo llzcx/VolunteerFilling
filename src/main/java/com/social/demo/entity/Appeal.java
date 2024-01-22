@@ -53,6 +53,10 @@ public class Appeal {
      * 最近修改时间
      */
     private LocalDateTime lastDdlTime;
+    /**
+     * 申述类型 0-综测 1-志愿
+     */
+    private Boolean type;
 
     public Appeal(Long userId, Long classId, String content, LocalDateTime created, Integer state, LocalDateTime lastDdlTime) {
         this.userId = userId;

@@ -16,18 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 public class AppraisalVo {
     /**
-     * 详细
-     */
-    private List<AppraisalDetailVo> detail;
-    /**
-     * 月总加分
-     */
-    private Integer totalPlus;
-    /**
-     * 月总减分
-     */
-    private Integer totalMinus;
-    /**
      * 月份
      */
     private Integer month;
@@ -43,4 +31,12 @@ public class AppraisalVo {
      * 签名
      */
     private String signature;
+    /**
+     * 内容
+     */
+    private AppraisalContentVo content;
+    /**
+     * 合计
+     */
+    private AppraisalTotalVo total;
 }

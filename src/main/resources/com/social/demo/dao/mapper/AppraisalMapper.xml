@@ -46,6 +46,9 @@
         </if>
     </select>
     <select id="selectAppraisalByUserNumber" resultType="com.social.demo.entity.Appraisal">
-        SELECT * FROM appraisal WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber}) AND `month` = #{month}
+        SELECT * FROM appraisal WHERE user_id = #{userId} AND `month` = #{month}
+    </select>
+    <select id="selectAppraisalId" resultType="java.lang.Long">
+        SELECT appraisal_id FROM appraisal WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber}) AND `month` = #{month}
     </select>
 </mapper>
