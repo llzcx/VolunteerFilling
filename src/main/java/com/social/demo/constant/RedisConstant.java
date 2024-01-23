@@ -5,7 +5,7 @@ package com.social.demo.constant;
  * @author 陈翔
  */
 public interface RedisConstant {
-    String SOCIAL = "SOCIAL:";
+    String WISH = "WISH:";
 
     String JWT_TOKEN = "JWT_TOKEN:";
 

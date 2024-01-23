@@ -89,7 +89,7 @@ public class JwtUtil implements InitializingBean {
     // 解析JWT
     public DecodedJWT getClaimsByToken(String token) {
         if (token==null || "".equals(token.trim())){
-            throw new SystemException(ResultCode.TOKEN_EXCEPTION);
+            throw new SystemException(ResultCode.TOKEN_DECODE_ERROR);
         }
         try {
             return JWT.decode(token);
@@ -137,7 +137,7 @@ public class JwtUtil implements InitializingBean {
         final String refreshToken = generateRefreshToken(userId);
         Date refreshException = getClaimsByToken(refreshToken).getExpiresAt();
         Long time = (refreshException.getTime() - System.currentTimeMillis()) / 1000 + 100;
-        redisUtil.set(RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN + refreshToken, accessToken, time);
+        redisUtil.set(RedisConstant.WISH+RedisConstant.JWT_TOKEN + refreshToken, accessToken, time);
         return new TokenPair(accessToken, refreshToken);
     }
     public Long getSubject(HttpServletRequest request){
@@ -151,8 +151,8 @@ public class JwtUtil implements InitializingBean {
      */
     public TokenPair getTokenForRedis(String userNumber){
         TokenPair tokenPair = new TokenPair();
-        tokenPair.setAccessToken(redisUtil.get(RedisConstant.SOCIAL+RedisConstant.ACCESS_TOKEN+ userNumber));
-        tokenPair.setRefreshToken(redisUtil.get(RedisConstant.SOCIAL+RedisConstant.REFRESH_TOKEN+ userNumber));
+        tokenPair.setAccessToken(redisUtil.get(RedisConstant.WISH+RedisConstant.ACCESS_TOKEN+ userNumber));
+        tokenPair.setRefreshToken(redisUtil.get(RedisConstant.WISH+RedisConstant.REFRESH_TOKEN+ userNumber));
         return tokenPair;
     }
 
@@ -162,7 +162,7 @@ public class JwtUtil implements InitializingBean {
      * @return
      */
     public Boolean delTokenForRedis(String refreshToken){
-        return redisUtil.del(RedisConstant.SOCIAL+RedisConstant.JWT_TOKEN+ refreshToken);
+        return redisUtil.del(RedisConstant.WISH+RedisConstant.JWT_TOKEN+ refreshToken);
     }
 
 

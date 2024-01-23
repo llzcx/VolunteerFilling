@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 用于获取该路径需要的权限
+ * 用于获取该路径需要的身份
  * @author 陈翔
  */
 @Slf4j
@@ -27,19 +27,19 @@ public class CustomSecurityMetadataSource implements FilterInvocationSecurityMet
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object)
-                                               throws IllegalArgumentException {
-        String requestURI = 
-                   ((FilterInvocation) object).getRequest().getRequestURI();
+            throws IllegalArgumentException {
+        final FilterInvocation filterInvocation = (FilterInvocation) object;
+        String requestURI = filterInvocation.getRequest().getRequestURI();
         List<SysApi> allMenu = sysApiMapper.selectApisWithRoles();
         for (SysApi menu : allMenu) {
             if (antPathMatcher.match(menu.getPattern(), requestURI)) {
                 String[] roles = menu.getRoles().stream()
-                               .map(SysRole::getRoleName).toArray(String[]::new);
+                        .map(SysRole::getRoleName).toArray(String[]::new);
                 log.info("接口路径匹配成功，接口要求的身份：{}", Arrays.toString(roles));
                 return SecurityConfig.createList(roles);
             }
         }
-        log.info("接口路径匹配失败");
+        log.info("接口路径匹配失败,判定为非法访问");
         return null;
     }
 
