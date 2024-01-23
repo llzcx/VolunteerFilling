@@ -9,7 +9,6 @@ import com.social.demo.dao.repository.IClassAdviserService;
 import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.manager.security.authentication.JwtUtil;
-import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,17 +40,11 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
                                           Integer rank, Integer current, Integer size) {
         Long userId = jwtUtil.getSubject(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, TimeUtil.now().getMonthValue(), (current-1)*size, size);
+        List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, (current-1)*size, size);
         Integer total = userMapper.selectClassStudentCount(classId);
-        if (userList.isEmpty()){
-            userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank,
-                    (TimeUtil.now().getMonthValue()-1>0?TimeUtil.now().getMonthValue()-1:12), (current-1)*size, size);
-        }
-
         IPage<ClassUserVo> page = new Page<>(current, size);
         page.setTotal(total);
         page.setRecords(userList);
-
         return page;
     }
 
@@ -60,5 +53,10 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         for (IdentityDto dto : identityDto) {
             userMapper.updateClassIdentity(dto.getUserNumber(), dto.getIdentity());
         }
+    }
+
+    @Override
+    public void getAppraisalTeam(HttpServletRequest request, String[] numbers) {
+
     }
 }

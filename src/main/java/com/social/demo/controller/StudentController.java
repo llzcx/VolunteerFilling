@@ -6,6 +6,7 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IUserService;
+import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.data.vo.AppraisalVo;
@@ -94,7 +95,7 @@ public class StudentController {
      */
     @PostMapping("/appeal")
     public ApiResp<String> submitAppeal(HttpServletRequest request,
-                                        @RequestBody String appeal){
+                                        @RequestBody AppealDto appeal){
         appealService.submitAppeal(request, appeal);
         return ApiResp.success("上传成功");
     }

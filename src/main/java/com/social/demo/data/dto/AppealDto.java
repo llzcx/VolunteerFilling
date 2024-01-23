@@ -20,4 +20,8 @@ public class AppealDto {
      * 内容
      */
     private String content;
+    /**
+     * 类型
+     */
+    private Boolean type;
 }

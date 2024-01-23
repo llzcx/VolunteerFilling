@@ -29,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -195,42 +196,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
+    @Transactional
     public String importStudents(List<StudentDto> studentDtos) {
         List<User> users = new ArrayList<>();
-        List<Student> students = new ArrayList<>();
+        HashMap<String, Student> map = new HashMap<>();
         for (StudentDto studentDto : studentDtos) {
             User user = new User();
             BeanUtils.copyProperties(studentDto, user);
             users.add(user);
-
             Student student = new Student();
             BeanUtils.copyProperties(studentDto, student);
-
             Long classId = classMapper.selectClassIdByName(studentDto.getClassName());
             student.setClassId(classId);
             Long schoolNumber = schoolMapper.selectSchoolNumberByName(studentDto.getSchool());
             student.setSchoolNumber(schoolNumber);
             user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
-//            LocalDateTime now = TimeUtil.now();
-//            user.setCreated(now);
-//            user.setLastDdlTime(now);
             user.setIdentity(PropertiesConstant.IDENTITY_STUDENT);
             student.setEnrollmentYear(TimeUtil.now().getYear());
             Set<String> strings = new HashSet<>(Arrays.asList(studentDto.getSubjects()));
             student.setHashcode(JSONUtil.toJsonStr(strings).hashCode());
-            students.add(student);
-
             if (!JudgeUser(studentDto.getUserNumber())){
                 return studentDto.getUserNumber();
             }
+            map.put(user.getUserNumber(), student);
         }
 //        SysRole sysRole = sysRoleMapper.selectOne(MybatisPlusUtil.queryWrapperEq("role_name", PropertiesConstant.IDENTITY_STUDENT));
         for (User user : users) {
             userMapper.insert(user);
 //            sysUserRoleMapper.insert(new SysUserRole(user.getClassUserId(), sysRole.getId()));
-        }
-        for (Student student : students) {
+            Student student = map.get(user.getUserNumber());
+            student.setUserId(user.getUserId());
             studentMapper.insert(student);
+            Consignee consignee = new Consignee();
+            consignee.setUserId(user.getUserId());
+            consigneeMapper.insert(consignee);
         }
         return null;
     }

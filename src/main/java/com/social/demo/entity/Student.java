@@ -66,4 +66,16 @@ public class Student {
      */
     @TableField(value = "`state`")
     private Integer state;
+    /**
+     * 总成绩
+     */
+    private Integer score;
+    /**
+     * 每科成绩
+     */
+    private String grade;
+    /**
+     * 综测成绩
+     */
+    private Integer appraisalScore;
 }

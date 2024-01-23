@@ -30,5 +30,5 @@ public class ClassUserVo {
     /**
      * 该月综测分
      */
-    private Integer score;
+    private Integer appraisalScore;
 }

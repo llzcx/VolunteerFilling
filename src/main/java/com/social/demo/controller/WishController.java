@@ -52,6 +52,6 @@ public class WishController {
      */
     @GetMapping("selectStudentMajor")
     public ApiResp<List<MajorVo>> selectStudentMajor(@RequestParam("schoolId")Long schoolId,@RequestParam("groupId")Integer groupId){
-
+        return null;
     }
 }

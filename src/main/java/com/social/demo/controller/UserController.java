@@ -145,8 +145,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/headshot")
-    public ApiResp<String> uploadHeadshot(HttpServletRequest request,
-                                          @RequestBody MultipartFile file) throws Exception {
+    public ApiResp<String> uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
         return ApiResp.success(userService.uploadHeadshot(request, file));
     }
 

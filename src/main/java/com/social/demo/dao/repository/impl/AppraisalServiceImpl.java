@@ -14,6 +14,7 @@ import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.entity.Appraisal;
+import com.social.demo.entity.Student;
 import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.authentication.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
@@ -62,7 +63,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public Boolean uploadAppraisal(AppraisalContentVo appraisalContentVo) {
-        Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()), appraisalContentVo.getMonth());
+        Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
+        Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, appraisalContentVo.getMonth());
         Appraisal appraisal;
         if (appraisalByUserNumber == null){
             appraisal = new Appraisal();
@@ -73,7 +75,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             appraisalTotalVo.setClass4(appraisalContentVo.getPoint4());
             appraisalTotalVo.setClass5(appraisalContentVo.getPoint5());
             appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total());
-            appraisalTotalVo.setSup(appraisalContentVo.getSub_total());
+            appraisalTotalVo.setSub(appraisalContentVo.getSub_total());
             appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
             appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
             appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
@@ -90,7 +92,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             appraisalTotalVo.setClass4(appraisalContentVo.getPoint4() + appraisalTotalVo.getClass4());
             appraisalTotalVo.setClass5(appraisalContentVo.getPoint5() + appraisalTotalVo.getClass5());
             appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total() + appraisalTotalVo.getAdd());
-            appraisalTotalVo.setSup(appraisalContentVo.getSub_total() + appraisalTotalVo.getSup());
+            appraisalTotalVo.setSub(appraisalContentVo.getSub_total() + appraisalTotalVo.getSub());
             appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
             appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
             appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
@@ -99,7 +101,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
             appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
         }
-
+        Student student = new Student();
+        studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return null;
     }
 

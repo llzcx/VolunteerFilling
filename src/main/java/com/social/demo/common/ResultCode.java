@@ -56,7 +56,9 @@ public enum ResultCode {
     CLASS_NOT_MATCH_DATA(2024, "班级与数据不一致"),
     SUBJECT_HAVE_CLASS(2025, "科目已存在"),
     NOT_DELETE_UNFINISHED(2026, "无法删除待处理申述，请先取消或处理"),
-
+    GRADE_NOT_EXISTS(2027, "科目不存在或用户不存在"),
+    MAJOR_NOT_DELETE(2028, "主科无法删除"),
+    MAJOR_NOT_MODIFY(2029, "主科无法修改"),
 
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),

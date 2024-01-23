@@ -75,4 +75,8 @@ public class StudentVo implements Serializable {
      * 收获信息
      */
     private ConsigneeBo consignee;
+    /**
+     * 证件照
+     */
+    private String headshot;
 }

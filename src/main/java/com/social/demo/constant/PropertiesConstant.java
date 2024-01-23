@@ -36,4 +36,11 @@ public interface PropertiesConstant {
 
     //申诉状态 - 已取消
     Integer APPEAL_STATE_CANCELED = 2;
+
+    // 语文科目编号
+    Long SUBJECT_CHINESE = 1L;
+    // 数学科目编号
+    Long SUBJECT_MATH = 2L;
+    // 英语科目编号
+    Long SUBJECT_ENGLISH = 3L;
 }

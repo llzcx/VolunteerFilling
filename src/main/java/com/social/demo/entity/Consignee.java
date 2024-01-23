@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Consignee {
-    private Long user_id;
+    private Long userId;
     private String username;
     private String phone;
     private String address;

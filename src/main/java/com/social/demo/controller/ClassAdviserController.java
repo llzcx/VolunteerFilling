@@ -3,10 +3,7 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
-import com.social.demo.dao.repository.IAppealService;
-import com.social.demo.dao.repository.IAppraisalService;
-import com.social.demo.dao.repository.IClassAdviserService;
-import com.social.demo.dao.repository.IUserService;
+import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
@@ -39,6 +36,9 @@ public class ClassAdviserController {
 
     @Autowired
     IAppealService appealService;
+
+    @Autowired
+    IAppraisalTeamService appraisalTeamService;
 
     /**
      * 班级成员列表
@@ -117,22 +117,29 @@ public class ClassAdviserController {
         return ApiResp.success(appraisals);
     }
 
-//    /**
-//     * 修改班级成员身份
-//     * @param identityDto
-//     * @return
-//     */
-//    @PutMapping("/modify-identity")
-//    public ApiResp<String> modifyIdentity(@RequestBody IdentityDto[] identityDto){
-//        classAdviserService.modifyIdentity(identityDto);
-//        return ApiResp.success("修改成功");
-//    }
+    /**
+     * 修改班级成员身份
+     * @param identityDto
+     * @return
+     */
+    @PutMapping("/modify-identity")
+    public ApiResp<String> modifyIdentity(@RequestBody IdentityDto[] identityDto){
+        classAdviserService.modifyIdentity(identityDto);
+        return ApiResp.success("修改成功");
+    }
 
-
-//    @GetMapping
-//    public ApiResp<> getAppraisalTeam(){
-//
-//    }
+    /**
+     * 获取综测小组成员
+     * @param request
+     * @param numbers 成员名单
+     * @return
+     */
+    @PutMapping("/team")
+    public ApiResp<String> getAppraisalTeam(HttpServletRequest request,
+                                            @RequestBody String[] numbers){
+        classAdviserService.getAppraisalTeam(request, numbers);
+        return ApiResp.success("修改成功");
+    }
 
     /**
      * 获取班级内的申诉
@@ -169,5 +176,21 @@ public class ClassAdviserController {
                                          @RequestBody Long[] appealId){
         Boolean b = appealService.deleteAppealsByTeacher(request, appealId);
         return ApiResp.judge(b, "删除成功", ResultCode.NOT_DELETE_UNFINISHED);
+    }
+
+    /**
+     * 添加学生至综测小组
+     * @param userNumber 学号
+     * @return
+     */
+    @PostMapping("/team")
+    public ApiResp<String> addAppraisalTeam(HttpServletRequest request, @RequestBody String userNumber){
+        appraisalTeamService.addAppraisalTeam(request, userNumber);
+        return ApiResp.success("添加成功");
+    }
+
+    @GetMapping("/team")
+    public ApiResp<List<AppraisalTeamVo>> getAppraisalTeam(HttpServletRequest request){
+        return null;
     }
 }

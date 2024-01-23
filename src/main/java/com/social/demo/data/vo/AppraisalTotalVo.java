@@ -19,6 +19,6 @@ public class AppraisalTotalVo {
     private Integer class4;
     private Integer class5;
     private Integer add;
-    private Integer sup;
+    private Integer sub;
     private Integer all;
 }

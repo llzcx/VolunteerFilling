@@ -7,6 +7,7 @@ import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IAppealService;
+import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.entity.Appeal;
 import com.social.demo.entity.User;
@@ -61,11 +62,12 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
     }
 
     @Override
-    public void submitAppeal(HttpServletRequest request, String appeal) {
+    public void submitAppeal(HttpServletRequest request, AppealDto appeal) {
         Long userId = jwtUtil.getSubject(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
-        Appeal newAppeal = new Appeal(userId, classId, appeal, TimeUtil.now(),
+        Appeal newAppeal = new Appeal(userId, classId, appeal.getContent(), TimeUtil.now(),
                 PropertiesConstant.APPEAL_STATE_PENDING, TimeUtil.now());
+        newAppeal.setType(appeal.getType());
         int insert = appealMapper.insert(newAppeal);
     }
 
