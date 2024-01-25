@@ -45,10 +45,27 @@
             ORDER BY score desc
         </if>
     </select>
-    <select id="selectAppraisalByUserNumber" resultType="com.social.demo.entity.Appraisal">
-        SELECT * FROM appraisal WHERE user_id = #{userId} AND `month` = #{month}
-    </select>
     <select id="selectAppraisalId" resultType="java.lang.Long">
         SELECT appraisal_id FROM appraisal WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber}) AND `month` = #{month}
+    </select>
+    <select id="selectAppraisalByUserId" resultType="com.social.demo.entity.Appraisal">
+        SELECT * FROM appraisal WHERE user_id = #{userId} AND `month` = #{month}
+    </select>
+    <select id="selectUserNumbersToTeam" resultType="java.lang.String">
+        SELECT user_number FROM user AS u, appraisal AS a
+        WHERE u.user_id = a.user_id AND u.user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
+        <if test="name!=null and name!=''">
+            AND u.username LIKE CONCAT("%",#{name},"%")
+        </if>
+        <if test="month != null">
+            AND a.month = #{month}
+        </if>
+        <if test="rank == -1">
+            ORDER BY score
+        </if>
+        <if test="rank == 1">
+            ORDER BY score desc
+        </if>
+        LIMIT #{number1}, #{number2}
     </select>
 </mapper>

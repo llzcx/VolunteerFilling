@@ -18,4 +18,6 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
     Appraisal selectAppraisalByUserId(Long userId, Integer month);
 
     Long selectAppraisalId(String userNumber, Integer month);
+
+    List<String> selectUserNumbersToTeam(Long userId, String name, String userNumber, Integer month, Integer rank, Integer number1, Integer number2);
 }

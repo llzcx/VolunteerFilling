@@ -1,10 +1,12 @@
 package com.social.demo.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IGradeService;
 import com.social.demo.data.dto.GradeDto;
 import com.social.demo.data.dto.GradeSubjectDto;
+import com.social.demo.data.vo.GradeVo;
 import com.social.demo.entity.GradeSubject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -79,5 +81,55 @@ public class GradeController {
     public ApiResp<String> uploadGrades(@RequestBody GradeDto[] gradeDto){
         Boolean b = gradeService.uploadGrades(gradeDto);
         return ApiResp.judge(b, "上传成功", ResultCode.GRADE_NOT_EXISTS);
+    }
+
+    /**
+     * 学生成绩
+     * @param year 年份
+     * @param keyword 查找关键字，姓名或学号，模糊查找
+     * @param current 当前页码
+     * @param size 每页多少条
+     * @return
+     */
+    @GetMapping
+    public ApiResp<IPage<GradeVo>> getGrades(@RequestParam(value = "year", required = false)String year,
+                                            @RequestParam("keyword") String keyword,
+                                            @RequestParam("current")Integer current,
+                                            @RequestParam("size")Integer size){
+        IPage<GradeVo> gradeVoIPage = gradeService.getGrades(year, keyword, current, size);
+        return ApiResp.success(gradeVoIPage);
+    }
+
+    /**
+     * 重置学生成绩
+     * @param userNumbers
+     * @return
+     */
+    @PutMapping("/reset")
+    public ApiResp<String> deleteGrades(@RequestBody String[] userNumbers){
+        gradeService.deleteGrades(userNumbers);
+        return ApiResp.success("重置成功");
+    }
+
+    /**
+     * 修改学生成绩
+     * @param gradeDto
+     * @return
+     */
+    @PutMapping("/grade")
+    public ApiResp<String> modifyGrade(@RequestBody GradeDto gradeDto){
+        gradeService.modifyGrade(gradeDto);
+        return ApiResp.success("修改成功");
+    }
+
+    /**
+     * 获取所有成绩
+     * @param year 年份，不传即为今年
+     * @return
+     */
+    @GetMapping("/all")
+    public ApiResp<List<GradeVo>> getAllGrade(@RequestParam(value = "year", required = false)String year){
+        List<GradeVo> list = gradeService.getAllGradeVo(year);
+        return ApiResp.success(list);
     }
 }

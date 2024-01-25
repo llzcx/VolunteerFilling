@@ -7,6 +7,8 @@ import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
 import com.social.demo.entity.Class;
 
+import java.util.List;
+
 /**
  * @author 杨世博
  * @date 2023/12/4 15:42
@@ -28,5 +30,5 @@ public interface IClassService extends IService<Class> {
      * @param classId
      * @return
      */
-    Long[] getClassUserId(String classId);
+    List<Long> getClassUserId(Long classId);
 }

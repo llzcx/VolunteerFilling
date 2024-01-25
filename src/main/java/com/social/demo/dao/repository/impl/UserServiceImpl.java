@@ -140,8 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         BeanUtils.copyProperties(userDtoByTeacher, user);
         Student student = new Student();
         BeanUtils.copyProperties(userDtoByTeacher, student);
-        student.setSchoolNumber(schoolMapper.selectSchoolNumberByName(userDtoByTeacher.getSchoolName()));
-        student.setHashcode(JSONUtil.toJsonStr(userDtoByTeacher.getSubjects()).hashCode());
+        user.setUserNumber(null);
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
         studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
         return true;

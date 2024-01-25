@@ -69,7 +69,7 @@ public class AppraisalTeamController {
     public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                      @RequestParam(value = "name", required = false)String name,
                                                      @RequestParam(value = "userNumber", required = false)String userNumber,
-                                                     @RequestParam(value = "month")Integer month,
+                                                     @RequestParam("month")Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
@@ -79,12 +79,23 @@ public class AppraisalTeamController {
 
     /**
      * 上传学生综测情况
-     * @param appraisalContentVo
+     * @param appraisalContentVos
      * @return
      */
     @PostMapping("/appraisal")
-    public ApiResp<String> uploadAppraisal(@RequestBody AppraisalContentVo appraisalContentVo){
-        appraisalService.uploadAppraisal(appraisalContentVo);
+    public ApiResp<String> uploadAppraisal(@RequestBody AppraisalContentVo[] appraisalContentVos){
+        appraisalService.uploadAppraisal(appraisalContentVos);
+        return ApiResp.success("上传成功");
+    }
+
+    /**
+     * 修改学生综测情况
+     * @param appraisalContentVo
+     * @return
+     */
+    @PutMapping("/appraisal")
+    public ApiResp<String> modifyAppraisal(@RequestBody AppraisalContentVo appraisalContentVo){
+        appraisalService.modifyAppraisal(appraisalContentVo);
         return ApiResp.success("上传成功");
     }
 
@@ -94,9 +105,8 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appeals")
-    public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request,
-                                                      @RequestParam(value = "state", required = false)Integer state){
-        List<AppealVo> appealVos = appealService.getAppealByTeam(request, state);
+    public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request){
+        List<AppealVo> appealVos = appealService.getAppealByTeam(request);
         return ApiResp.success(appealVos);
     }
 
@@ -110,5 +120,18 @@ public class AppraisalTeamController {
                                          @RequestBody Long appealId){
         Boolean aBoolean = appealService.disposeAppealByTeam(request, appealId);
         return ApiResp.judge(aBoolean, "操作成功", ResultCode.CLASS_NOT_MATCH_DATA);
+    }
+
+    /**
+     * 删除已完成申述
+     * @param request
+     * @param appealId
+     * @return
+     */
+    @DeleteMapping("/appeal")
+    public ApiResp<String> deleteAppeals(HttpServletRequest request,
+                                         @RequestBody Long[] appealId){
+        Boolean b = appealService.deleteAppealsByTeam(request, appealId);
+        return ApiResp.judge(b, "删除成功", ResultCode.NOT_DELETE_UNFINISHED);
     }
 }

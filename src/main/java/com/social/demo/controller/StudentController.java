@@ -1,6 +1,5 @@
 package com.social.demo.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
@@ -77,13 +76,11 @@ public class StudentController {
     /**
      * 学生获取申诉
      * @param request
-     * @param state 状态 0-待处理 1-已处理 2-已取消
      * @return
      */
     @GetMapping("/appeal")
-    public ApiResp<List<AppealVo>> getAppeal(HttpServletRequest request,
-                                             @RequestParam(value = "state", required = false)Integer state){
-        List<AppealVo> appeals = appealService.getAppealsToStudent(request, state);
+    public ApiResp<List<AppealVo>> getAppeal(HttpServletRequest request){
+        List<AppealVo> appeals = appealService.getAppealsToStudent(request);
         return ApiResp.success(appeals);
     }
 

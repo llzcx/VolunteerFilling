@@ -1,20 +1,30 @@
 package com.social.demo.dao.repository.impl;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.GradeSubjectMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IGradeService;
+import com.social.demo.data.bo.GradeBo;
+import com.social.demo.data.bo.GradeSubjectBo;
 import com.social.demo.data.dto.GradeDto;
 import com.social.demo.data.dto.GradeSubjectDto;
+import com.social.demo.data.vo.GradeVo;
 import com.social.demo.entity.GradeSubject;
 import com.social.demo.entity.Student;
 import com.social.demo.util.MybatisPlusUtil;
+import com.social.demo.util.TimeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -85,8 +95,77 @@ public class GradeServiceImpl implements IGradeService {
             String jsonStr = JSONUtil.toJsonStr(dto.getGradeSubjectBos());
             Student student = new Student();
             student.setGrade(jsonStr);
+            student.setScore(dto.getScore());
             studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         }
         return true;
+    }
+
+    @Override
+    public IPage<GradeVo> getGrades(String year, String keyword, Integer current, Integer size) {
+        int newYear = 0;
+        if (year==null || year.isEmpty()){
+            newYear = TimeUtil.now().getYear();
+        }else {
+            newYear = Integer.parseInt(year);
+        }
+        List<GradeBo> gradeBoList = studentMapper.getGrades(newYear, keyword, (current - 1) * size, size);
+        Integer number = studentMapper.getGradesCount(newYear, keyword);
+        List<GradeVo> list = new ArrayList<>();
+        for (GradeBo gradeBo : gradeBoList) {
+            GradeVo gradeVo = new GradeVo();
+            BeanUtils.copyProperties(gradeBo, gradeVo);
+            gradeVo.setGradeSubjectBos(JSONUtil.toList(gradeBo.getGrade(), GradeSubjectBo.class));
+            list.add(gradeVo);
+        }
+        IPage<GradeVo> gradeVoIPage = new Page<>(current, size);
+        gradeVoIPage.setTotal(number);
+        gradeVoIPage.setRecords(list);
+        return gradeVoIPage;
+    }
+
+    @Override
+    public void deleteGrades(String[] userNumbers) {
+        Student student = new Student();
+        List<GradeSubject> gradeSubjects = gradeSubjectMapper.selectList(MybatisPlusUtil.queryWrapperEq());
+        List<GradeSubjectBo> gradeSubjectBos = new ArrayList<>();
+        for (GradeSubject gradeSubject : gradeSubjects) {
+            GradeSubjectBo gradeSubjectBo = new GradeSubjectBo();
+            gradeSubjectBo.setGradeId(gradeSubject.getGradeId());
+            gradeSubjectBo.setGrade(0);
+            gradeSubjectBos.add(gradeSubjectBo);
+        }
+        student.setScore(0);
+        student.setGrade(JSONUtil.toJsonStr(gradeSubjectBos));
+        for (String userNumber : userNumbers) {
+            studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
+        }
+    }
+
+    @Override
+    public void modifyGrade(GradeDto gradeDto) {
+        Student student = new Student();
+        student.setGrade(JSONUtil.toJsonStr(gradeDto.getGradeSubjectBos()));
+        student.setScore(gradeDto.getScore());
+        studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(gradeDto.getUserNumber())));
+    }
+
+    @Override
+    public List<GradeVo> getAllGradeVo(String year) {
+        int newYear = 0;
+        if (year==null || year.isEmpty()){
+            newYear = TimeUtil.now().getYear();
+        }else {
+            newYear = Integer.parseInt(year);
+        }
+        List<GradeBo> gradeBoList = studentMapper.getAllGrades(newYear);
+        List<GradeVo> list = new ArrayList<>();
+        for (GradeBo gradeBo : gradeBoList) {
+            GradeVo gradeVo = new GradeVo();
+            BeanUtils.copyProperties(gradeBo, gradeVo);
+            gradeVo.setGradeSubjectBos(JSONUtil.toList(gradeBo.getGrade(), GradeSubjectBo.class));
+            list.add(gradeVo);
+        }
+        return list;
     }
 }

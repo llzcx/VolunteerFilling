@@ -41,22 +41,14 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         Long userId = jwtUtil.getSubject(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, (current-1)*size, size);
+        for (ClassUserVo classUserVo : userList) {
+            Integer integer = userMapper.selectIdentity(classId + classUserVo.getUserNumber());
+            classUserVo.setIdentity(integer == null ? 1 : 2);
+        }
         Integer total = userMapper.selectClassStudentCount(classId);
         IPage<ClassUserVo> page = new Page<>(current, size);
         page.setTotal(total);
         page.setRecords(userList);
         return page;
-    }
-
-    @Override
-    public void modifyIdentity(IdentityDto[] identityDto) {
-        for (IdentityDto dto : identityDto) {
-            userMapper.updateClassIdentity(dto.getUserNumber(), dto.getIdentity());
-        }
-    }
-
-    @Override
-    public void getAppraisalTeam(HttpServletRequest request, String[] numbers) {
-
     }
 }

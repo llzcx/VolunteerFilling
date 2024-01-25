@@ -4,20 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @author 杨世博
- * @date 2024/1/23 21:57
- * @description AppraisalTeamVo
+ * @date 2024/1/24 14:57
+ * @description AppraisalTeamMemberVo
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AppraisalTeamVo {
+@NoArgsConstructor
+public class AppraisalTeamMemberVo {
     private Long userId;
     private String username;
     private String userNumber;
-
-    List<AppraisalTeamMemberVo> appraisalTeamMemberVos;
 }

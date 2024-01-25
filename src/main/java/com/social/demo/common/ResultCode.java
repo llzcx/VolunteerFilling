@@ -65,6 +65,10 @@ public enum ResultCode {
     GRADE_NOT_EXISTS(2027, "科目不存在或用户不存在"),
     MAJOR_NOT_DELETE(2028, "主科无法删除"),
     MAJOR_NOT_MODIFY(2029, "主科无法修改"),
+    TOKEN_EXCEPTION(2030, ""),
+    USER_IS_TEAM(2031, "该用户已是综测小组成员"),
+    GROUP_ALREADY_EXISTS(2032, "已进行分组，请先重置"),
+    REMOVE_MEMBER_FIRST(2033, "请先将分组成员移除"),
 
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),

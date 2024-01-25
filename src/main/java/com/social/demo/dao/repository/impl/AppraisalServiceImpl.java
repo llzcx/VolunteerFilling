@@ -4,12 +4,9 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.social.demo.common.ResultCode;
-import com.social.demo.common.SystemException;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
-import com.social.demo.data.bo.StudentBo;
 import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
@@ -62,48 +59,68 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public Boolean uploadAppraisal(AppraisalContentVo appraisalContentVo) {
-        Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
-        Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, appraisalContentVo.getMonth());
-        Appraisal appraisal;
-        if (appraisalByUserNumber == null){
-            appraisal = new Appraisal();
-            AppraisalTotalVo appraisalTotalVo = new AppraisalTotalVo();
-            appraisalTotalVo.setClass1(appraisalContentVo.getPoint1());
-            appraisalTotalVo.setClass2(appraisalContentVo.getPoint2());
-            appraisalTotalVo.setClass3(appraisalContentVo.getPoint3());
-            appraisalTotalVo.setClass4(appraisalContentVo.getPoint4());
-            appraisalTotalVo.setClass5(appraisalContentVo.getPoint5());
-            appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total());
-            appraisalTotalVo.setSub(appraisalContentVo.getSub_total());
-            appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
-            appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
-            appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-            appraisal.setMonth(appraisalContentVo.getMonth());
-            appraisal.setScore(appraisalContentVo.getPoint_total());
-            appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
-            appraisalMapper.insert(appraisal);
-        }else {
-            appraisal = appraisalByUserNumber;
-            AppraisalTotalVo appraisalTotalVo = JSONUtil.toBean(appraisal.getTotal(), AppraisalTotalVo.class);
-            appraisalTotalVo.setClass1(appraisalContentVo.getPoint1() + appraisalTotalVo.getClass1());
-            appraisalTotalVo.setClass2(appraisalContentVo.getPoint2() + appraisalTotalVo.getClass2());
-            appraisalTotalVo.setClass3(appraisalContentVo.getPoint3() + appraisalTotalVo.getClass3());
-            appraisalTotalVo.setClass4(appraisalContentVo.getPoint4() + appraisalTotalVo.getClass4());
-            appraisalTotalVo.setClass5(appraisalContentVo.getPoint5() + appraisalTotalVo.getClass5());
-            appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total() + appraisalTotalVo.getAdd());
-            appraisalTotalVo.setSub(appraisalContentVo.getSub_total() + appraisalTotalVo.getSub());
-            appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
-            appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
-            appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-            appraisal.setMonth(appraisalContentVo.getMonth());
-            appraisal.setScore(appraisalContentVo.getPoint_total());
-            appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
-            appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
+    public Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos) {
+        for (AppraisalContentVo appraisalContentVo : appraisalContentVos) {
+            Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
+            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, appraisalContentVo.getMonth());
+            Appraisal appraisal;
+            if (appraisalByUserNumber == null){
+                appraisal = add(appraisalContentVo);
+            }else {
+                appraisal = modify(appraisalByUserNumber, appraisalContentVo);
+            }
+            Student student = new Student();
+            student.setAppraisalScore(appraisal.getScore());
+            studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         }
-        Student student = new Student();
-        studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return null;
+    }
+
+    @Override
+    public void modifyAppraisal(AppraisalContentVo appraisalContentVo) {
+
+    }
+
+    private Appraisal modify(Appraisal appraisalByUserNumber, AppraisalContentVo appraisalContentVo){
+        Appraisal appraisal;
+        appraisal = appraisalByUserNumber;
+        AppraisalTotalVo appraisalTotalVo = JSONUtil.toBean(appraisal.getTotal(), AppraisalTotalVo.class);
+        appraisalTotalVo.setClass1(appraisalContentVo.getPoint1() + appraisalTotalVo.getClass1());
+        appraisalTotalVo.setClass2(appraisalContentVo.getPoint2() + appraisalTotalVo.getClass2());
+        appraisalTotalVo.setClass3(appraisalContentVo.getPoint3() + appraisalTotalVo.getClass3());
+        appraisalTotalVo.setClass4(appraisalContentVo.getPoint4() + appraisalTotalVo.getClass4());
+        appraisalTotalVo.setClass5(appraisalContentVo.getPoint5() + appraisalTotalVo.getClass5());
+        appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total() + appraisalTotalVo.getAdd());
+        appraisalTotalVo.setSub(appraisalContentVo.getSub_total() + appraisalTotalVo.getSub());
+        appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
+        appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
+        appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
+        appraisal.setMonth(appraisalContentVo.getMonth());
+        appraisal.setScore(appraisalContentVo.getPoint_total());
+        appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
+        appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
+        return appraisal;
+    }
+
+    private Appraisal add(AppraisalContentVo appraisalContentVo){
+        Appraisal appraisal;
+        appraisal = new Appraisal();
+        AppraisalTotalVo appraisalTotalVo = new AppraisalTotalVo();
+        appraisalTotalVo.setClass1(appraisalContentVo.getPoint1());
+        appraisalTotalVo.setClass2(appraisalContentVo.getPoint2());
+        appraisalTotalVo.setClass3(appraisalContentVo.getPoint3());
+        appraisalTotalVo.setClass4(appraisalContentVo.getPoint4());
+        appraisalTotalVo.setClass5(appraisalContentVo.getPoint5());
+        appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total());
+        appraisalTotalVo.setSub(appraisalContentVo.getSub_total());
+        appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
+        appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
+        appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
+        appraisal.setMonth(appraisalContentVo.getMonth());
+        appraisal.setScore(appraisalContentVo.getPoint_total());
+        appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
+        appraisalMapper.insert(appraisal);
+        return appraisal;
     }
 
     @Override
@@ -128,8 +145,21 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     @Override
     public IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size) {
         Long userId = jwtUtil.getSubject(request);
-        Long classId = studentMapper.selectClassIdByUserId(userId);
-        return getAppraisalPage(classId, name, userNumber, month, rank, current, size);
+        List<String> userNumbers;
+        if (month == null){
+            month = TimeUtil.now().getDayOfMonth();
+        }
+        userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, name, userNumber, month, rank, (current - 1) * size, size);
+
+        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
+        for (String number : userNumbers) {
+            AppraisalVo appraisalVo = getAppraisal(number, month);
+            appraisalVos.add(appraisalVo);
+        }
+
+        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, appraisalVos.size());
+        appraisalVoIPage.setRecords(appraisalVos);
+        return appraisalVoIPage;
     }
 
     @Override
@@ -167,40 +197,6 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, appraisalVos.size());
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
-    }
-
-    /**
-     * 分页获取班级学生
-     * @param classId
-     * @param current
-     * @param size
-     * @return
-     */
-    private List<StudentBo> getClassStudents(Long classId, Integer current, Integer size){
-        return userMapper.selectClassStudents(classId, (current-1) * size, size);
-    }
-
-    /**
-     * 判断该月的综测是否存在
-     * 存在返回
-     * 不存在且不是月份不本月返回
-     * 不存在但是本月创建一份新的
-     * @param userNumber
-     * @param month
-     * @return
-     */
-    private Appraisal judgeAppraisalExist(String userNumber, Integer month){
-        Long userId = userMapper.selectUserIdByUserNumber(userNumber);
-        Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
-        if (appraisal == null){
-            if (TimeUtil.now().getMonthValue()!=month){
-                throw new SystemException(ResultCode.APPRAISAL_NOT_EXISTS);
-            }else {
-                appraisal = new Appraisal(userId, month, 0);
-                appraisalMapper.insert(appraisal);
-            }
-        }
-        return appraisal;
     }
 
     /**

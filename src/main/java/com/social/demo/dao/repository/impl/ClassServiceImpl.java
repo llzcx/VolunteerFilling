@@ -63,7 +63,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public Long[] getClassUserId(String classId) {
+    public List<Long> getClassUserId(Long classId) {
         return studentMapper.getUserIdByClassId(classId);
     }
 

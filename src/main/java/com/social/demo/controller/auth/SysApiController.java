@@ -1,7 +1,6 @@
 package com.social.demo.controller.auth;
 
 import com.social.demo.common.ApiResp;
-import com.social.demo.common.Identity;
 import com.social.demo.constant.PropertiesConstant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,7 @@ public class SysApiController {
      * @return
      */
     @GetMapping("")
-    @Identity(PropertiesConstant.IDENTITY_STUDENT)
+//    @Identity(PropertiesConstant.IDENTITY_STUDENT)
     public ApiResp<Object> listApis(){
         return ApiResp.success();
     }

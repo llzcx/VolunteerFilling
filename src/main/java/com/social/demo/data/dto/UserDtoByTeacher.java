@@ -39,18 +39,6 @@ public class UserDtoByTeacher {
      */
     private String nation;
     /**
-     * 目标院校的院校编码
-     */
-    private String schoolName;
-    /**
-     * 来源省份
-     */
-    private String province;
-    /**
-     * 计划
-     */
-    private String plan;
-    /**
      * 家庭地址
      */
     private String address;
@@ -62,8 +50,4 @@ public class UserDtoByTeacher {
      * 父母电话
      */
     private String parentPhone;
-    /**
-     * 选课
-     */
-    private String[] subjects;
 }

@@ -1,29 +1,30 @@
-package com.social.demo.data.dto;
+package com.social.demo.data.bo;
 
-import com.social.demo.data.bo.GradeSubjectBo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @author 杨世博
- * @date 2024/1/22 21:12
- * @description GradeDto
+ * @date 2024/1/25 15:12
+ * @description GradeBo
  */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class GradeDto {
+@NoArgsConstructor
+public class GradeBo {
     /**
      * 用户名
+     */
+    private String username;
+    /**
+     * 学号
      */
     private String userNumber;
     /**
      * 科目成绩
      */
-    private List<GradeSubjectBo> gradeSubjectBos;
+    private String grade;
     /**
      * 总成绩
      */

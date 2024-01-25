@@ -1,12 +1,16 @@
 package com.social.demo.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.*;
+import com.social.demo.data.dto.AppraisalTeamDto;
 import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
+import com.social.demo.util.TimeUtil;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -99,7 +103,7 @@ public class ClassAdviserController {
      * 获取分页获取学生综测信息
      * @param name 学生姓名
      * @param userNumber 学号
-     * @param month 月份，不输入即为本月
+     * @param month 月份
      * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
      * @param current 当前页码
      * @param size 每页大小
@@ -109,7 +113,7 @@ public class ClassAdviserController {
     public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                             @RequestParam(value = "name", required = false)String name,
                                                             @RequestParam(value = "userNumber", required = false)String userNumber,
-                                                            @RequestParam("month")Integer month,
+                                                            @RequestParam(value = "month", required = false)Integer month,
                                                             @RequestParam("identity")Integer rank,
                                                             @RequestParam("current")Integer current,
                                                             @RequestParam("size")Integer size){
@@ -118,38 +122,32 @@ public class ClassAdviserController {
     }
 
     /**
-     * 修改班级成员身份
-     * @param identityDto
+     * 获取分页获取学生本月综测信息
+     * @param name 学生姓名
+     * @param userNumber 学号
+     * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
+     * @param current 当前页码
+     * @param size 每页大小
      * @return
      */
-    @PutMapping("/modify-identity")
-    public ApiResp<String> modifyIdentity(@RequestBody IdentityDto[] identityDto){
-        classAdviserService.modifyIdentity(identityDto);
-        return ApiResp.success("修改成功");
-    }
-
-    /**
-     * 获取综测小组成员
-     * @param request
-     * @param numbers 成员名单
-     * @return
-     */
-    @PutMapping("/team")
-    public ApiResp<String> getAppraisalTeam(HttpServletRequest request,
-                                            @RequestBody String[] numbers){
-        classAdviserService.getAppraisalTeam(request, numbers);
-        return ApiResp.success("修改成功");
+    @GetMapping("/appraisal/this")
+    public ApiResp<IPage<AppraisalVo>> getAppraisalsThis(HttpServletRequest request,
+                                                     @RequestParam(value = "name", required = false)String name,
+                                                     @RequestParam(value = "userNumber", required = false)String userNumber,
+                                                     @RequestParam("identity")Integer rank,
+                                                     @RequestParam("current")Integer current,
+                                                     @RequestParam("size")Integer size){
+        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, name, userNumber, TimeUtil.now().getMonthValue(), rank, current, size);
+        return ApiResp.success(appraisals);
     }
 
     /**
      * 获取班级内的申诉
-     * @param state 申述状态 0-待处理 1-已处理 2-已取消
      * @return
      */
     @GetMapping("/appeals")
-    public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request,
-                                                      @RequestParam(value = "state",required = false) Integer state){
-        List<AppealVo> appealVos = appealService.getAppealByTeacher(request, state);
+    public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request){
+        List<AppealVo> appealVos = appealService.getAppealByTeacher(request);
         return ApiResp.success(appealVos);
     }
 
@@ -180,17 +178,79 @@ public class ClassAdviserController {
 
     /**
      * 添加学生至综测小组
-     * @param userNumber 学号
+     * @param userNumbers 学号
      * @return
      */
-    @PostMapping("/team")
-    public ApiResp<String> addAppraisalTeam(HttpServletRequest request, @RequestBody String userNumber){
-        appraisalTeamService.addAppraisalTeam(request, userNumber);
-        return ApiResp.success("添加成功");
+    @PostMapping("/appraisal/team")
+    public ApiResp<String> addAppraisalTeam(HttpServletRequest request, @RequestBody String[] userNumbers){
+        Boolean b = appraisalTeamService.addAppraisalTeam(request, userNumbers);
+        return ApiResp.judge(b, "添加成功", ResultCode.USER_IS_TEAM);
     }
 
-    @GetMapping("/team")
+    /**
+     * 班主任获取本班综测小组成员
+     * @param request
+     * @return
+     */
+    @GetMapping("/appraisal/team")
     public ApiResp<List<AppraisalTeamVo>> getAppraisalTeam(HttpServletRequest request){
-        return null;
+        List<AppraisalTeamVo> list = appraisalTeamService.getAppraisalTeam(request);
+        return ApiResp.success(list);
+    }
+
+    /**
+     * 重置综测小组成员密码
+     * @param userNumber 被重置学生学号
+     * @return
+     */
+    @PutMapping("/appraisal/team")
+    public ApiResp<String> resetAppraisalTeamPwd(@RequestParam("userNumber")String userNumber){
+        appraisalTeamService.resetAppraisalTeamPwd(userNumber);
+        return ApiResp.success("重置成功");
+    }
+
+    /**
+     * 平均分配班级成员
+     * @param request
+     * @return
+     */
+    @PostMapping("/appraisal/class/average")
+    public ApiResp<String> averageClassMember(HttpServletRequest request){
+        Boolean b = appraisalTeamService.averageClassMember(request);
+        return ApiResp.judge(b, "操作成功", ResultCode.GROUP_ALREADY_EXISTS);
+    }
+
+    /**
+     * 撤销分配班级成员
+     * @param request
+     * @return
+     */
+    @DeleteMapping("/appraisal/class/revocation")
+    public ApiResp<String> revocationMember(HttpServletRequest request){
+        appraisalTeamService.revocationMember(request);
+        return ApiResp.success("重置成功");
+    }
+
+    /**
+     * 撤销小组成员身份
+     * @param userNumbers 被撤销的小组成员
+     * @return
+     */
+    @DeleteMapping("/appraisal/team/revocation")
+    public ApiResp<String> revocationTeam(HttpServletRequest request,
+                                          @RequestBody String[] userNumbers){
+        Boolean b = appraisalTeamService.revocationTeam(request, userNumbers);
+        return ApiResp.judge(b, "操作成功", ResultCode.REMOVE_MEMBER_FIRST);
+    }
+
+    /**
+     * 手动分配班级成员
+     * @param appraisalTeamDto
+     * @return
+     */
+    @PostMapping("/appraisal/class/allocation")
+    public ApiResp<String> allocationClassMember(@RequestBody AppraisalTeamDto appraisalTeamDto){
+        appraisalTeamService.allocationClassMember(appraisalTeamDto);
+        return ApiResp.success("操作成功");
     }
 }

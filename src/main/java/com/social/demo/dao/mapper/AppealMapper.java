@@ -11,7 +11,7 @@ public interface AppealMapper extends BaseMapper<Appeal> {
 
     Integer selectAppealCount(Long classId);
 
-    List<Appeal> selectStudentAppeal(Long userId, Integer state);
+    List<Appeal> selectStudentAppeal(Long userId);
 
     Integer selectStudentAppealCount(String userNumber, Integer state);
 
@@ -19,7 +19,7 @@ public interface AppealMapper extends BaseMapper<Appeal> {
 
     Long selectClassId(Long appealId);
 
-    List<Appeal> selectClassAppeals(Long classId, Boolean type, Integer state);
+    List<Appeal> selectClassAppeals(Long classId, Boolean type);
 
     int deleteAppeal(String userNumber, Long appealId);
 
@@ -28,4 +28,6 @@ public interface AppealMapper extends BaseMapper<Appeal> {
     int selectAppealsByClassId(Long classId, Long appealId);
 
     void deleteAppealByClassId(Long classId, Long appealId);
+
+    List<Appeal> selectTeamAppeals(Long userId, Boolean type);
 }

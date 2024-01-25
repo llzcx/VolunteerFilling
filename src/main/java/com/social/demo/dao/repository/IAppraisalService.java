@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface IAppraisalService extends IService<Appraisal> {
     AppraisalVo getAppraisal(HttpServletRequest request, Integer month);
 
-    Boolean uploadAppraisal(AppraisalContentVo appraisalContentVo);
+    Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos);
 
     Boolean uploadSignature(MultipartFile file, HttpServletRequest request) throws Exception;
 
@@ -26,4 +26,6 @@ public interface IAppraisalService extends IService<Appraisal> {
     IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size);
 
     IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size);
+
+    void modifyAppraisal(AppraisalContentVo appraisalContentVo);
 }

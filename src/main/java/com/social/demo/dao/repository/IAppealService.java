@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IAppealService extends IService<Appeal> {
 
-    List<AppealVo> getAppealsToStudent(HttpServletRequest request, Integer state);
+    List<AppealVo> getAppealsToStudent(HttpServletRequest request);
     void submitAppeal(HttpServletRequest request, AppealDto appeal);
     Boolean quashAppeal(HttpServletRequest request, Long appealId);
     Boolean disposeAppeal(HttpServletRequest request, Long appealId);
@@ -20,7 +20,9 @@ public interface IAppealService extends IService<Appeal> {
 
     Boolean deleteAppealsByTeacher(HttpServletRequest request, Long[] appealId);
 
-    List<AppealVo> getAppealByTeacher(HttpServletRequest request, Integer state);
+    List<AppealVo> getAppealByTeacher(HttpServletRequest request);
 
-    List<AppealVo> getAppealByTeam(HttpServletRequest request, Integer state);
+    List<AppealVo> getAppealByTeam(HttpServletRequest request);
+
+    Boolean deleteAppealsByTeam(HttpServletRequest request, Long[] appealId);
 }

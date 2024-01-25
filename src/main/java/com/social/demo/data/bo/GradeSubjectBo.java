@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author 杨世博
  * @date 2024/1/22 21:13
@@ -12,11 +14,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @NoArgsConstructor
-public class GradeSubjectBo {
+public class GradeSubjectBo implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 科目Id
      */
-    private Integer gradeId;
+    private Long gradeId;
     /**
      * 科目分数
      */

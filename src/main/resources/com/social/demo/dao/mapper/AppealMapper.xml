@@ -22,9 +22,6 @@
         a.user_id = u.user_id
         AND
         a.user_id = #{userId}
-        <if test="state != null">
-            AND state = #{state}
-        </if>
     </select>
     <select id="selectStudentAppealCount" resultType="java.lang.Integer">
         SELECT COUNT(a.user_id) FROM appeal AS a, user AS u
@@ -43,9 +40,6 @@
     </select>
     <select id="selectClassAppeals" resultType="com.social.demo.entity.Appeal">
         SELECT * FROM appeal WHERE class_id = #{classId} AND type = #{type}
-        <if test="state != null">
-            AND state = #{state}
-        </if>
     </select>
     <select id="selectAppealWithAppealId" resultType="java.lang.Integer">
         SELECT COUNT(appeal_id) FROM appeal WHERE user_id in (SELECT user_id FROM user WHERE user_number = #{userNumber})
@@ -54,5 +48,9 @@
     <select id="selectAppealsByClassId" resultType="java.lang.Integer">
         SELECT COUNT(appeal_id) FROM appeal WHERE class_id = #{classId}
         AND appeal_id = #{appealId} AND state != 0
+    </select>
+    <select id="selectTeamAppeals" resultType="com.social.demo.entity.Appeal">
+        SELECT * FROM appeal WHERE type = #{type}
+        AND user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
     </select>
 </mapper>

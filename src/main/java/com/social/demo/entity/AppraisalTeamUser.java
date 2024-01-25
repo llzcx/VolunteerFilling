@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AppraisalTeamUser {
     /**
-     * 小组id
+     * 小组成员id
      */
-    private Long teamId;
+    private Long teamUserId;
     /**
-     * 班级成员
+     * 班级成员id
      */
     private Long classUserId;
 }

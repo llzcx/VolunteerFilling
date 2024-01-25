@@ -1,10 +1,11 @@
-package com.social.demo.data.dto;
+package com.social.demo.data.vo;
 
 import com.social.demo.data.bo.GradeSubjectBo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -15,9 +16,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GradeDto {
+public class GradeVo implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * 用户名
+     */
+    private String username;
+    /**
+     * 学号
      */
     private String userNumber;
     /**

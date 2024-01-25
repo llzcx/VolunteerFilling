@@ -1,7 +1,5 @@
 package com.social.demo.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +21,4 @@ public class AppraisalTeam {
      * 小组成员id
      */
     private Long teamUserId;
-    /**
-     * 小组id
-     */
-    @TableId(value = "team_id", type = IdType.AUTO)
-    private Long teamId;
 }

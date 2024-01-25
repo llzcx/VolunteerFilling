@@ -1,20 +1,20 @@
 package com.social.demo.data.dto;
 
-/**
- * 综测分组信息
- *
- * @author 杨世博
- * @date 2024/1/21 11:38
- * @description AppreisalTeamDto
- */
-public class AppraisalTeamDto {
-    /**
-     * 综测小组成员学号
-     */
-    private Integer teamUserNumber;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    /**
-     * 分配的小组成员
-     */
-    private Integer[] classUserNumber;
+import java.util.List;
+
+/**
+ * @author 杨世博
+ * @date 2024/1/23 21:57
+ * @description AppraisalTeamVo
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AppraisalTeamDto {
+    private Long userId;
+    List<Long> teamMemberUserIds;
 }
