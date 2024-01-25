@@ -46,6 +46,6 @@ public class DynamicIdentityImpl implements IdentityAuthentication {
                 throw new SystemException(ResultCode.UNAUTHORIZED_ACCESS);
             }
         }
-        throw new SystemException(ResultCode.ENCODING_ANOMALY);
+        throw new SystemException(ResultCode.ACCESS_WAS_DENIED);
     }
 }

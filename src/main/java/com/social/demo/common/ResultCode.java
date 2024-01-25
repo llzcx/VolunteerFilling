@@ -74,7 +74,7 @@ public enum ResultCode {
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
     NULL_POINT_EXCEPTION(3002,"空指针异常"),
-    ENCODING_ANOMALY(3003,"系统编码错误,`请上报开发人员"),
+    ENCODING_ANOMALY(3003,"系统编码错误,请上报开发人员"),
     DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
     UPLOAD_ERROR(3005,"上传失败");
 
