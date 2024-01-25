@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.InputStream;
 
@@ -12,6 +13,7 @@ import java.io.InputStream;
  * @author 陈翔
  */
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class},scanBasePackages={"com.social.demo.*"})
+@EnableTransactionManagement
 public class Application {
 
 	private static ConfigurableApplicationContext applicationContext;

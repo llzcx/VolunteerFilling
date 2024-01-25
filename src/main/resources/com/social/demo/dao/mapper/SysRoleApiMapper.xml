@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.social.demo.dao.mapper.SysRoleApiMapper">
     <!-- 中间类-此处不写SQL逻辑-->
+    <select id="selectAllRoleBYApiId" resultType="java.lang.Integer">
+        select role_id from sys_role_api where api_id = #{apiId}
+    </select>
 </mapper>

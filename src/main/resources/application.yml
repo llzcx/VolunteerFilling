@@ -55,14 +55,12 @@ jwt:
 
 security:
     releasable-path: #可放行资源
-        - /** #所有路径
-        - /user/login #登录
+        - /user/login1 #登录
         - /user/loginVerify/image #登录验证码
         - /user/loginVerify/base64 #图片Base54
         - /user/loginOut #登出
         - /user/register #注册
         - /user/register/send/** #注册手机验证码发送
-        - /test/** #测试
 
 logging:
     level:

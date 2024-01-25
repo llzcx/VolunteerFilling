@@ -36,10 +36,10 @@ public enum ResultCode {
     TOKEN_TIME_OUT(2004,"token已过期,请重新获取"),
     TOKEN_DECODE_ERROR(2005,"token解码失败"),
     TOKEN_LOST_IN_DATABASE(2005,"token在数据库中不存在"),
-    AUTHENTICATION_EXCEPTION(2006,"身份验证异常"),
+    AUTHENTICATION_EXCEPTION(2006,"其他身份验证异常"),
     ACCESS_WAS_DENIED(2007,"访问被拒绝"),
     OPERATION_FAIL(2008,"操作失败"),
-    UNAUTHORIZED_ACCESS(2009,"无权访问"),
+    UNAUTHORIZED_ACCESS(2009,"您的身份无权访问"),
     USERNAME_HAS_ALREADY_BEEN_USED(2010,"用户名已经被使用"),
     CODE_TIME_OUT(2011,"验证码过期"),
     USER_NOT_AUTHENTICATED(2012,"用户未认证"),
@@ -66,10 +66,15 @@ public enum ResultCode {
     MAJOR_NOT_DELETE(2028, "主科无法删除"),
     MAJOR_NOT_MODIFY(2029, "主科无法修改"),
 
+    PARAMETER_RESOURCE_DOES_NOT_EXIST(2030,"参数资源不存在"),
+    REQUIRES_FULL_AUTHENTICATION(2031,"访问此资源需要完全身份验证"),
+    PATH_MATCH_ERROR(2032,"接口路径匹配失败,判断此次为非法访问"),
+    PROHIBIT_ANONYMOUS_REQUESTS(2033,"禁止匿名请求(请携带token)"),
+
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
     NULL_POINT_EXCEPTION(3002,"空指针异常"),
-    ENCODING_ANOMALY(3003,"系统编码错误"),
+    ENCODING_ANOMALY(3003,"系统编码错误,`请上报开发人员"),
     DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
     UPLOAD_ERROR(3005,"上传失败");
 

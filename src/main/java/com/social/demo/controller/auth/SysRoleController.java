@@ -1,20 +1,23 @@
 package com.social.demo.controller.auth;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
-import com.social.demo.dao.repository.ISysRoleService;
-import com.social.demo.dao.repository.IUserService;
-import com.social.demo.data.dto.SaveSysRoleDto;
-import com.social.demo.entity.SysRole;
-import com.social.demo.manager.security.authentication.JwtUtil;
+import com.social.demo.common.Excluded;
+import com.social.demo.common.Identity;
+import com.social.demo.constant.IdentityEnum;
+import com.social.demo.dao.mapper.UserMapper;
+import com.social.demo.entity.SysRoleVo;
+import com.social.demo.entity.User;
+import com.social.demo.manager.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 权限-角色与用户操作
@@ -26,86 +29,59 @@ import java.util.List;
 @RequestMapping("/role")
 public class SysRoleController {
 
-    @Autowired
-    ISysRoleService sysRoleService;
 
     @Autowired
     JwtUtil jwtUtil;
 
     @Autowired
-    IUserService userService;
+    UserMapper userMapper;
+
 
 
     /**
-     * 根据用户id获取身份
-     *
+     * 查询当前登录的用户身份，需要携带token
      * @return
      */
     @GetMapping
-    public ApiResp<List<SysRole>> getRole(HttpServletRequest request) {
-        final Long userId = jwtUtil.getSubject(request);
-        final List<SysRole> list = sysRoleService.getRoleByUserId(userId);
-        return ApiResp.success(list);
+    public ApiResp<SysRoleVo> getRole(HttpServletRequest request) {
+        final Long userId = jwtUtil.getUserId(request);
+        Integer code = userMapper.selectIdentityByUserId(userId);
+        return ApiResp.success(new SysRoleVo(code,IdentityEnum.searchByCode(code).getMessage()));
     }
 
     /**
-     * 添加一种身份
-     *
-     * @param saveSysRoleDto
-     * @return
-     */
-    @PostMapping
-    public ApiResp<Object> saveRole(@RequestBody SaveSysRoleDto saveSysRoleDto) {
-        SysRole sysRole = new SysRole();
-        BeanUtils.copyProperties(saveSysRoleDto, sysRole);
-        sysRoleService.save(sysRole);
-        return ApiResp.success();
-    }
-
-    /**
-     * 删除一种身份
-     * @param roleId 身份id
-     * @return
-     */
-    @DeleteMapping("/{roleId}")
-    public ApiResp<Boolean> deleteRole(@PathVariable String roleId) {
-        sysRoleService.removeById(roleId);
-        return ApiResp.success(true);
-    }
-
-    /**
-     * 添加一条role -> user
-     * @param roleId 角色id
-     * @param userId 用户id
+     * 修改用户的身份
+     * @param roleCode 角色id
+     * @param request 用户id
      * @return
      */
     @PostMapping("/permission")
-    public ApiResp<Boolean> saveUserRole(@PathVariable Long roleId, @PathVariable Long userId) {
-
+    @Identity(IdentityEnum.SUPER)
+    @Excluded
+    public ApiResp<Boolean> saveUserRole(@PathVariable Integer roleCode,HttpServletRequest request) {
+        final Long userId = jwtUtil.getUserId(request);
+        IdentityEnum identityEnum = IdentityEnum.searchByCode(roleCode);
+        userMapper.updateIdentityByUserId(userId,identityEnum.getRoleId());
         return ApiResp.success(true);
     }
 
     /**
-     * 删除一条role -> user
-     * @param userRoleId
-     * @return
-     */
-    @DeleteMapping("/permission/{userRoleId}")
-    public ApiResp<Object> deleteUserRole(@PathVariable String userRoleId) {
-
-        return ApiResp.success();
-    }
-
-    /**
-     * 查询一个身份的所有的role -> user （分页给出）
+     * 查询一个身份的所有的用户（分页给出）
      *
-     * @param roleId
+     * @param roleCode
      * @return
      */
-    @GetMapping("/permission/{roleId}")
-    public ApiResp<Object> selectUserRole(@PathVariable Long roleId) {
-        // Your implementation to save permissions for roleId
-        return ApiResp.success();
+    @GetMapping("/permission/{roleCode}")
+    @Identity(IdentityEnum.SUPER)
+    @Excluded
+    public ApiResp<IPage<User>> selectUserRole(@PathVariable Integer roleCode, Integer pageNum, Integer pageSize) {
+        Page<User> page = new Page<>(pageNum, pageSize);
+        // 构造查询条件
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("identity", roleCode);
+        // 调用 selectPage 方法进行分页查询
+        IPage<User> resultPage = userMapper.selectPage(page,queryWrapper);
+        return ApiResp.success(resultPage);
     }
 
 }

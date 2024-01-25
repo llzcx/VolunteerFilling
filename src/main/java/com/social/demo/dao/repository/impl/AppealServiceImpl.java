@@ -11,7 +11,7 @@ import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.entity.Appeal;
 import com.social.demo.entity.User;
-import com.social.demo.manager.security.authentication.JwtUtil;
+import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public List<AppealVo> getAppealsToStudent(HttpServletRequest request, Integer state) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         List<Appeal> appeals = appealMapper.selectStudentAppeal(userId, state);
         List<AppealVo> appealVos = new ArrayList<>();
         for (Appeal appeal : appeals) {
@@ -63,7 +63,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public void submitAppeal(HttpServletRequest request, AppealDto appeal) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
         Appeal newAppeal = new Appeal(userId, classId, appeal.getContent(), TimeUtil.now(),
                 PropertiesConstant.APPEAL_STATE_PENDING, TimeUtil.now());
@@ -73,7 +73,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public Boolean quashAppeal(HttpServletRequest request, Long appealId) {
-        Long myUserId = jwtUtil.getSubject(request);
+        Long myUserId = jwtUtil.getUserId(request);
         Long userId = appealMapper.selectUserId(appealId);
         if (!myUserId.equals(userId)){
             return false;
@@ -87,21 +87,21 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public Boolean disposeAppeal(HttpServletRequest request, Long appealId) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         return disposeAppeal(classId, appealId);
     }
 
     @Override
     public Boolean disposeAppealByTeam(HttpServletRequest request, Long appealId) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
         return disposeAppeal(classId, appealId);
     }
 
     @Override
     public Boolean deleteAppeals(HttpServletRequest request, Long[] appealIds) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         String userNumber = userMapper.selectUserNumberByUserId(userId);
         for (Long appealId : appealIds) {
             int flag = appealMapper.selectAppealWithAppealId(userNumber, appealId);
@@ -117,7 +117,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public Boolean deleteAppealsByTeacher(HttpServletRequest request, Long[] appealIds) {
-        Long classId = classMapper.selectClassIdByTeacherUserId(jwtUtil.getSubject(request));
+        Long classId = classMapper.selectClassIdByTeacherUserId(jwtUtil.getUserId(request));
         for (Long appealId : appealIds) {
             int flag = appealMapper.selectAppealsByClassId(classId, appealId);
             if (flag <= 0){
@@ -132,14 +132,14 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public List<AppealVo> getAppealByTeacher(HttpServletRequest request, Integer state) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         return getAppeals(classId, true, state);
     }
 
     @Override
     public List<AppealVo> getAppealByTeam(HttpServletRequest request, Integer state) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
         return getAppeals(classId, false, state);
     }

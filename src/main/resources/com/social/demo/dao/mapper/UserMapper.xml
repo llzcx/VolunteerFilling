@@ -4,6 +4,9 @@
     <update id="updateClassIdentity">
         UPDATE user SET identity = #{identity} WHERE user_number = #{userNumber}
     </update>
+    <update id="updateIdentityByUserId">
+        UPDATE user SET identity = #{identity} WHERE id = #{userId}
+    </update>
 
     <select id="selectUserIdByUserNumber" resultType="java.lang.Long">
         select user_id from user where user.user_number = #{userNumber}
@@ -64,6 +67,9 @@
     </select>
     <select id="selectUserNumberByUserId" resultType="java.lang.String">
         SELECT user_number FROM user WHERE user_id = #{userId}
+    </select>
+    <select id="selectIdentityByUserId" resultType="java.lang.Integer">
+        select `identity` from user where user_id = #{userId}
     </select>
 
 </mapper>

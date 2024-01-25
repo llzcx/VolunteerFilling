@@ -12,5 +12,10 @@ public class SysRoleApi {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     private Long apiId;
-    private Long roleId;
+    private Integer roleId;
+
+    public SysRoleApi(Long apiId, Integer roleId) {
+        this.apiId = apiId;
+        this.roleId = roleId;
+    }
 }

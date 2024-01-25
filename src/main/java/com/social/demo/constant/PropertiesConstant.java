@@ -4,21 +4,6 @@ public interface PropertiesConstant {
     //初始密码
     String PASSWORD = "123456";
 
-    //身份：超管
-    Integer IDENTITY_SUPER = -1;
-
-    //身份：学生
-    Integer IDENTITY_STUDENT = 1;
-
-    //身份：老师
-    Integer IDENTITY_TEACHER = 0;
-
-    //身份：综测成员
-    Integer IDENTITY_APPRAISAL_TEAM = 2;
-
-    //身份：班主任
-    Integer IDENTITY_CLASS_ADVISER = 3;
-
     //文件前缀-综测用户签名
     String APPRAISAL = "appraisal";
 
@@ -46,4 +31,11 @@ public interface PropertiesConstant {
     Long SUBJECT_MATH = 2L;
     // 英语科目编号
     Long SUBJECT_ENGLISH = 3L;
+
+    /**
+     * 此开关并不会影响accessToken的验证，只会影响身份验证。
+     * 验权开关，false：表示开启权限验证
+     *         true：表示关闭权限功能，便于部分接口测试。
+     */
+    boolean AUTHORIZATION_CLOSE = false;
 }

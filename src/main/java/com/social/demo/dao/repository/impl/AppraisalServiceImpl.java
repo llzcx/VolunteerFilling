@@ -16,7 +16,7 @@ import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.entity.Appraisal;
 import com.social.demo.entity.Student;
 import com.social.demo.manager.file.UploadFile;
-import com.social.demo.manager.security.authentication.JwtUtil;
+import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,7 +57,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), month);
     }
 
@@ -108,7 +108,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public Boolean uploadSignature(MultipartFile file, HttpServletRequest request) throws Exception {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long appraisalId = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getMonthValue()).getAppraisalId();
         String filename = PropertiesConstant.APPRAISAL  + "-"  + appraisalId;
         String fileName = uploadFile.upload(file, PropertiesConstant.APPRAISALS, filename);
@@ -121,20 +121,20 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public AppraisalVo getAppraisalThisMonth(HttpServletRequest request) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), TimeUtil.now().getMonthValue());
     }
 
     @Override
     public IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
         return getAppraisalPage(classId, name, userNumber, month, rank, current, size);
     }
 
     @Override
     public IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         return getAppraisalPage(classId, name, userNumber, month, rank, current, size);
     }

@@ -15,5 +15,4 @@ import lombok.NoArgsConstructor;
 public class TokenPair {
     private String accessToken;
     private String refreshToken;
-
 }

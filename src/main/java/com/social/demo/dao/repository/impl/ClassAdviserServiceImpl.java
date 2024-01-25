@@ -8,7 +8,7 @@ import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassAdviserService;
 import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.vo.ClassUserVo;
-import com.social.demo.manager.security.authentication.JwtUtil;
+import com.social.demo.manager.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     @Override
     public IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, String role,
                                           Integer rank, Integer current, Integer size) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, (current-1)*size, size);
         Integer total = userMapper.selectClassStudentCount(classId);
