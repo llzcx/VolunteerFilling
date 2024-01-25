@@ -1,4 +1,4 @@
-package com.social.demo.manager.security.authentication;
+package com.social.demo.manager.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -41,6 +41,7 @@ public class JwtUtil implements InitializingBean {
     @Autowired
     RedisUtil redisUtil;
 
+    //accessToken头
     private String tokenHeader;
     @Value("${jwt.expire.accessToken}")
     private Long accessTokenExpire;
@@ -140,8 +141,17 @@ public class JwtUtil implements InitializingBean {
         redisUtil.set(RedisConstant.WISH+RedisConstant.JWT_TOKEN + refreshToken, accessToken, time);
         return new TokenPair(accessToken, refreshToken);
     }
-    public Long getSubject(HttpServletRequest request){
+
+    /**
+     * 获取userId()
+     * @param request
+     * @return
+     */
+    public Long getUserId(HttpServletRequest request){
         return getClaimsByToken(request.getHeader(getTokenHeader())).getClaim("userId").asLong();
+    }
+    public Long getUserId(DecodedJWT decodedJWT){
+        return decodedJWT.getClaim("userId").asLong();
     }
 
     /**

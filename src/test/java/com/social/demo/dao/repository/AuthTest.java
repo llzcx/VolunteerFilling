@@ -3,13 +3,9 @@ package com.social.demo.dao.repository;
 import cn.hutool.json.JSONUtil;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.SysApiMapper;
-import com.social.demo.dao.mapper.SysRoleMapper;
-import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.data.bo.GradeSubjectBo;
-import com.social.demo.entity.GradeSubject;
 import com.social.demo.entity.Student;
 import com.social.demo.entity.SysApi;
-import com.social.demo.entity.SysRole;
 import com.social.demo.util.MybatisPlusUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -32,8 +28,6 @@ public class AuthTest {
     @Autowired
     SysApiMapper sysApiMapper;
 
-    @Autowired
-    SysRoleMapper sysRoleMapper;
 
     @Autowired
     StudentMapper studentMapper;
@@ -47,16 +41,6 @@ public class AuthTest {
     void selectApisWithRoles() throws Exception {
         final List<SysApi> sysApis = sysApiMapper.selectApisWithRoles();
         System.out.println(sysApis);
-    }
-
-    /**
-     * 根据用户名获取身份列表
-     * @throws Exception
-     */
-    @Test
-    void getRole() throws Exception {
-        final List<SysRole> list = sysRoleMapper.selectRoleListByUserName("admin");
-        System.out.println(list);
     }
 
     /**

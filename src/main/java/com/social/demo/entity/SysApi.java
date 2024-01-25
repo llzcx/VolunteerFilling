@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Data
 @TableName("sys_api")
+@ToString
 public class SysApi {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
@@ -25,5 +27,8 @@ public class SysApi {
     private String description;
 
 
-    private List<SysRole> roles;
+    /**
+     * 一共有哪些身份包含了这个API
+     */
+    private List<SysRoleVo> roles;
 }

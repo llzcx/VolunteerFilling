@@ -1,7 +1,10 @@
 package com.social.demo.manager.mvc.config;
 
+import com.social.demo.manager.mvc.handlerInterceptor.RequestInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
@@ -11,6 +14,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
+
+    @Autowired
+    RequestInterceptor requestInterceptor;
     /**
      * 开启跨域
      */
@@ -26,6 +32,13 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedMethods("*")
                 // 跨域允许时间
                 .maxAge(3600);
+    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        // 添加拦截器，配置拦截地址
+        registry.addInterceptor(requestInterceptor)
+                .addPathPatterns("/**")
+                .order(1);
     }
 
 }

@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.social.demo.dao.mapper.SysApiMapper">
-    <select id="selectApisWithRoles" resultMap="SysApiResultMap">
-        SELECT a.id, a.pattern, a.description as ade, r.id as role_id, r.role_name,r.update_time,r.create_time,status,r.description as rde
+     <select id="selectApisWithRoles" resultMap="SysApiResultMap">
+        SELECT a.*, ra.role_id
         FROM sys_api a
                  LEFT JOIN sys_role_api ra ON a.id = ra.api_id
-                 LEFT JOIN sys_role r ON ra.role_id = r.id
     </select>
-
     <resultMap id="SysApiResultMap" type="com.social.demo.entity.SysApi">
         <id property="id" column="id"/>
         <result property="pattern" column="pattern"/>
         <result property="description" column="ade"/>
-        <collection property="roles" ofType="com.social.demo.entity.SysRole">
-            <id property="id" column="role_id"/>
-            <result property="roleName" column="role_name"/>
-            <result property="createTime" column="create_time"/>
-            <result property="updateTime" column="update_time"/>
-            <result property="status" column="status"/>
-            <result property="description" column="rde"/>
+        <collection property="roles" ofType="com.social.demo.entity.SysRoleVo">
+            <result property="roleId" column="role_id"/>
         </collection>
     </resultMap>
 </mapper>

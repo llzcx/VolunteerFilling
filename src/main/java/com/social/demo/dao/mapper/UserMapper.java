@@ -53,7 +53,9 @@ public interface UserMapper extends BaseMapper<User> {
 
     void updateClassIdentity(String userNumber, Integer identity);
 
+    void updateIdentityByUserId(Long userId, Integer identity);
+
     String selectUserNumberByUserId(Long userId);
 
-    Integer selectIdentity(String userNumber);
+    Integer selectIdentityByUserId(Long userId);
 }

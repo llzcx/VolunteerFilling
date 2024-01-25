@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IUserService;
@@ -19,7 +20,7 @@ import com.social.demo.data.vo.*;
 import com.social.demo.entity.*;
 import com.social.demo.entity.Class;
 import com.social.demo.manager.file.UploadFile;
-import com.social.demo.manager.security.authentication.JwtUtil;
+import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,11 +60,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Autowired
     StudentMapper studentMapper;
 
-    @Autowired
-    SysRoleMapper sysRoleMapper;
-
-    @Autowired
-    SysUserRoleMapper sysUserRoleMapper;
 
     @Autowired
     ConsigneeMapper consigneeMapper;
@@ -71,6 +67,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Qualifier("local")
     @Autowired
     UploadFile uploadFile;
+
+
 
     @Override
     public void loginOut(HttpServletRequest request) {
@@ -97,7 +95,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public StudentVo getInformationOfStudent(HttpServletRequest request) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         String userNumber = userMapper.selectUserNumberByUserId(userId);
         return getStudent(userNumber);
     }
@@ -105,7 +103,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public Boolean modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent) {
 
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         User user = new User();
         user.setPhone(userDtoByStudent.getPhone());
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
@@ -169,7 +167,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public TeacherVo getInformationOfTeacher(HttpServletRequest request) {
         TeacherVo teacherVo = new TeacherVo();
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId));
         BeanUtils.copyProperties(user, teacherVo);
         String className = classMapper.selectClassNameByTeacherUserId(user.getUserId());
@@ -179,7 +177,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public Boolean modifyPhone(HttpServletRequest request, String phone) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         User user = new User();
         user.setPhone(phone);
         int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
@@ -210,7 +208,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             Long schoolNumber = schoolMapper.selectSchoolNumberByName(studentDto.getSchool());
             student.setSchoolNumber(schoolNumber);
             user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
-            user.setIdentity(PropertiesConstant.IDENTITY_STUDENT);
+            user.setIdentity(IdentityEnum.STUDENT.getRoleId());
             student.setEnrollmentYear(TimeUtil.now().getYear());
             Set<String> strings = new HashSet<>(Arrays.asList(studentDto.getSubjects()));
             student.setHashcode(JSONUtil.toJsonStr(strings).hashCode());
@@ -247,7 +245,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         jwtUtil.delTokenForRedis(refreshToken);
 
         // 生成新的 访问令牌 和 刷新令牌
-        return jwtUtil.createTokenAndSaveToKy(jwtUtil.getSubject(request));
+        return jwtUtil.createTokenAndSaveToKy(jwtUtil.getUserId(request));
     }
 
     @Override
@@ -284,16 +282,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     public IPage<UserVo> getUser(String username, String role, Long current, Long size) {
         IPage<UserVo> userVoPage = new Page<>();
         IPage<User> userPage;
-        int identity;
-        if (role == null || role.isEmpty()){
-            identity = -1;
-        }else {
-            switch (role){
-                case "学生" : identity = PropertiesConstant.IDENTITY_STUDENT;break;
-                case "老师" : identity = PropertiesConstant.IDENTITY_TEACHER;break;
-                default : throw new SystemException(ResultCode.ROLE_NOT_EXISTS);
-            }
-        }
+        //获取身份code类型
+        int identity = IdentityEnum.searchByString(role).getRoleId();
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.like(username != null, "username", username).
                 eq(identity != -1,"identity", identity);
@@ -306,10 +296,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         for (User user : userPage.getRecords()) {
             UserVo userVo = new UserVo();
             BeanUtils.copyProperties(user, userVo);
-            switch (user.getIdentity()){
-                case 1: userVo.setRole("学生"); break;
-                case 0: userVo.setRole("老师"); break;
-            }
+            //获取身份的string类型
+            userVo.setRole(IdentityEnum.searchByCode(user.getIdentity()).getMessage());
             userVos.add(userVo);
         }
         userVoPage.setRecords(userVos);
@@ -327,7 +315,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
                 throw new SystemException(ResultCode.USER_NOT_EXISTS);
             }
             User user = users.get(0);
-            if (user.getIdentity().equals(PropertiesConstant.IDENTITY_TEACHER)){
+            if (user.getIdentity().equals(IdentityEnum.TEACHER.getRoleId())){
                 Class aClass = classMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", user.getUserId()));
                 if (aClass != null){
                     return number;
@@ -355,7 +343,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public Boolean modifyPassword(HttpServletRequest request, String password) {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         User user = new User();
         user.setPassword(DigestUtil.md5Hex(password));
         int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
@@ -364,7 +352,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
-        Long userId = jwtUtil.getSubject(request);
+        Long userId = jwtUtil.getUserId(request);
         String upload = uploadFile.upload(file, PropertiesConstant.USERS, PropertiesConstant.USER + "-" + userId);
         User user = new User();
         user.setHeadshot(upload);

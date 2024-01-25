@@ -1,13 +1,23 @@
 package com.social.demo.controller.auth;
 
-import com.social.demo.common.ApiResp;
+import com.social.demo.common.*;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
+import com.social.demo.dao.mapper.SysApiMapper;
+import com.social.demo.dao.mapper.SysRoleApiMapper;
+import com.social.demo.dao.repository.ISysApiService;
+import com.social.demo.entity.SysApi;
+import com.social.demo.entity.SysRoleApi;
+import com.social.demo.manager.mvc.config.MybatisPlusConfig;
+import com.social.demo.util.MybatisPlusUtil;
+import jakarta.persistence.Access;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.event.PaintEvent;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,45 +29,58 @@ import java.util.Set;
 @AllArgsConstructor
 @RequestMapping("/api")
 public class SysApiController {
+
+    @Autowired
+    ISysApiService apiService;
+
+    @Autowired
+    SysRoleApiMapper sysRoleApiMapper;
+
     /**
-     * 获取api列表
+     * 获取所有api
      * @return
      */
-    @GetMapping("")
-//    @Identity(PropertiesConstant.IDENTITY_STUDENT)
-    public ApiResp<Object> listApis(){
-        return ApiResp.success();
+    @GetMapping("/list")
+    @Identity(IdentityEnum.SUPER)
+    @Excluded
+    public ApiResp<List<SysApi>> listApis(){
+        return ApiResp.success(apiService.selectApisWithRoles());
     }
 
 
     /**
-     * 添加多条 role -> api
+     * 为身份绑定api【重复绑定会报错】
+     * @param apis 需要绑定的接口
+     * @param roleId 被绑定的身份
      * @return
      */
-    @PostMapping("/{roleId}")
-    public ApiResp<Object> listApis(@RequestBody Set<Long> apis, @PathVariable String roleId){
-
-        return ApiResp.success();
+    @PostMapping("/add/{roleId}")
+    @Identity(IdentityEnum.SUPER)
+    @Excluded
+    public ApiResp<Boolean> addApis(@RequestBody Set<Long> apis, @PathVariable Integer roleId){
+        if(roleId.equals(IdentityEnum.SUPER.getRoleId())){
+            throw new SystemException(ResultCode.SUPER_PERMISSION_CANT_CHANGE);
+        }
+        return ApiResp.judge(apiService.addApis(apis,Integer.valueOf(roleId)),true, ResultCode.COMMON_FAIL);
     }
 
     /**
-     * 删除一条 role -> api
+     * 为身份解绑一条API【不存在这条绑定记录会报错】
+     * @param roleApiId 绑定关系的id
      * @return
      */
-    @PostMapping("/{roleApiId}")
-    public ApiResp<Object> deleteRoleApi(@PathVariable String roleApiId){
-
-        return ApiResp.success();
+    @DeleteMapping("/delete/{roleApiId}")
+    @Identity(IdentityEnum.SUPER)
+    @Excluded
+    public ApiResp<Boolean> deleteRoleApi(@PathVariable String roleApiId){
+        SysRoleApi sysRoleApi = sysRoleApiMapper.selectById(roleApiId);
+        Integer roleId = sysRoleApi.getRoleId();
+        if(roleId.equals(IdentityEnum.SUPER.getRoleId())){
+            throw new SystemException(ResultCode.SUPER_PERMISSION_CANT_CHANGE);
+        }
+        sysRoleApiMapper.deleteById(roleApiId);
+        return ApiResp.success(true);
     }
 
 
-    /**
-     * 获取一个role所有的 role -> api
-     * @return
-     */
-    @GetMapping("/{roleId}")
-    public ApiResp<Object> listRoleApi(@PathVariable String roleId){
-
-        return ApiResp.success();
-    }
 }

@@ -1,5 +1,6 @@
 package com.social.demo.controller.auth;
 
+import com.social.demo.manager.security.context.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,24 +10,21 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TestController {
-    @GetMapping("/admin/hello")
-    public String admin() {
-        return "hello admin";
+    @GetMapping("/test/super")
+    public String super1() {
+        return "hello super"+ SecurityContext.get();
     }
-    @GetMapping("/user/hello")
-    public String user() {
-        return "hello user";
+    @GetMapping("/test/teacher")
+    public String teacher() {
+        return "hello teacher"+ SecurityContext.get();
     }
-    @GetMapping("/guest/hello")
-    public String guest() {
-        return "hello guest";
+    @GetMapping("/test/student")
+    public String student() {
+        return "hello student"+ SecurityContext.get();
     }
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
-    }
-    @GetMapping("/test/1")
-    public String test() {
-        return "hello";
+
+    @GetMapping("/test/other")
+    public String other() {
+        return "hello student"+ SecurityContext.get();
     }
 }
