@@ -6,7 +6,6 @@
         FROM sys_api a
                  LEFT JOIN sys_role_api ra ON a.id = ra.api_id
     </select>
-
     <resultMap id="SysApiResultMap" type="com.social.demo.entity.SysApi">
         <id property="id" column="id"/>
         <result property="pattern" column="pattern"/>

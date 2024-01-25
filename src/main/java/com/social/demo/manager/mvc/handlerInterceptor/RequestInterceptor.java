@@ -5,6 +5,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.IdentityEnum;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.SysApiMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.manager.security.jwt.JwtUtil;
@@ -98,8 +99,12 @@ public class RequestInterceptor implements HandlerInterceptor {
         Long userId = jwtUtil.getUserId(tokenDecode);
         Integer identityCode = userMapper.selectIdentityByUserId(userId);
         RequestInfo requestInfo = new RequestInfo(userId,IdentityEnum.searchByCode(identityCode));
+        log.info("本次访问的身份是：{}",requestInfo.getIdentity().getMessage());
         //保存到当前线程上下文
         SecurityContext.set(requestInfo);
+        if(PropertiesConstant.AUTHORIZATION_CLOSE){
+            return true;
+        }
         //权限验证
         return identityAuthentication.check(requestURL,requestInfo.getIdentity(),method);
 

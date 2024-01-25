@@ -55,7 +55,7 @@ jwt:
 
 security:
     releasable-path: #可放行资源
-        - /user/login1 #登录
+        - /user/login #登录
         - /user/loginVerify/image #登录验证码
         - /user/loginVerify/base64 #图片Base54
         - /user/loginOut #登出

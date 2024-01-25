@@ -32,6 +32,9 @@ public interface PropertiesConstant {
     // 英语科目编号
     Long SUBJECT_ENGLISH = 3L;
 
+    //开发者超管【此超管不允许降级】，开发者专属
+    Long DEVELOPER_ADMIN_USER_ID = 100L;
+
     /**
      * 此开关并不会影响accessToken的验证，只会影响身份验证。
      * 验权开关，false：表示开启权限验证

@@ -70,6 +70,7 @@ public enum ResultCode {
     REQUIRES_FULL_AUTHENTICATION(2031,"访问此资源需要完全身份验证"),
     PATH_MATCH_ERROR(2032,"接口路径匹配失败,判断此次为非法访问"),
     PROHIBIT_ANONYMOUS_REQUESTS(2033,"禁止匿名请求(请携带token)"),
+    SUPER_PERMISSION_CANT_CHANGE(2034,"超管权限不允许修改"),
 
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),

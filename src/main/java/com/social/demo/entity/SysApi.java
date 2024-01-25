@@ -27,5 +27,8 @@ public class SysApi {
     private String description;
 
 
+    /**
+     * 一共有哪些身份包含了这个API
+     */
     private List<SysRoleVo> roles;
 }

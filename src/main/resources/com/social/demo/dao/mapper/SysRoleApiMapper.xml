@@ -5,4 +5,17 @@
     <select id="selectAllRoleBYApiId" resultType="java.lang.Integer">
         select role_id from sys_role_api where api_id = #{apiId}
     </select>
+    <select id="apiList" resultMap="SysApiResultMap">
+        select a.* from (select * from sys_role_api where role_id = #{roleId} ) as ra
+        left join sys_api as a on a.id = ra.api_id
+
+    </select>
+    <resultMap id="SysApiResultMap" type="com.social.demo.entity.SysApi">
+        <id property="id" column="id"/>
+        <result property="pattern" column="pattern"/>
+        <result property="description" column="ade"/>
+        <collection property="roles" ofType="com.social.demo.entity.SysRoleVo">
+            <result property="roleId" column="role_id"/>
+        </collection>
+    </resultMap>
 </mapper>
