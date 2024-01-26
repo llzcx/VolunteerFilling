@@ -7,22 +7,20 @@
         SELECT score FROM appraisal WHERE user_id in (SELECT user_id FROM user WHERE user_number = #{userNumber}) AND `month` = #{month}
     </select>
     <select id="selectUserNumbers" resultType="java.lang.String">
-        SELECT user_number FROM user AS u, appraisal AS a 
-                           WHERE u.user_id = a.user_id
-                             <if test="name!=null and name!=''">
-                                 AND u.username LIKE CONCAT("%",#{name},"%")
-                             </if>
-                             <if test="classId != null">
-                                 AND u.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
-                             </if>
-                             <if test="month != null">
-                                 AND a.month = #{month}
-                             </if>
+        SELECT user_number FROM user
+                           <where>
+                               <if test="name!=null and name!=''">
+                                   username LIKE CONCAT("%",#{name},"%")
+                               </if>
+                               <if test="classId != null">
+                                   user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
+                               </if>
+                            </where>
                             <if test="rank == -1">
-                                ORDER BY score
+                                ORDER BY appraisal_score
                             </if>
                             <if test="rank == 1">
-                                ORDER BY score desc
+                                ORDER BY appraisal_score desc
                             </if>
         LIMIT #{number1}, #{number2}
     </select>
@@ -52,19 +50,16 @@
         SELECT * FROM appraisal WHERE user_id = #{userId} AND `month` = #{month}
     </select>
     <select id="selectUserNumbersToTeam" resultType="java.lang.String">
-        SELECT user_number FROM user AS u, appraisal AS a
-        WHERE u.user_id = a.user_id AND u.user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
-        <if test="name!=null and name!=''">
-            AND u.username LIKE CONCAT("%",#{name},"%")
-        </if>
-        <if test="month != null">
-            AND a.month = #{month}
+        SELECT user_number FROM user
+        WHERE user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
+        <if test="name!=null and name!='' and name!='null'">
+            AND username LIKE CONCAT("%",#{name},"%")
         </if>
         <if test="rank == -1">
-            ORDER BY score
+            ORDER BY appraisal_score
         </if>
         <if test="rank == 1">
-            ORDER BY score desc
+            ORDER BY appraisal_score desc
         </if>
         LIMIT #{number1}, #{number2}
     </select>
