@@ -16,6 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 public class AppraisalVo {
     /**
+     * 学号
+     */
+    private String userNumber;
+    /**
+     * 姓名
+     */
+    private String username;
+    /**
      * 月份
      */
     private Integer month;

@@ -26,16 +26,5 @@ public class AppraisalController {
     @Autowired
     IAppraisalService appraisalService;
 
-    /**
-     * 上传电子签名
-     * @param file 上传的签名文件
-     * @param request
-     * @return
-     */
-    @PostMapping("/signature")
-    public ApiResp<String> uploadSignature(@RequestBody MultipartFile file,
-                                           HttpServletRequest request) throws Exception {
-        appraisalService.uploadSignature(file, request);
-        return ApiResp.success("上传成功");
-    }
+
 }

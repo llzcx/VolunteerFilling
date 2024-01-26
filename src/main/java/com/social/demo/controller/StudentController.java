@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -145,5 +146,18 @@ public class StudentController {
                                              Integer month){
         AppraisalVo appraisal = appraisalService.getAppraisal(request, month);
         return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
+    }
+
+    /**
+     * 上传电子签名
+     * @param file 上传的签名文件
+     * @param request
+     * @return
+     */
+    @PostMapping("/signature")
+    public ApiResp<String> uploadSignature(@RequestBody MultipartFile file,
+                                           HttpServletRequest request) throws Exception {
+        String signature = appraisalService.uploadSignature(file, request);
+        return ApiResp.success(signature);
     }
 }

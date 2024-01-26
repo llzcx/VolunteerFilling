@@ -34,32 +34,11 @@ public class AppraisalTeamController {
     IAppealService appealService;
 
     /**
-     * 综测小组获取本月学生综测
-     * @param request
-     * @param name 学生姓名
-     * @param userNumber 学号
-     * @param rank 排序类型： 0 -不排、 -1从小到大 1从大到小
-     * @param current 当前页码
-     * @param size 每页数
-     * @return
-     */
-    @GetMapping("/appraisal/this")
-    public ApiResp<IPage<AppraisalVo>> getAppraisalsThisMonth(HttpServletRequest request,
-                                                     @RequestParam(value = "name", required = false)String name,
-                                                     @RequestParam(value = "userNumber", required = false)String userNumber,
-                                                     @RequestParam("rank")Integer rank,
-                                                     @RequestParam("current")Integer current,
-                                                     @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeam(request, name, userNumber, TimeUtil.now().getMonthValue(),rank, current, size);
-        return ApiResp.success(appraisals);
-    }
-
-    /**
      * 综测小组获取学生综测
      * @param request
      * @param name 学生姓名
      * @param userNumber 学号
-     * @param month 月份
+     * @param month 月份 0表示本月
      * @param rank 排序类型： 0 -不排、 -1从小到大 1从大到小
      * @param current 当前页码
      * @param size 每页数
