@@ -2,6 +2,7 @@ package com.social.demo.dao.repository.impl;
 
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,6 +21,7 @@ import com.social.demo.data.vo.*;
 import com.social.demo.entity.*;
 import com.social.demo.entity.Class;
 import com.social.demo.manager.file.UploadFile;
+import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
@@ -69,11 +71,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     UploadFile uploadFile;
 
 
-
+    /**
+     * 退出登录
+     */
     @Override
-    public void loginOut(HttpServletRequest request) {
-        final String token = request.getHeader(jwtUtil.getTokenHeader());
-        jwtUtil.addBlacklist(token, jwtUtil.getExpirationData(token));
+    public void loginOut() {
+        jwtUtil.delTokenForRedis(SecurityContext.get().getUserId());
     }
 
     @Override
@@ -232,20 +235,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public TokenPair refresh(HttpServletRequest request) {
-        String refreshToken = request.getHeader(jwtUtil.getTokenHeader());
-        // 刷新令牌 放入黑名单
-        jwtUtil.addBlacklist(refreshToken, jwtUtil.getExpirationData(refreshToken));
-        // 访问令牌 放入黑名单
-        String odlAccessToken = jwtUtil.getAccessTokenByRefresh(refreshToken);
-        if (!StringUtils.isEmpty(odlAccessToken)) {
-            jwtUtil.addBlacklist(odlAccessToken, jwtUtil.getExpirationData(odlAccessToken));
+    public TokenPair refresh(String refreshToken) {
+        DecodedJWT claimsByToken = jwtUtil.getClaimsByToken(refreshToken);
+        if(claimsByToken == null){
+            throw new SystemException(ResultCode.TOKEN_DECODE_ERROR);
         }
-
-        jwtUtil.delTokenForRedis(refreshToken);
-
-        // 生成新的 访问令牌 和 刷新令牌
-        return jwtUtil.createTokenAndSaveToKy(jwtUtil.getUserId(request));
+        Long userId = jwtUtil.getUserId(claimsByToken);
+        TokenPair tokenForRedis = jwtUtil.getTokenForRedis(userId);
+        if(tokenForRedis.getRefreshToken() == null){
+            throw new SystemException(ResultCode.TOKEN_LOST_IN_DATABASE);
+        }else if(!tokenForRedis.getRefreshToken().equals(refreshToken)){
+            throw new SystemException(ResultCode.OLD_TOKEN);
+        }else{
+            jwtUtil.delTokenForRedis(userId);
+            // 生成新的 访问令牌 和 刷新令牌
+            return jwtUtil.createTokenAndSaveToKy(userId);
+        }
     }
 
     @Override

@@ -49,16 +49,16 @@ aliyun:
 jwt:
     tokenHeader: Authorization
     expire:
-        accessToken: 2592000 #（秒）30分钟
-        refreshToken: 2592000 #（秒）2天
+        accessToken: 7200 #（秒）30分钟:1800秒 2小时:7200秒 2天:172800秒 7天:604800秒
+        refreshToken: 172800 #（秒）2天
     secret: abcdefghabcdefghabcdefghabcdefgh
 
 security:
     releasable-path: #可放行资源
         - /user/login #登录
+        - /user/refresh/* #刷新token
         - /user/loginVerify/image #登录验证码
         - /user/loginVerify/base64 #图片Base54
-        - /user/loginOut #登出
         - /user/register #注册
         - /user/register/send/** #注册手机验证码发送
 

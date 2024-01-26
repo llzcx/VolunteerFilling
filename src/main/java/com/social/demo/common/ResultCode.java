@@ -75,13 +75,14 @@ public enum ResultCode {
     PATH_MATCH_ERROR(2032,"接口路径匹配失败,判断此次为非法访问"),
     PROHIBIT_ANONYMOUS_REQUESTS(2033,"禁止匿名请求(请携带token)"),
     SUPER_PERMISSION_CANT_CHANGE(2034,"超管权限不允许修改"),
-
+    OLD_TOKEN(2036,"请使用最新令牌"),
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
     NULL_POINT_EXCEPTION(3002,"空指针异常"),
     ENCODING_ANOMALY(3003,"系统编码错误,请上报开发人员"),
     DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
     UPLOAD_ERROR(3005,"上传失败");
+
 
 
     private Integer code;

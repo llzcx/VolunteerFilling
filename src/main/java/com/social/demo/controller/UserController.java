@@ -49,11 +49,12 @@ public class UserController {
     /**
      * 刷新accessToken
      * @param request
+     * @param refreshToken
      * @return
      */
-    @GetMapping("/refresh")
-    public ApiResp<TokenPair> refresh(HttpServletRequest request){
-        TokenPair tokenPair = userService.refresh(request);
+    @GetMapping("/refresh/{refreshToken}")
+    public ApiResp<TokenPair> refresh(@PathVariable String refreshToken){
+        TokenPair tokenPair = userService.refresh(refreshToken);
         return ApiResp.success(tokenPair);
     }
 
@@ -62,9 +63,9 @@ public class UserController {
      * @throws Exception
      */
     @GetMapping("/loginOut")
-    public ApiResp<String> loginOut(HttpServletRequest request) throws Exception {
-        userService.loginOut(request);
-        return ApiResp.success();
+    public ApiResp<Boolean> loginOut() throws Exception {
+        userService.loginOut();
+        return ApiResp.success(true);
     }
 
     /**

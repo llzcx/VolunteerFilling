@@ -23,10 +23,8 @@ public interface IUserService extends IService<User> {
 
     /**
      * 退出登录
-     *
-     * @param request
      */
-    void loginOut(HttpServletRequest request);
+    void loginOut();
 
 
     /**
@@ -112,10 +110,11 @@ public interface IUserService extends IService<User> {
 
     /**
      * 刷新token
-     * @param request
+     * @param userId
+     * @param refreshToken
      * @return
      */
-    TokenPair refresh(HttpServletRequest request);
+    TokenPair refresh(String refreshToken);
 
     /**
      * 批量上传老师信息

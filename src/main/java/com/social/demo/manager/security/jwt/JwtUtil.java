@@ -63,11 +63,13 @@ public class JwtUtil implements InitializingBean {
         //设置token过期时间
         Date expireDate = new Date(nowDate.getTime() + 1000 * accessTokenExpire);
         //秘钥是密码则省略
-        return JWT.create()
+        String accessToken = JWT.create()
                 .withHeader(header)
                 .withClaim("userId", userId)
                 .withExpiresAt(expireDate)
                 .sign(algorithm);
+        redisUtil.set(RedisConstant.WISH+RedisConstant.ACCESS_TOKEN + userId, accessToken, accessTokenExpire);
+        return accessToken;
     }
 
     /**
@@ -80,11 +82,13 @@ public class JwtUtil implements InitializingBean {
         //设置token过期时间
         Date expireDate = new Date(nowDate.getTime() + 1000 * refreshTokenExpire);
         //秘钥是密码则省略
-        return JWT.create()
+        String refreshToken = JWT.create()
                 .withHeader(header)
                 .withClaim("userId", userId)
                 .withExpiresAt(expireDate)
                 .sign(algorithm);
+        redisUtil.set(RedisConstant.WISH+RedisConstant.REFRESH_TOKEN + userId, refreshToken, refreshTokenExpire);
+        return refreshToken;
     }
 
     // 解析JWT
@@ -136,9 +140,6 @@ public class JwtUtil implements InitializingBean {
     public TokenPair createTokenAndSaveToKy(Long userId){
         final String accessToken = generateAccessToken(userId);
         final String refreshToken = generateRefreshToken(userId);
-        Date refreshException = getClaimsByToken(refreshToken).getExpiresAt();
-        Long time = (refreshException.getTime() - System.currentTimeMillis()) / 1000 + 100;
-        redisUtil.set(RedisConstant.WISH+RedisConstant.JWT_TOKEN + refreshToken, accessToken, time);
         return new TokenPair(accessToken, refreshToken);
     }
 
@@ -156,13 +157,13 @@ public class JwtUtil implements InitializingBean {
 
     /**
      * 从Redis中获取refreshToken
-     * @param userNumber
+     * @param userId
      * @return
      */
-    public TokenPair getTokenForRedis(String userNumber){
+    public TokenPair getTokenForRedis(Long userId){
         TokenPair tokenPair = new TokenPair();
-        tokenPair.setAccessToken(redisUtil.get(RedisConstant.WISH+RedisConstant.ACCESS_TOKEN+ userNumber));
-        tokenPair.setRefreshToken(redisUtil.get(RedisConstant.WISH+RedisConstant.REFRESH_TOKEN+ userNumber));
+        tokenPair.setAccessToken(redisUtil.get(RedisConstant.WISH+RedisConstant.ACCESS_TOKEN+ userId));
+        tokenPair.setRefreshToken(redisUtil.get(RedisConstant.WISH+RedisConstant.REFRESH_TOKEN+ userId));
         return tokenPair;
     }
 
@@ -171,8 +172,10 @@ public class JwtUtil implements InitializingBean {
      * @param refreshToken
      * @return
      */
-    public Boolean delTokenForRedis(String refreshToken){
-        return redisUtil.del(RedisConstant.WISH+RedisConstant.JWT_TOKEN+ refreshToken);
+    public Boolean delTokenForRedis(Long userId){
+        redisUtil.del(RedisConstant.WISH+RedisConstant.REFRESH_TOKEN + userId);
+        redisUtil.del(RedisConstant.WISH+RedisConstant.ACCESS_TOKEN + userId);
+        return true;
     }
 
 
