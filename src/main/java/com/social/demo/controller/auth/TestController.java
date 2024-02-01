@@ -1,7 +1,11 @@
 package com.social.demo.controller.auth;
 
+import com.social.demo.common.ApiResp;
+import com.social.demo.common.ResultCode;
+import com.social.demo.common.SystemException;
 import com.social.demo.manager.security.context.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,8 +27,8 @@ public class TestController {
         return "hello student"+ SecurityContext.get();
     }
 
-    @GetMapping("/test/other")
-    public String other() {
-        return "hello student"+ SecurityContext.get();
+    @GetMapping("/test/other/{name}")
+    public ApiResp<String> other(@PathVariable String name){
+       return ApiResp.success("1");
     }
 }
