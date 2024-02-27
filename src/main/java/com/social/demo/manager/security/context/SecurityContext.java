@@ -13,4 +13,8 @@ public class SecurityContext {
         context.set(requestInfo);
     }
 
+    public static void clear(){
+        context.remove();
+    }
+
 }

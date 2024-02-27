@@ -16,7 +16,7 @@ spring:
 #        password: root
         url: jdbc:mysql://47.99.86.144:3306/wish
         username: root
-        password: 123abc
+        password: 123abcqwe
         driver-class-name: com.mysql.cj.jdbc.Driver
     data:
         redis:
