@@ -65,8 +65,9 @@ public class SysRoleController {
     @Identity(IdentityEnum.SUPER)
     @Excluded
     public ApiResp<List<SysApi>> listRoleApi(@PathVariable Integer roleId){
-        List<SysApi> sysRoleApis = sysRoleApiMapper.apiList(roleId);
-        return ApiResp.success(sysRoleApis);
+//        List<SysApi> sysRoleApis = sysRoleApiMapper.apiList(roleId);
+//        return ApiResp.success(sysRoleApis);
+        throw new SystemException(ResultCode.NO_IMPL);
     }
 
     /**

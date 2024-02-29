@@ -70,18 +70,22 @@ public enum ResultCode {
     GROUP_ALREADY_EXISTS(2032, "已进行分组，请先重置"),
     REMOVE_MEMBER_FIRST(2033, "请先将分组成员移除"),
 
-    PARAMETER_RESOURCE_DOES_NOT_EXIST(2030,"参数资源不存在"),
-    REQUIRES_FULL_AUTHENTICATION(2031,"访问此资源需要完全身份验证"),
-    PATH_MATCH_ERROR(2032,"接口路径匹配失败,判断此次为非法访问"),
-    PROHIBIT_ANONYMOUS_REQUESTS(2033,"禁止匿名请求(请携带token)"),
-    SUPER_PERMISSION_CANT_CHANGE(2034,"超管权限不允许修改"),
-    OLD_TOKEN(2036,"请使用最新令牌"),
+    PARAMETER_RESOURCE_DOES_NOT_EXIST(2034,"参数资源不存在"),
+    REQUIRES_FULL_AUTHENTICATION(2035,"访问此资源需要完全身份验证"),
+    PATH_MATCH_ERROR(2036,"接口路径匹配失败,判断此次为非法访问"),
+    PROHIBIT_ANONYMOUS_REQUESTS(2037,"禁止匿名请求(请携带token)"),
+    SUPER_PERMISSION_CANT_CHANGE(2038,"超管权限不允许修改"),
+    OLD_TOKEN(2039,"请使用最新令牌"),
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
     NULL_POINT_EXCEPTION(3002,"空指针异常"),
     ENCODING_ANOMALY(3003,"系统编码错误,请上报开发人员"),
     DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
-    UPLOAD_ERROR(3005,"上传失败");
+    UPLOAD_ERROR(3005,"上传失败"),
+    NO_IMPL(3007,"暂无实现，请联系开发人员"),
+
+
+    ;
 
 
 
