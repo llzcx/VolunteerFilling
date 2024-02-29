@@ -8,6 +8,7 @@ import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.SysApiMapper;
 import com.social.demo.dao.mapper.UserMapper;
+import com.social.demo.data.bo.TokenPair;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.manager.security.config.PathConfig;
 import com.social.demo.manager.security.context.RequestInfo;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -97,6 +99,10 @@ public class RequestInterceptor implements HandlerInterceptor {
             throw new SystemException(ResultCode.TOKEN_DECODE_ERROR);
         }
         Long userId = jwtUtil.getUserId(tokenDecode);
+        TokenPair tokenForRedis = jwtUtil.getTokenForRedis(userId);
+        if(!Objects.equals(tokenForRedis.getAccessToken(),token)){
+            throw new SystemException(ResultCode.OLD_TOKEN);
+        }
         Integer identityCode = userMapper.selectIdentityByUserId(userId);
         RequestInfo requestInfo = new RequestInfo(userId,IdentityEnum.searchByCode(identityCode));
         log.info("本次访问的身份是：{}",requestInfo.getIdentity().getMessage());
@@ -118,6 +124,6 @@ public class RequestInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
+        SecurityContext.clear();
     }
 }

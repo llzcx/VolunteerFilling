@@ -46,6 +46,7 @@ public class DynamicIdentityImpl implements IdentityAuthentication {
                 throw new SystemException(ResultCode.UNAUTHORIZED_ACCESS);
             }
         }
+        //到这里就说明数据库当中没有Pattern可以匹配当前RequestURL，直接拒绝访问
         throw new SystemException(ResultCode.ACCESS_WAS_DENIED);
     }
 }
