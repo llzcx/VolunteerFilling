@@ -1,6 +1,7 @@
 package com.social.demo.dao.repository.impl;
 
 import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONUtil;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -358,7 +359,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
         Long userId = jwtUtil.getUserId(request);
-        String upload = uploadFile.upload(file, PropertiesConstant.USERS, PropertiesConstant.USER + "-" + userId);
+        String upload = uploadFile.upload(file, PropertiesConstant.USERS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         User user = new User();
         user.setHeadshot(upload);
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));

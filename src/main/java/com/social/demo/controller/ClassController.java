@@ -41,7 +41,7 @@ public class ClassController {
      * @param year 年份
      * @param current 当前页码
      * @param size 每页大小
-     * @return
+     * @return 班级信息
      */
     @GetMapping
     public ApiResp<IPage<ClassVo>> getClass(@RequestParam(required = false) Integer year,

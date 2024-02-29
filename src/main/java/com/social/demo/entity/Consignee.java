@@ -15,8 +15,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Consignee {
+    /**
+     * 用户id
+     */
     private Long userId;
+    /**
+     * 收件人
+     */
     private String username;
+    /**
+     * 电话号码
+     */
     private String phone;
+    /**
+     * 收件地址
+     */
     private String address;
 }
