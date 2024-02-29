@@ -5,22 +5,48 @@ import com.social.demo.common.SystemException;
 
 public enum IdentityEnum {
 
-    STUDENT(0,"学生"),
+    STUDENT(0,"学生","查看个人信息\n" +
+            "上传/修改证件照\n" +
+            "修改密码，修改电话\n" +
+            "修改收件地址(收件人，收件电话，详细地址)\n" +
+            "查看志愿，填报/修改志愿\n" +
+            "个人月综测查看，个人学期综测查看，签字确认综测\n" +
+            "问题申诉，申诉历史查看，申诉进度查看\n" +
+            "班级综合测评查看，导出\n" +
+            "查询排名\n"),
 
-    TEACHER(1,"老师"),
+    TEACHER(1,"老师","个人信息查看\n" +
+            "修改电话\n" +
+            "查看班级志愿情况\n"),
 
-    APPRAISAL_TEAM(2,"综测成员"),
+    APPRAISAL_TEAM(2,"综测成员","查看基本资料\n" +
+            "修改密码\n" +
+            "查看，修改，查询成员班级综测\n" +
+            "|电子签名提交综测\n" +
+            "申诉情况查看，处理\n"),
 
-    CLASS_ADVISER(3,"班主任"),
-    SUPER(4, "超级管理员"),
+    CLASS_ADVISER(3,"班主任","个人信息查看\n" +
+            "修改电话\n" +
+            "查看班级志愿情况\n" +
+            "查看综合测评情况\n" +
+            "查看班级成员列表\n" +
+            "(批量)重置学生密码\n" +
+            "设置测评小组成员/撤销职位\n" +
+            "分配小组成员负责学生\n" +
+            "申诉处理\n" +
+            "查看/修改学生详细信息\n"),
+    SUPER(4, "超级管理员","待补充"),
     ;
 
     private Integer roleId;
     private String str;
 
-    IdentityEnum(Integer roleId, String message) {
+    private String  des;
+
+    IdentityEnum(Integer roleId, String message,String des) {
         this.roleId = roleId;
         this.str = message;
+        this.des = des;
     }
 
     public Integer getRoleId() {
@@ -33,6 +59,22 @@ public enum IdentityEnum {
 
     public String getMessage() {
         return str;
+    }
+
+    public String getStr() {
+        return str;
+    }
+
+    public void setStr(String str) {
+        this.str = str;
+    }
+
+    public String getDes() {
+        return des;
+    }
+
+    public void setDes(String des) {
+        this.des = des;
     }
 
     public void setMessage(String message) {
