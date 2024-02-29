@@ -48,7 +48,6 @@ public class UserController {
 
     /**
      * 刷新accessToken
-     * @param request
      * @param refreshToken
      * @return
      */

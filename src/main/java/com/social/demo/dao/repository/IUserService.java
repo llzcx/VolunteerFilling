@@ -110,7 +110,6 @@ public interface IUserService extends IService<User> {
 
     /**
      * 刷新token
-     * @param userId
      * @param refreshToken
      * @return
      */

@@ -257,7 +257,7 @@ public class ClassAdviserController {
     }
 
     /**
-     *
+     * 上传头像
      * @param signatureDto
      * @return
      */

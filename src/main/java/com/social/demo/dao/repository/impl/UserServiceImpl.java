@@ -260,6 +260,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         for (TeacherDto teacher : teachers) {
             User user = new User();
             BeanUtils.copyProperties(teacher, user);
+            user.setIdentity(IdentityEnum.TEACHER.getRoleId());
             user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
             users.add(user);
             if (!JudgeUser(teacher.getUserNumber())){
@@ -289,7 +290,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         IPage<UserVo> userVoPage = new Page<>();
         IPage<User> userPage;
         //获取身份code类型
-        int identity = IdentityEnum.searchByString(role).getRoleId();
+        int identity;
+        if ("".equals(role)){
+            identity = -1;
+        }else identity = IdentityEnum.searchByString(role).getRoleId();
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.like(username != null, "username", username).
                 eq(identity != -1,"identity", identity);
