@@ -7,12 +7,14 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.AppraisalTeamDto;
 import com.social.demo.data.dto.IdentityDto;
+import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
 import com.social.demo.util.TimeUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -103,7 +105,7 @@ public class ClassAdviserController {
      * 获取分页获取学生综测信息
      * @param name 学生姓名
      * @param userNumber 学号
-     * @param month 月份
+     * @param month 月份 0表示本月
      * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
      * @param current 当前页码
      * @param size 每页大小
@@ -252,5 +254,16 @@ public class ClassAdviserController {
     public ApiResp<String> allocationClassMember(@RequestBody AppraisalTeamDto appraisalTeamDto){
         appraisalTeamService.allocationClassMember(appraisalTeamDto);
         return ApiResp.success("操作成功");
+    }
+
+    /**
+     *
+     * @param signatureDto
+     * @return
+     */
+    @PostMapping("/signature")
+    public ApiResp<String> uploadSignature(@RequestBody SignatureDto signatureDto){
+        String fileName = classAdviserService.uploadSignature(signatureDto);
+        return ApiResp.success(fileName);
     }
 }

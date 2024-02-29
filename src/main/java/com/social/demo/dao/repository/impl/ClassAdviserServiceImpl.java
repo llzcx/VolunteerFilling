@@ -7,6 +7,7 @@ import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassAdviserService;
 import com.social.demo.data.dto.IdentityDto;
+import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,5 +51,11 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         page.setTotal(total);
         page.setRecords(userList);
         return page;
+    }
+
+    @Override
+    public String uploadSignature(SignatureDto signatureDto) {
+
+        return null;
     }
 }
