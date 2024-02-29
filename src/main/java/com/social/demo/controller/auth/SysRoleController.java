@@ -10,6 +10,7 @@ import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.SysRoleApiMapper;
 import com.social.demo.dao.mapper.UserMapper;
+import com.social.demo.data.vo.IdentityVo;
 import com.social.demo.entity.SysApi;
 import com.social.demo.entity.SysRoleApi;
 import com.social.demo.entity.SysRoleVo;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -108,6 +110,21 @@ public class SysRoleController {
         // 调用 selectPage 方法进行分页查询
         IPage<User> resultPage = userMapper.selectPage(page,queryWrapper);
         return ApiResp.success(resultPage);
+    }
+
+
+    /**
+     * 获取所有身份和信息
+     * @return
+     */
+    @GetMapping("/allRole")
+    @Identity(IdentityEnum.SUPER)
+    @Excluded
+    public ApiResp<List<IdentityVo>> getAllRole() {
+        List<IdentityVo> list = new ArrayList<>();
+        for (IdentityEnum value : IdentityEnum.values())
+            list.add(new IdentityVo(value.getRoleId(),value.getMessage(),value.getDes()));
+        return ApiResp.success(list);
     }
 
 }
