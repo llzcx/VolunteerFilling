@@ -207,6 +207,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         for (StudentDto studentDto : studentDtos) {
             User user = new User();
             BeanUtils.copyProperties(studentDto, user);
+            user.setCreated(TimeUtil.now());
+            user.setLastDdlTime(TimeUtil.now());
             users.add(user);
             Student student = new Student();
             BeanUtils.copyProperties(studentDto, student);
@@ -241,16 +243,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             map.put(user.getUserNumber(), student);
         }
 //        SysRole sysRole = sysRoleMapper.selectOne(MybatisPlusUtil.queryWrapperEq("role_name", PropertiesConstant.IDENTITY_STUDENT));
+        userMapper.insertBatchSomeColumn(users);
+        List<Consignee> consignees = new ArrayList<>();
+        List<Student> students = new ArrayList<>();
         for (User user : users) {
-            userMapper.insert(user);
 //            sysUserRoleMapper.insert(new SysUserRole(user.getClassUserId(), sysRole.getId()));
             Student student = map.get(user.getUserNumber());
             student.setUserId(user.getUserId());
-            studentMapper.insert(student);
+            students.add(student);
             Consignee consignee = new Consignee();
             consignee.setUserId(user.getUserId());
-            consigneeMapper.insert(consignee);
+            consignees.add(consignee);
         }
+        studentMapper.insertBatchSomeColumn(students);
+        consigneeMapper.insertBatchSomeColumn(consignees);
         return null;
     }
 

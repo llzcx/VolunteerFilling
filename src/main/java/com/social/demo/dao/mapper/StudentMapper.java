@@ -13,7 +13,7 @@ import java.util.List;
  * @description StudentMapper
  */
 @Mapper
-public interface StudentMapper extends BaseMapper<Student> {
+public interface StudentMapper extends EasyBaseMapper<Student> {
     Long selectClassIdByUserNumber(String number);
 
     List<Long> getUserIdByClassId(Long classId);

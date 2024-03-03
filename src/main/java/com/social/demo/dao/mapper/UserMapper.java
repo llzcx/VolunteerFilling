@@ -18,7 +18,7 @@ import java.util.List;
  * @since 2023-07-02
  */
 @Mapper
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper extends EasyBaseMapper<User> {
 
     /**
      * 根据业务username查询主键id

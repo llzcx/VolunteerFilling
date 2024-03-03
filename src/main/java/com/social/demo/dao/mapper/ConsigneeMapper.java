@@ -5,5 +5,5 @@ import com.social.demo.entity.Consignee;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ConsigneeMapper extends BaseMapper<Consignee> {
+public interface ConsigneeMapper extends EasyBaseMapper<Consignee> {
 }
