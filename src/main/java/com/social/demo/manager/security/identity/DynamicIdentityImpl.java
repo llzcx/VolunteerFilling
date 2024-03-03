@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * 动态RBAC
  */
-@Component
 @Slf4j
 public class DynamicIdentityImpl implements IdentityAuthentication {
 

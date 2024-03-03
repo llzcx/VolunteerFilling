@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 /**
  * 静态RBAC
  */
+@Component
 public class StaticIdentityImpl implements IdentityAuthentication{
     @Override
     public boolean check(String requestURL, IdentityEnum identity,Method method) {
