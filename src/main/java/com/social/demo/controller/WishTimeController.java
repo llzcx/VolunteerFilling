@@ -31,6 +31,7 @@ public class WishTimeController {
     @PostMapping("/addWishTime")
     public ApiResp<Boolean> addWiseTime(@RequestBody WishTime wishTime){
         return ApiResp.success(wishTimeService.addWishTime(wishTime));
+
     }
     /**
      * 修改志愿时间接口
@@ -69,4 +70,5 @@ public class WishTimeController {
         Boolean deleteArea = wishTimeService.deleteWishTime(id);
         return ApiResp.success(deleteArea);
     }
+
 }

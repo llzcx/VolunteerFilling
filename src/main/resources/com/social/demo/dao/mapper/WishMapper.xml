@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.social.demo.dao.mapper.WishMapper">
-
-
+    <select id="selectWish" resultType="com.social.demo.data.vo.WishVo">
+        SELECT wish.wish.first,wish.wish.first_name,wish.wish.second,wish.wish.second_name,wish.wish.third,
+               wish.wish.third_name,wish.wish_time.end_time,wish.wish.id,wish.wish.user_id,wish.wish.time_id,wish.wish.frequency
+        FROM wish.wish
+                 JOIN wish.wish_time on wish.user_id= #{userId} and wish.time_id = wish_time.id;
+    </select>
+    <select id="selectSchoolWish" resultType="com.social.demo.entity.Wish">
+       SELECT * FROM wish.wish WHERE wish.wish.user_id IN (SELECT user_id FROM student WHERE school_id = #{schoolId}) and wish.wish.time_id = #{timeId}
+    </select>
 </mapper>

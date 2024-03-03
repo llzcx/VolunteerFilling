@@ -109,7 +109,7 @@ public class MajorController {
         Boolean deleteArea = majorService.deleteMajor(majorId);
         return ApiResp.success(deleteArea);
     }
-    public  MajorVo MajorMajorVo(Major major){
+    public static  MajorVo MajorMajorVo(Major major){
         MajorVo majorVo =new MajorVo();
         majorVo.setName(major.getName());
         majorVo.setEnrollmentNumber(major.getEnrollmentNumber());
@@ -120,7 +120,7 @@ public class MajorController {
         majorVo.setSubjectRule(subjectRuleVos);
         return majorVo;
     }
-    public Major MajorVoMajor(MajorVo majorVo){
+    private static  Major MajorVoMajor(MajorVo majorVo){
         Major major = new Major();
         major.setName(majorVo.getName());
         major.setEnrollmentNumber(majorVo.getEnrollmentNumber());

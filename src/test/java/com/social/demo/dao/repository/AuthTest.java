@@ -53,7 +53,7 @@ public class AuthTest {
             GradeSubjectBo[] a = new GradeSubjectBo[7];
             for (int j = 1; j <= 6; j++) {
                 a[j] = new GradeSubjectBo();
-                a[j].setGradeId(j);
+                a[j].setGradeId((long) j);
                 Random rand = new Random();
                 int randomNum = rand.nextInt(41) + 60;
                 a[j].setGrade(randomNum);

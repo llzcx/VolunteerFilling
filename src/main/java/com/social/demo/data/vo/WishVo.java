@@ -1,22 +1,15 @@
-package com.social.demo.entity;
+package com.social.demo.data.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * 志愿
- *
- * @author 杨世博
- */
 @Data
-public class Wish {
+public class WishVo {
     /**
      * 志愿填报id
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 用户id
@@ -55,11 +48,7 @@ public class Wish {
      */
     private Integer frequency;
     /**
-     * 录取结果id
+     * 结束时间
      */
-    private Long admissionResultId;
-    /**
-     * 录取结果名字
-     */
-    private String admissionResultName;
+    private LocalDateTime endTime;
 }

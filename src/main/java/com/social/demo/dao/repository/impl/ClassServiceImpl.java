@@ -1,5 +1,6 @@
 package com.social.demo.dao.repository.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -14,6 +15,7 @@ import com.social.demo.dao.repository.ISysRoleService;
 import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
+import com.social.demo.entity.WishClass;
 import com.social.demo.entity.Class;
 import com.social.demo.entity.User;
 import com.social.demo.util.MybatisPlusUtil;
@@ -75,44 +77,56 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public Boolean judgeClassName(String className){
+    public Boolean judgeClassName(String className) {
         List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("class_name", className));
-        if (!classes.isEmpty()){
+        if (!classes.isEmpty()) {
             throw new SystemException(ResultCode.IS_EXISTS);
-        }else {
+        } else {
             return true;
         }
     }
 
     @Override
-    public List<Long> getClassUserId(Long classId) {
-        return studentMapper.getUserIdByClassId(classId);
-    }
-
-    private Long getTeacherId(String userNumber){
-        Long userId = userMapper.selectUserIdByUserNumber(userNumber);
-
-        List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("user_id", userId));
-
-        if (classes.size() >= 1){
-            throw new SystemException(ResultCode.USER_IS_CLASS_TEACHER);
-        }
-
-        return userId;
+    public Class getClass(Long userId) {
+        QueryWrapper<Class> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        Class aClass = classMapper.selectOne(queryWrapper);
+        return aClass;
     }
 
     @Override
-    public IPage<ClassVo> getClassPage(Integer year, int current, int size) {
-        IPage<Class> classIPage;
-        if (year != 0){
-            classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq("year", year));
-        }else {
-            classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq());
+    public List<WishClass> getClassUserId(Long classId, Long timeId, Long current, Long size) {
+        current = (current - 1) * size;
+        return studentMapper.getUserIdByClassId1(classId, timeId, current, size);
+    }
+        @Override
+        public Long getClass1 (Long classId, Long timeId){
+            return studentMapper.getClass1(classId, timeId);
         }
-        IPage<ClassVo> classVoIPage = new Page<>(current, size);
-        classVoIPage.setTotal(classIPage.getTotal());
-        List<ClassVo> classVoList = new ArrayList<>();
-        for (Class aClass : classIPage.getRecords()) {
+        private Long getTeacherId (String userNumber){
+            Long userId = userMapper.selectUserIdByUserNumber(userNumber);
+
+            List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+
+            if (classes.size() >= 1) {
+                throw new SystemException(ResultCode.USER_IS_CLASS_TEACHER);
+            }
+
+            return userId;
+        }
+
+        @Override
+        public IPage<ClassVo> getClassPage (Integer year,int current, int size){
+            IPage<Class> classIPage;
+            if (year != 0) {
+                classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq("year", year));
+            } else {
+                classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq());
+            }
+            IPage<ClassVo> classVoIPage = new Page<>(current, size);
+            classVoIPage.setTotal(classIPage.getTotal());
+            List<ClassVo> classVoList = new ArrayList<>();
+            for (Class aClass : classIPage.getRecords()) {
 
             ClassVo classVo = new ClassVo();
             BeanUtils.copyProperties(aClass, classVo);
@@ -169,3 +183,5 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         return true;
     }
 }
+
+

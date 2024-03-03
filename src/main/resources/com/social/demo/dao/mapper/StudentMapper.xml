@@ -8,11 +8,59 @@
     <select id="selectClassIdByUserNumber" resultType="java.lang.Long">
         SELECT class_id FROM student WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{number})
     </select>
-    <select id="selectClassIdByUserId" resultType="java.lang.Long">
-        SELECT class_id FROM student WHERE user_id = #{userId}
+    <select id="getUserIdByClassId1" resultType="com.social.demo.entity.WishClass">
+        SELECT school.name,student.province,user.username,user.user_number,user.sex,student.score
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name FROM student INNER JOIN wish  on student.user_id = wish.user_id
+                                                                                           INNER JOIN wish.school ON student.school_number = school.number
+                                                                                           INNER JOIN wish.user on user.user_id = student.user_id
+        WHERE student.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId}) and wish.wish.time_id = #{timeId} LIMIT #{size} OFFSET #{current};
     </select>
     <select id="getUserIdByClassId" resultType="java.lang.Long">
         SELECT user_id FROM student WHERE class_id = #{classId}
+    </select>
+    <select id="getWishResultBySchoolId" resultType="com.social.demo.entity.WishResult">
+        SELECT class.class_id,subject_group.subjects,school.name,student.province,user.username,user.user_number,user.sex,student.score
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way
+        FROM student INNER JOIN wish  on student.user_id = wish.user_id
+                                                                                           INNER JOIN wish.school ON student.school_number = school.number
+                                                                                           INNER JOIN wish.user on user.user_id = student.user_id
+                                                                                           INNER JOIN wish.subject_group  on wish.subject_group.hashcode = student.hashcode
+                                                                                           INNER JOIN wish.mate on wish.mate.user_id = student.user_id
+                                                                                           INNER JOIN wish.class on class.class_id = student.class_id
+        WHERE student.user_id IN (SELECT user_id FROM student WHERE school_number = #{schoolId}) and wish.wish.time_id = #{timeId} and mate.mate_way = #{mateWay};
+    </select>
+
+    <select id="getWishResultBySchoolId1" resultType="com.social.demo.entity.WishResult">
+        SELECT class.class_id,subject_group.subjects,school.name,student.province,user.username,user.user_number,user.sex,student.score
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way
+        FROM student INNER JOIN wish  on student.user_id = wish.user_id
+                     INNER JOIN wish.school ON student.school_number = school.number
+                     INNER JOIN wish.user on user.user_id = student.user_id
+                     INNER JOIN wish.subject_group  on wish.subject_group.hashcode = student.hashcode
+                     INNER JOIN wish.mate on wish.mate.user_id = student.user_id
+                     INNER JOIN wish.class on class.class_id = student.class_id
+        WHERE student.user_id IN (SELECT user_id FROM student WHERE school_number = #{schoolId}) and wish.wish.time_id = #{timeId} and mate.mate_way = #{mateWay}
+        LIMIT #{size} OFFSET #{current};
+    </select>
+    <select id="getClass1" resultType="java.lang.Long">
+        SELECT count(*) FROM student INNER JOIN wish  on student.user_id = wish.user_id
+                                                                                           INNER JOIN wish.school ON student.school_number = school.number
+                                                                                           INNER JOIN wish.user on user.user_id = student.user_id
+        WHERE student.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId}) and wish.wish.time_id = #{timeId};
+    </select>
+    <select id="selectClassIdByUserId" resultType="java.lang.Long">
+        SELECT class_id FROM student WHERE user_id = #{userId}
+    </select>
+
+
+    <select id="getRanking" resultType="com.social.demo.entity.Ranking">
+        SELECT score,grade,user_id  FROM student
+    </select>
+    <select id="getClassRanking" resultType="com.social.demo.entity.Ranking">
+        SELECT score,grade,user_id  FROM student WHERE class_id = #{classId}
+    </select>
+    <select id="getSchoolRanking" resultType="com.social.demo.entity.Ranking">
+        SELECT score,grade,user_id  FROM student WHERE school_id = #{schoolId} and enrollment_year = #{ago}
     </select>
     <select id="getGrades" resultType="com.social.demo.data.bo.GradeBo">
         SELECT s.score, u.username, u.user_number, s.grade FROM user AS u, student AS s WHERE

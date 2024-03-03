@@ -5,11 +5,14 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.dao.mapper.WishMapper;
 import com.social.demo.dao.repository.IWishService;
+import com.social.demo.data.vo.WishVo;
 import com.social.demo.entity.School;
 import com.social.demo.entity.Wish;
 import com.social.demo.util.MybatisPlusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  *
@@ -25,16 +28,14 @@ public class WishServiceImpl extends ServiceImpl<WishMapper, Wish> implements IW
   @Override
   public  Boolean addWish(Wish wish){
     boolean insertSuccess;
-    Wish existingWish = wishMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id",wish.getUserId()));
-    if (existingWish == null) {
       int insertResult = wishMapper.insert(wish);
       insertSuccess = insertResult > 0;
-    } else {
-      throw new SystemException(ResultCode.SCHOOL_ALREADY_EXISTS);
-    }
     return insertSuccess;
   }
-
+  @Override
+  public List<Wish> selectSchool(Long schoolId,Integer timeId){
+   return wishMapper.selectSchoolWish(schoolId,timeId);
+  }
   /**
    * 修改学生志愿
    */
@@ -49,8 +50,8 @@ public class WishServiceImpl extends ServiceImpl<WishMapper, Wish> implements IW
    *查询学生志愿
    */
   @Override
-  public Wish selectWish(Long userId){
-    return wishMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id",userId));
+  public WishVo selectWish(Long userId){
+    return wishMapper.selectWish(userId);
   }
 
   @Override

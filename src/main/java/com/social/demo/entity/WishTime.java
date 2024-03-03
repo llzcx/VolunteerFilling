@@ -1,5 +1,7 @@
 package com.social.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -15,6 +17,7 @@ public class WishTime {
     /**
      * 志愿时间段id
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 填报类型
