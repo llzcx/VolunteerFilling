@@ -14,7 +14,7 @@ public interface SchoolMapper extends BaseMapper<School> {
      * @param schoolName 学校名
      * @return 返回学校编号
      */
-    Long selectSchoolNumberByName(String schoolName);
+    Long selectSchoolIdByName(String schoolName);
 
-    String selectNameBySchoolNumber(Long schoolNumber);
+    String selectNameBySchoolId(Long schoolId);
 }

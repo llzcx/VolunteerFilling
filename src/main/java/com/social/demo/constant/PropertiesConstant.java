@@ -41,4 +41,10 @@ public interface PropertiesConstant {
      *         true：表示关闭权限功能，便于部分接口测试。
      */
     boolean AUTHORIZATION_CLOSE = true;
+
+    //成绩初始分数
+    Integer SCORE = 100;
+
+    //综测成绩初始分数
+    Integer APPRAISAL_SCORE = 100;
 }

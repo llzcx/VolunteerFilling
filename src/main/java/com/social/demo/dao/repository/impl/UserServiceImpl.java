@@ -12,7 +12,9 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
+import com.social.demo.constant.StateEnum;
 import com.social.demo.dao.mapper.*;
+import com.social.demo.dao.repository.IClassService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.ConsigneeBo;
 import com.social.demo.data.bo.LoginBo;
@@ -28,7 +30,6 @@ import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,6 +56,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     ClassMapper classMapper;
 
     @Autowired
+    IClassService classService;
+
+    @Autowired
     JwtUtil jwtUtil;
 
     @Autowired
@@ -62,7 +66,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Autowired
     StudentMapper studentMapper;
-
 
     @Autowired
     ConsigneeMapper consigneeMapper;
@@ -126,7 +129,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
         studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
-        studentVo.setSchool(schoolMapper.selectNameBySchoolNumber(student.getSchoolNumber()));
+        studentVo.setSchool(schoolMapper.selectNameBySchoolId(student.getSchoolId()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
         ConsigneeBo consigneeBo = new ConsigneeBo();
         BeanUtils.copyProperties(consigneeMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", user.getUserId())), consigneeBo);
@@ -208,14 +211,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             Student student = new Student();
             BeanUtils.copyProperties(studentDto, student);
             Long classId = classMapper.selectClassIdByName(studentDto.getClassName());
+            if (classId == null){
+                classId = classService.createClass(studentDto.getClassName(), null);
+            }
             student.setClassId(classId);
-            Long schoolNumber = schoolMapper.selectSchoolNumberByName(studentDto.getSchool());
-            student.setSchoolNumber(schoolNumber);
+            Long schoolId = schoolMapper.selectSchoolIdByName(studentDto.getSchool());
+            if (schoolId == null){
+                School school = new School();
+                school.setName(studentDto.getSchool());
+                schoolMapper.insert(school);
+                schoolId = school.getSchoolId();
+            }
+            student.setSchoolId(schoolId);
+            student.setState(StateEnum.NOT_FILL.getState());
+            student.setScore(PropertiesConstant.SCORE);
+            student.setAppraisalScore(PropertiesConstant.APPRAISAL_SCORE);
             user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
             user.setIdentity(IdentityEnum.STUDENT.getRoleId());
             student.setEnrollmentYear(TimeUtil.now().getYear());
             Set<String> strings = new HashSet<>(Arrays.asList(studentDto.getSubjects()));
-            student.setHashcode(JSONUtil.toJsonStr(strings).hashCode());
+            int hashCode = 0;
+            for (String string : strings) {
+                hashCode += string.hashCode();
+            }
+            student.setHashcode(hashCode);
             if (!JudgeUser(studentDto.getUserNumber())){
                 return studentDto.getUserNumber();
             }
@@ -295,8 +314,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             identity = -1;
         }else identity = IdentityEnum.searchByString(role).getRoleId();
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.like(username != null, "username", username).
-                eq(identity != -1,"identity", identity);
+        userQueryWrapper.like(username != null, "username", username)
+                .eq(identity != -1,"identity", identity)
+                .or().like(username!=null, "user_number", username)
+                .eq(identity != -1,"identity", identity);
         userPage = userMapper.selectPage(new Page<>(current, size), userQueryWrapper);
 
         userVoPage.setCurrent(userPage.getCurrent());
@@ -308,6 +329,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             BeanUtils.copyProperties(user, userVo);
             //获取身份的string类型
             userVo.setRole(IdentityEnum.searchByCode(user.getIdentity()).getMessage());
+            String className = null;
+            if (user.getIdentity().equals(IdentityEnum.STUDENT.getRoleId())){
+                className = studentMapper.selectClassNameByUserId(user.getUserId());
+            }else if (user.getIdentity().equals(IdentityEnum.CLASS_ADVISER.getRoleId())){
+                className = classMapper.selectClassNameByTeacherUserId(user.getUserId());
+            }
+            userVo.setClassName(className);
             userVos.add(userVo);
         }
         userVoPage.setRecords(userVos);
@@ -341,7 +369,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public List<ClassTeacherVo> getTeachers() {
-        List<User> users = userMapper.selectTeacherNotClass();
+        List<User> users = userMapper.selectTeacher();
         List<ClassTeacherVo> teacherVos = new ArrayList<>();
         for (User user : users) {
             ClassTeacherVo classTeacherVo = new ClassTeacherVo();
@@ -368,5 +396,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         user.setHeadshot(upload);
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return upload;
+    }
+
+    @Override
+    public Boolean modifyClass(ModifyClassDto modifyClassDto) {
+        for (Long userId : modifyClassDto.getUserId()) {
+            Student student = new Student();
+            student.setClassId(modifyClassDto.getClassId());
+            studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
+        }
+        return true;
     }
 }

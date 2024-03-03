@@ -5,7 +5,7 @@
         UPDATE user SET identity = #{identity} WHERE user_number = #{userNumber}
     </update>
     <update id="updateIdentityByUserId">
-        UPDATE user SET identity = #{identity} WHERE id = #{userId}
+        UPDATE user SET identity = #{identity} WHERE user_id = #{userId}
     </update>
 
     <select id="selectUserIdByUserNumber" resultType="java.lang.Long">
@@ -73,6 +73,9 @@
     </select>
     <select id="selectIdentity" resultType="java.lang.Integer">
         SELECT `identity` FROM `user` WHERE user_number = #{userNumber}
+    </select>
+    <select id="selectTeacher" resultType="com.social.demo.entity.User">
+        SELECT * FROM `user` WHERE `identity` = 1
     </select>
 
 </mapper>

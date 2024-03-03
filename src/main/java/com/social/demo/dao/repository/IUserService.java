@@ -141,4 +141,6 @@ public interface IUserService extends IService<User> {
     Boolean modifyPassword(HttpServletRequest request, String password);
 
     String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception;
+
+    Boolean modifyClass(ModifyClassDto modifyClassDto);
 }

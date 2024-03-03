@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.social.demo.data.bo.GradeBo;
 import com.social.demo.entity.Student;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.data.redis.connection.ReactiveSetCommands;
 
 import java.util.List;
 
@@ -28,4 +27,6 @@ public interface StudentMapper extends BaseMapper<Student> {
     void deleteGrades(String userNumber);
 
     List<GradeBo> getAllGrades(Integer year);
+
+    String selectClassNameByUserId(Long userId);
 }

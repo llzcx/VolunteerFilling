@@ -40,7 +40,7 @@ public class GradeController {
     }
 
     /**
-     * 上传科目名称
+     * 上传预科考试科目名称
      * @param gradeSubjectDto 科目
      * @return
      */
@@ -59,17 +59,6 @@ public class GradeController {
     public ApiResp<String> deleteGradeSubject(@RequestParam("id")Integer gradeSubjectId){
         Boolean b = gradeService.deleteGradeSubject(Long.valueOf(gradeSubjectId));
         return ApiResp.judge(b, "删除成功", ResultCode.MAJOR_NOT_DELETE);
-    }
-
-    /**
-     * 修改科目内容
-     * @param gradeSubject 科目
-     * @return
-     */
-    @PutMapping("/subject")
-    public ApiResp<String> modifyGradeSubject(@RequestBody GradeSubject gradeSubject){
-        Boolean b = gradeService.modifyGradeSubject(gradeSubject);
-        return ApiResp.judge(b, "修改成功", ResultCode.MAJOR_NOT_MODIFY);
     }
 
     /**

@@ -29,7 +29,7 @@ public class Student {
     /**
      * 学校编号
      */
-    private Long schoolNumber;
+    private Long schoolId;
     /**
      * 来源省份
      */

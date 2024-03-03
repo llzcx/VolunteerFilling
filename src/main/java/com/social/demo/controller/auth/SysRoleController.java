@@ -10,6 +10,7 @@ import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.SysRoleApiMapper;
 import com.social.demo.dao.mapper.UserMapper;
+import com.social.demo.dao.repository.ISysRoleService;
 import com.social.demo.data.vo.IdentityVo;
 import com.social.demo.entity.SysApi;
 import com.social.demo.entity.SysRoleApi;
@@ -46,6 +47,8 @@ public class SysRoleController {
     @Autowired
     SysRoleApiMapper sysRoleApiMapper;
 
+    @Autowired
+    ISysRoleService sysRoleService;
 
 
     /**
@@ -81,15 +84,7 @@ public class SysRoleController {
     @Identity(IdentityEnum.SUPER)
     @Excluded
     public ApiResp<Boolean> saveUserRole(@PathVariable Long userId, Integer roleId) {
-        if(roleId.equals(IdentityEnum.SUPER.getRoleId())){
-            throw new SystemException(ResultCode.SUPER_PERMISSION_CANT_CHANGE);
-        }
-        if(Objects.equals(userId, PropertiesConstant.DEVELOPER_ADMIN_USER_ID)){
-            //开发者超管不允许降级
-            throw new SystemException(ResultCode.ACCESS_WAS_DENIED);
-        }
-        IdentityEnum identityEnum = IdentityEnum.searchByCode(roleId);
-        userMapper.updateIdentityByUserId(userId,identityEnum.getRoleId());
+        sysRoleService.saveUserRole(userId, roleId);
         return ApiResp.success(true);
     }
 

@@ -25,10 +25,6 @@ public class Class {
      */
     private String className;
     /**
-     * 班级人数
-     */
-    private Integer size;
-    /**
      * 年份
      */
     private Integer year;

@@ -46,13 +46,13 @@ public class SchoolController {
 
     /**
      * 删除院校
-     * @param number 院校编码
+     * @param schoolId 院校id
      * @return
      */
     @DeleteMapping
-    public ApiResp<Boolean> deleteSchool(@RequestBody Long number){
-        Boolean deleteSchool = schoolService.deleteSchool(number);
-        return ApiResp.judge(deleteSchool, deleteSchool, ResultCode.SCHOOL_NOT_EXISTS);
+    public ApiResp<Boolean> deleteSchool(@RequestBody Long schoolId){
+        Boolean deleteSchool = schoolService.deleteSchool(schoolId);
+        return ApiResp.judge(deleteSchool, "删除成功", ResultCode.SCHOOL_NOT_EXISTS);
     }
 
     /**
@@ -73,7 +73,6 @@ public class SchoolController {
      */
     @GetMapping("/exists")
     public ApiResp<Boolean> judge(@RequestParam("schoolName") String schoolName){
-        System.out.println(schoolName);
         Boolean b = schoolService.judgeSchoolName(schoolName);
         return ApiResp.success(b);
     }

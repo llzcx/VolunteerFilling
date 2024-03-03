@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserVo {
     /**
+     * userId
+     */
+    private Long userId;
+    /**
      * 学号
      */
     private String userNumber;
@@ -23,6 +27,10 @@ public class UserVo {
      * 姓名
      */
     private String username;
+    /**
+     * 班级
+     */
+    private String className;
     /**
      * 用户身份
      */

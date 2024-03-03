@@ -31,7 +31,6 @@ public class ClassController {
      */
     @PostMapping
     public ApiResp<String> createClass(@RequestBody ClassDto classDto){
-        System.out.println(classDto);
         Boolean b = classService.create(classDto);
         return ApiResp.judge(b, "操作成功", ResultCode.IS_EXISTS);
     }
@@ -58,8 +57,8 @@ public class ClassController {
      */
     @DeleteMapping
     public ApiResp<String> delete(@RequestBody Long[] classIds){
-        classService.delete(classIds);
-        return ApiResp.success("操作成功");
+        Boolean delete = classService.delete(classIds);
+        return ApiResp.judge(delete, "操作成功", ResultCode.CLASS_DELETE_LOSE);
     }
 
     /**

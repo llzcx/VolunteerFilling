@@ -3,10 +3,10 @@
 <mapper namespace="com.social.demo.dao.mapper.SchoolMapper">
 
 
-    <select id="selectSchoolNumberByName" resultType="java.lang.Long">
-        SELECT number FROM school WHERE name = #{schoolName}
+    <select id="selectSchoolIdByName" resultType="java.lang.Long">
+        SELECT school_id FROM school WHERE name = #{schoolName}
     </select>
-    <select id="selectNameBySchoolNumber" resultType="java.lang.String">
-        SELECT name FROM school WHERE number = #{schoolNumber}
+    <select id="selectNameBySchoolId" resultType="java.lang.String">
+        SELECT name FROM school WHERE school_id = #{schoolid}
     </select>
 </mapper>

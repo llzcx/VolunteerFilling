@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassService;
+import com.social.demo.dao.repository.ISysRoleService;
 import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
@@ -16,9 +18,11 @@ import com.social.demo.entity.Class;
 import com.social.demo.entity.User;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +43,35 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Autowired
     StudentMapper studentMapper;
 
+    @Autowired
+    ISysRoleService sysRoleService;
+
     @Override
     public Boolean create(ClassDto classDto) {
         Long userId = getTeacherId(classDto.getUserNumber());
-        Class aClass = new Class();
-        BeanUtils.copyProperties(classDto, aClass);
-        aClass.setSize(0);
-        aClass.setUserId(userId);
-        aClass.setYear(TimeUtil.now().getYear());
-
-        classMapper.insert(aClass);
+        createClass(classDto.getClassName(), userId);
         return true;
+    }
+
+    /**
+     * 创建班级，其中userId可谓空，className不可为空
+     *
+     * @param className
+     * @param userId
+     * @return
+     */
+    @Transactional
+    @Override
+    public Long createClass(@NotNull String className, Long userId){
+        Class aClass = new Class();
+        aClass.setClassName(className);
+        if (userId != null){
+            aClass.setUserId(userId);
+            sysRoleService.saveUserRole(userId, IdentityEnum.CLASS_ADVISER.getRoleId());
+        }
+        aClass.setYear(TimeUtil.now().getYear());
+        classMapper.insert(aClass);
+        return aClass.getClassId();
     }
 
     @Override
@@ -92,21 +114,16 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         List<ClassVo> classVoList = new ArrayList<>();
         for (Class aClass : classIPage.getRecords()) {
 
-            System.out.println(aClass);
-
             ClassVo classVo = new ClassVo();
             BeanUtils.copyProperties(aClass, classVo);
             User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", aClass.getUserId()));
 
-            System.out.println(user);
-
-            if (user == null){
-                throw new SystemException(ResultCode.DATABASE_DATA_EXCEPTION);
+            if (user != null){
+                classVo.setUserNumber(user.getUserNumber());
+                classVo.setUsername(user.getUsername());
+                classVo.setPhone(user.getPhone());
             }
-            classVo.setUserNumber(user.getUserNumber());
-            classVo.setUsername(user.getUsername());
-            classVo.setPhone(user.getPhone());
-
+            classVo.setSize(Math.toIntExact(studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id", classVo.getClassId()))));
             classVoList.add(classVo);
         }
         classVoIPage.setRecords(classVoList);
@@ -114,22 +131,41 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
+    @Transactional
     public Boolean delete(Long[] classIds) {
         for (Long classId : classIds) {
-            classMapper.delete(MybatisPlusUtil.queryWrapperEq("class_id", classId));
+            Long count = userMapper.selectCount(MybatisPlusUtil.queryWrapperEq(classId));
+            if (count != 0){
+                return false;
+            }
+        }
+        for (Long classId : classIds) {
+            deleteClass(classId);
         }
         return true;
     }
 
+    @Transactional
+    public void deleteClass(Long classId){
+        classMapper.delete(MybatisPlusUtil.queryWrapperEq("class_id", classId));
+        Long userId = classMapper.selectTeacherUserIdByClassId(classId);
+        sysRoleService.saveUserRole(userId, IdentityEnum.TEACHER.getRoleId());
+    }
+
     @Override
+    @Transactional
     public Boolean modify(ClassModifyDto classModifyDto) {
         if (classMapper.judge(classModifyDto.getClassId(), classModifyDto.getClassName()) != null){
             return false;
         }
+        Long teacherId = classMapper.selectTeacherUserIdByClassId(classModifyDto.getClassId());
+        sysRoleService.saveUserRole(teacherId, IdentityEnum.TEACHER.getRoleId());
         Class aClass = new Class();
         BeanUtils.copyProperties(classModifyDto, aClass);
-        aClass.setUserId(userMapper.selectUserIdByUserNumber(classModifyDto.getUserNumber()));
+        Long userId = userMapper.selectUserIdByUserNumber(classModifyDto.getUserNumber());
+        aClass.setUserId(userId);
         classMapper.update(aClass, MybatisPlusUtil.queryWrapperEq("class_id", classModifyDto.getClassId()));
+        sysRoleService.saveUserRole(userId, IdentityEnum.CLASS_ADVISER.getRoleId());
         return true;
     }
 }

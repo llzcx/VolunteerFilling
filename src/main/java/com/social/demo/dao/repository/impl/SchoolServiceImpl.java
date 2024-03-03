@@ -45,8 +45,8 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
     }
 
     @Override
-    public Boolean deleteSchool(Long number) {
-        int delete = schoolMapper.delete(MybatisPlusUtil.queryWrapperEq("number", number));
+    public Boolean deleteSchool(Long schoolId) {
+        int delete = schoolMapper.delete(MybatisPlusUtil.queryWrapperEq("school_id", schoolId));
         return delete > 0;
     }
 

@@ -6,6 +6,8 @@ import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
 import com.social.demo.entity.Class;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +24,16 @@ public interface IClassService extends IService<Class> {
     Boolean delete(Long[] classIds);
 
     Boolean modify(ClassModifyDto classModifyDto);
+
+    /**
+     * 创建班级
+     *
+     * @param className
+     * @param userId
+     * @return
+     */
+    @Transactional
+    Long createClass(@NotNull String className, Long userId);
 
     Boolean judgeClassName(String className);
 

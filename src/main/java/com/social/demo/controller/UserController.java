@@ -7,6 +7,7 @@ import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.LoginDto;
+import com.social.demo.data.dto.ModifyClassDto;
 import com.social.demo.data.dto.StudentDto;
 import com.social.demo.data.dto.TeacherDto;
 import com.social.demo.data.vo.ClassTeacherVo;
@@ -159,6 +160,16 @@ public class UserController {
     public ApiResp<String> modifyPassword(HttpServletRequest request,
                                           @RequestBody String password){
         Boolean b = userService.modifyPassword(request, password);
+        return ApiResp.judge(b, "修改成功", ResultCode.PARAM_NOT_VALID);
+    }
+
+    /**
+     * 修改学生班级信息
+     * @return
+     */
+    @PutMapping("/class")
+    public ApiResp<String> modifyClass(ModifyClassDto modifyClassDto){
+        Boolean b = userService.modifyClass(modifyClassDto);
         return ApiResp.judge(b, "修改成功", ResultCode.PARAM_NOT_VALID);
     }
 }

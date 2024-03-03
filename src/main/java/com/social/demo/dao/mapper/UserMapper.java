@@ -60,4 +60,6 @@ public interface UserMapper extends BaseMapper<User> {
     Integer selectIdentityByUserId(Long userId);
 
     Integer selectIdentity(String userNumber);
+
+    List<User> selectTeacher();
 }
