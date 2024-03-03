@@ -21,7 +21,7 @@ public class FirstChoice {
                     if(!school.getAdmissionStatus()){
                         List<Student> students1 = schoolAdmissions.get(school);
                         if(students1.size()==school.getEnrollmentNumber()){
-                            school.setAdmissionStatus(true);
+                            school.setAdmissionStatus(false);
                         }else{
                             student.setAdmissionStatus(true);
                             students1.add(student);

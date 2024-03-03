@@ -43,5 +43,8 @@ public interface IWishTimeService extends IService<WishTime> {
      * @return
      */
     Boolean deleteWishTime(Long id);
-
+    /**
+     * 查看志愿时间年份
+     */
+    Integer selectAgo(Long timeId);
 }

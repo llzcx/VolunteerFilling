@@ -46,6 +46,7 @@ public class ClassController {
     public ApiResp<IPage<ClassVo>> getClass(@RequestParam(required = false) Integer year,
                                             @RequestParam("current")int current,
                                             @RequestParam("size")int size){
+
         IPage<ClassVo> classPage = classService.getClassPage(year, current, size);
         return ApiResp.success(classPage);
     }

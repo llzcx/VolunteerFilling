@@ -4,12 +4,17 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
+import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.vo.AppealVo;
 import com.social.demo.data.vo.AppraisalVo;
+import com.social.demo.data.vo.RankingVo;
 import com.social.demo.data.vo.StudentVo;
+import com.social.demo.entity.Student;
+
+import com.social.demo.manager.security.context.SecurityContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -36,7 +41,8 @@ public class StudentController {
 
     @Autowired
     IAppraisalService appraisalService;
-
+    @Autowired
+    IStudentService studentService;
     /**
      * 学生获取个人信息
      * @param request
@@ -159,5 +165,27 @@ public class StudentController {
                                            HttpServletRequest request) throws Exception {
         String signature = appraisalService.uploadSignature(file, request);
         return ApiResp.success(signature);
+    }
+
+    /**
+     * 获取学生排名
+     * @param request
+     * @param type
+     * @return
+     */
+    @GetMapping("/getStudentRanking")
+    public ApiResp<Integer> getStudentRanking(HttpServletRequest request,@RequestParam("type") Integer type){
+        Long userId = SecurityContext.get().getUserId();
+        Student student = studentService.getStudent(userId);
+        List<RankingVo> rankingVos  = studentService.getRanking(type,student);
+        Integer rank = null;
+        for(RankingVo rankingVo:rankingVos){
+            if(rankingVo.getUserId().equals(userId)){
+                rank=rankingVo.getRanking();
+            }
+        }
+
+        System.out.println(rankingVos);
+         return  ApiResp.success(rank);
     }
 }

@@ -14,5 +14,5 @@ public class StudentMajorVo{
     /**
      * 专业集合
      */
-    private List<Major> majors;
+    private List<MajorVo1> majors;
 }

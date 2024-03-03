@@ -42,8 +42,9 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
    */
   @Override
   public  Boolean addWishTime(WishTime wishTime){
-    studentService.modifyState(wishTime.getSchoolId(),wishTime.getAgo(),1);
     int insertResult = wishTimeMapper.insert(wishTime);
+    Long id = wishTime.getId();
+    studentService.modifyState(wishTime.getSchoolId(),wishTime.getAgo(),1,id);
     return insertResult > 0;
   }
 
@@ -100,5 +101,14 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
   public Boolean deleteWishTime(Long id){
     int delete = wishTimeMapper.delete(MybatisPlusUtil.queryWrapperEq("id",id));
     return delete > 0;
+  }
+  /**
+   * 查看志愿时间年份
+   */
+  public Integer selectAgo(Long timeId){
+    QueryWrapper<WishTime> queryWrapper = Wrappers.query();
+    queryWrapper.eq("time_id",timeId);
+    WishTime wishTime = wishTimeMapper.selectOne(queryWrapper);
+    return  wishTime.getAgo();
   }
 }

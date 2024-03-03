@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
+import com.social.demo.entity.WishClass;
 import com.social.demo.entity.Class;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,10 +38,13 @@ public interface IClassService extends IService<Class> {
 
     Boolean judgeClassName(String className);
 
+    Class getClass(Long userId);
     /**
      * 根据班级id获取班级所有学生id
      * @param classId
      * @return
      */
-    List<Long> getClassUserId(Long classId);
+    List<WishClass> getClassUserId(Long classId, Long timeId,Long current,Long size);
+
+    Long getClass1(Long classId, Long timeId);
 }

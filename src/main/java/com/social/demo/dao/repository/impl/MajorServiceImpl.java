@@ -49,6 +49,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper,Major> implements 
      */
     @Override
     public List<Major> getSchoolMajor(Long schoolId){
+
         QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("school_id",schoolId);
         return majorMapper.selectList(queryWrapper);
