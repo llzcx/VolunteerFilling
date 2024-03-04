@@ -77,6 +77,8 @@ public enum ResultCode {
     SUPER_PERMISSION_CANT_CHANGE(2038,"超管权限不允许修改"),
     OLD_TOKEN(2039,"请使用最新令牌"),
     CLASS_DELETE_LOSE(2040, "班级内仍存在学生，请先移除"),
+    AUTH_CHANGE(2041, "学生、超管、评测成员身份不允许修改，不需要删除即可"),
+
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
     NULL_POINT_EXCEPTION(3002,"空指针异常"),

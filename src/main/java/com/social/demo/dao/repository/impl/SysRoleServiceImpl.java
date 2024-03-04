@@ -30,11 +30,10 @@ public class SysRoleServiceImpl implements ISysRoleService {
         if(roleId.equals(IdentityEnum.SUPER.getRoleId())){
             throw new SystemException(ResultCode.SUPER_PERMISSION_CANT_CHANGE);
         }
-        if(Objects.equals(userId, PropertiesConstant.DEVELOPER_ADMIN_USER_ID)){
-            //开发者超管不允许降级
-            throw new SystemException(ResultCode.ACCESS_WAS_DENIED);
-        }
         IdentityEnum identityEnum = IdentityEnum.searchByCode(roleId);
+        if(!identityEnum.isVariable()){
+            throw new SystemException(ResultCode.AUTH_CHANGE);
+        }
         userMapper.updateIdentityByUserId(userId,identityEnum.getRoleId());
     }
 }
