@@ -33,7 +33,7 @@ public class Appraisal {
     /**
      * 综测总分
      */
-    private Integer score;
+    private Double score;
     /**
      * 签名
      */
@@ -47,7 +47,7 @@ public class Appraisal {
      */
     private String total;
 
-    public Appraisal(Long userId, Integer month, Integer score) {
+    public Appraisal(Long userId, Integer month, Double score) {
         this.userId = userId;
         this.month = month;
         this.score = score;

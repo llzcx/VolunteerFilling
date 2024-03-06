@@ -33,5 +33,5 @@ public class GradeVo implements Serializable {
     /**
      * 总成绩
      */
-    private Integer score;
+    private Double score;
 }

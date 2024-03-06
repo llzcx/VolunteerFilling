@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppraisalTotalVo {
-    private Integer class1;
-    private Integer class2;
-    private Integer class3;
-    private Integer class4;
-    private Integer class5;
-    private Integer add;
-    private Integer sub;
-    private Integer all;
+    private Double class1;
+    private Double class2;
+    private Double class3;
+    private Double class4;
+    private Double class5;
+    private Double add;
+    private Double sub;
+    private Double all;
 }

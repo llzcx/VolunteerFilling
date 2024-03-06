@@ -23,5 +23,5 @@ public class GradeSubjectBo implements Serializable {
     /**
      * 科目分数
      */
-    private Integer grade;
+    private Double grade;
 }

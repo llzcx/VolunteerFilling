@@ -43,8 +43,8 @@ public interface PropertiesConstant {
     boolean AUTHORIZATION_CLOSE = true;
 
     //成绩初始分数
-    Integer SCORE = 100;
+    Double SCORE = 100.00;
 
     //综测成绩初始分数
-    Integer APPRAISAL_SCORE = 100;
+    Double APPRAISAL_SCORE = 100.00;
 }
