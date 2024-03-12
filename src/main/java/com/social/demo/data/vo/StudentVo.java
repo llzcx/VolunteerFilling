@@ -63,6 +63,10 @@ public class StudentVo implements Serializable {
      */
     private String phone;
     /**
+     * 选课Hashcode
+     */
+    private Integer hashcode;
+    /**
      * 选课
      */
     private List<String> subjects;

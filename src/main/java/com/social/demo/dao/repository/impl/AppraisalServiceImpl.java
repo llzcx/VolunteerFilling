@@ -62,7 +62,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     public Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos) {
         for (AppraisalContentVo appraisalContentVo : appraisalContentVos) {
             Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
-            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, appraisalContentVo.getMonth());
+            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getDayOfMonth());
             Appraisal appraisal;
             if (appraisalByUserNumber == null){
                 appraisal = add(appraisalContentVo);
@@ -95,7 +95,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
         appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-        appraisal.setMonth(appraisalContentVo.getMonth());
+        appraisal.setMonth(TimeUtil.now().getDayOfMonth());
         appraisal.setScore(appraisalContentVo.getPoint_total());
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
@@ -116,7 +116,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
         appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-        appraisal.setMonth(appraisalContentVo.getMonth());
+        appraisal.setMonth(TimeUtil.now().getDayOfMonth());
         appraisal.setScore(appraisalContentVo.getPoint_total());
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.insert(appraisal);

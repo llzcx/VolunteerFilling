@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppraisalContentVo {
-    private Integer month;
     private String userNumber;
     private String username;
     private String add1;

@@ -11,10 +11,10 @@
                            <where>
                                u.user_id = s.user_id
                                <if test="name!=null and name!=''">
-                                   u.username LIKE CONCAT("%",#{name},"%")
+                                   AND u.username LIKE CONCAT("%",#{name},"%")
                                </if>
                                <if test="classId != null">
-                                   u.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
+                                   AND u.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
                                </if>
                             </where>
                             <if test="rank == -1">

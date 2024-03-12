@@ -235,7 +235,7 @@ public class ClassAdviserController {
 
     /**
      * 撤销小组成员身份
-     * @param userNumbers 被撤销的小组成员
+     * @param userNumbers 被撤销的小组成员账号
      * @return
      */
     @DeleteMapping("/appraisal/team/revocation")
