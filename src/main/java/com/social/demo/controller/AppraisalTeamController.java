@@ -5,9 +5,8 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
-import com.social.demo.data.vo.AppealVo;
-import com.social.demo.data.vo.AppraisalContentVo;
-import com.social.demo.data.vo.AppraisalVo;
+import com.social.demo.dao.repository.IAppraisalTeamService;
+import com.social.demo.data.vo.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +30,9 @@ public class AppraisalTeamController {
 
     @Autowired
     IAppealService appealService;
+
+    @Autowired
+    IAppraisalTeamService appraisalTeamService;
 
     /**
      * 综测小组获取学生综测
@@ -109,5 +111,16 @@ public class AppraisalTeamController {
     public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
         List<Integer> list = appraisalService.getMonthToTeam(request);
         return ApiResp.success(list);
+    }
+
+    /**
+     * 获取综测小组成员个人消息
+     * @param request
+     * @return
+     */
+    @GetMapping("/message")
+    public ApiResp<AppraisalTeamUserVo> getMessage(HttpServletRequest request){
+        AppraisalTeamUserVo userMessage = appraisalTeamService.getMessage(request);
+        return ApiResp.success(userMessage);
     }
 }

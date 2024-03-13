@@ -2,6 +2,7 @@ package com.social.demo.dao.repository;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.dto.AppraisalTeamDto;
+import com.social.demo.data.vo.AppraisalTeamUserVo;
 import com.social.demo.data.vo.AppraisalTeamVo;
 import com.social.demo.entity.AppraisalTeam;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,4 +23,6 @@ public interface IAppraisalTeamService extends IService<AppraisalTeam> {
     Boolean revocationTeam(HttpServletRequest request, String[] userNumbers);
 
     Boolean allocationClassMember(AppraisalTeamDto appraisalTeamDto);
+
+    AppraisalTeamUserVo getMessage(HttpServletRequest request);
 }
