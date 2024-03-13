@@ -6,7 +6,6 @@ import com.social.demo.dao.mapper.AppraisalMapper;
 import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassAdviserService;
-import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.manager.security.jwt.JwtUtil;
@@ -37,11 +36,11 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     AppraisalMapper appraisalMapper;
 
     @Override
-    public IPage<ClassUserVo> getStudents(HttpServletRequest request, String userNumber, String username, String role,
+    public IPage<ClassUserVo> getStudents(HttpServletRequest request, String keyword, String role,
                                           Integer rank, Integer current, Integer size) {
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, userNumber, username, role, rank, (current-1)*size, size);
+        List<ClassUserVo> userList = userMapper.selectClassUserNumbers(classId, keyword, role, rank, (current-1)*size, size);
         for (ClassUserVo classUserVo : userList) {
             Integer integer = userMapper.selectIdentity(classId + classUserVo.getUserNumber());
             classUserVo.setIdentity(integer == null ? 1 : 2);
@@ -57,5 +56,13 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     public String uploadSignature(SignatureDto signatureDto) {
 
         return null;
+    }
+
+    @Override
+    public Boolean setIsEnd(HttpServletRequest request, Integer month, Boolean isEnd) {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
+        appraisalMapper.updateIsEnd(classId, month, isEnd);
+        return true;
     }
 }

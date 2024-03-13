@@ -1,20 +1,17 @@
 package com.social.demo.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.AppraisalTeamDto;
-import com.social.demo.data.dto.IdentityDto;
 import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
+import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.TimeUtil;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.AfterDomainEventPublication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,10 +43,12 @@ public class ClassAdviserController {
     @Autowired
     IAppraisalTeamService appraisalTeamService;
 
+    @Autowired
+    JwtUtil jwtUtil;
+
     /**
      * 班级成员列表
-     * @param userNumber 学号
-     * @param username 姓名
+     * @param keyword 学号或者姓名 模糊查找
      * @param role 班级职称
      * @param rank 是否根据综测排名排序 -1-倒叙 0-不排序 1-排序
      * @param current 当前页数
@@ -58,13 +57,12 @@ public class ClassAdviserController {
      */
     @GetMapping("/students")
     public ApiResp<IPage<ClassUserVo>> getStudents(HttpServletRequest request,
-                                                     @RequestParam(value = "userNumber", required = false)String userNumber,
-                                                     @RequestParam(value = "username", required = false)String username,
+                                                     @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam(value = "role", required = false)String role,
                                                      @RequestParam(value = "rank")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
-        IPage<ClassUserVo> classMemberVoIPage = classAdviserService.getStudents(request, userNumber, username, role, rank, current, size);
+        IPage<ClassUserVo> classMemberVoIPage = classAdviserService.getStudents(request, keyword, role, rank, current, size);
         return ApiResp.success(classMemberVoIPage);
     }
 
@@ -103,8 +101,7 @@ public class ClassAdviserController {
 
     /**
      * 获取分页获取学生综测信息
-     * @param name 学生姓名
-     * @param userNumber 学号
+     * @param keyword 关键词 学号或名字 模糊查找
      * @param month 月份 0表示本月
      * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
      * @param current 当前页码
@@ -113,20 +110,18 @@ public class ClassAdviserController {
      */
     @GetMapping("/appraisal")
     public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
-                                                            @RequestParam(value = "name", required = false)String name,
-                                                            @RequestParam(value = "userNumber", required = false)String userNumber,
+                                                            @RequestParam(value = "keyword", required = false)String keyword,
                                                             @RequestParam(value = "month", required = false)Integer month,
                                                             @RequestParam("identity")Integer rank,
                                                             @RequestParam("current")Integer current,
                                                             @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, name, userNumber, month, rank, current, size);
+        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
 
     /**
      * 获取分页获取学生本月综测信息
-     * @param name 学生姓名
-     * @param userNumber 学号
+     * @param keyword 学号或学生姓名 模糊查找
      * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
      * @param current 当前页码
      * @param size 每页大小
@@ -134,12 +129,11 @@ public class ClassAdviserController {
      */
     @GetMapping("/appraisal/this")
     public ApiResp<IPage<AppraisalVo>> getAppraisalsThis(HttpServletRequest request,
-                                                     @RequestParam(value = "name", required = false)String name,
-                                                     @RequestParam(value = "userNumber", required = false)String userNumber,
+                                                     @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam("identity")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, name, userNumber, TimeUtil.now().getMonthValue(), rank, current, size);
+        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, keyword, TimeUtil.now().getMonthValue(), rank, current, size);
         return ApiResp.success(appraisals);
     }
 
@@ -265,5 +259,30 @@ public class ClassAdviserController {
     public ApiResp<String> uploadSignature(@RequestBody SignatureDto signatureDto){
         String fileName = classAdviserService.uploadSignature(signatureDto);
         return ApiResp.success(fileName);
+    }
+
+    /**
+     * 修改某月综测进度
+     * @param month 月份
+     * @param isEnd 是否结束
+     * @return
+     */
+    @PutMapping("/end")
+    public ApiResp<String> setIsEnd(HttpServletRequest request,
+                                    @RequestParam("month") Integer month,
+                                    @RequestParam("end") Boolean isEnd){
+        classAdviserService.setIsEnd(request, month, isEnd);
+        return ApiResp.success("修改成功");
+    }
+
+    /**
+     * 获取综测可查询月份
+     * @param request
+     * @return
+     */
+    @GetMapping("/appraisal/month")
+    public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
+        List<Integer> list = appraisalService.getMonthToTeacher(request);
+        return ApiResp.success(list);
     }
 }

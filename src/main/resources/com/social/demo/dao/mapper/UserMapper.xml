@@ -45,11 +45,8 @@
     <select id="selectClassUserNumbers" resultType="com.social.demo.data.vo.ClassUserVo">
         SELECT u.user_number, u.username, u.identity, s.appraisal_score FROM user AS u, student AS s
         WHERE u.user_id = s.user_id
-        <if test="userNumber!=null and userNumber!='' and userNumber != 'null'">
-            AND u.user_number LIKE CONCAT("%",#{userNumber},"%")
-        </if>
-        <if test="username!=null and username!='' and username != 'null'">
-            AND u.username LIKE CONCAT("%",#{username},"%")
+        <if test="keyword!=null and keyword!='' and keyword != 'null'">
+            AND (u.user_number LIKE CONCAT("%",#{keyword},"%") OR u.username LIKE CONCAT("%",#{keyword},"%"))
         </if>
         <if test="classId != null">
             AND s.class_id = #{classId}

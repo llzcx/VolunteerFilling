@@ -15,4 +15,6 @@ public interface AppraisalTeamMapper extends BaseMapper<AppraisalTeam> {
     List<Long> selectTeamUserId(Long classId);
 
     void deleteTeamUser(String userNumber);
+
+    Long selectClassId(Long userId);
 }

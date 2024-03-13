@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.social.demo.dao.mapper.AppraisalMapper">
+    <update id="updateIsEnd">
+        UPDATE appraisal SET is_end = #{isEnd} WHERE `month` = #{month} AND user_id IN
+                                               (SELECT user_id FROM student WHERE class_id = #{classId})
+    </update>
 
 
     <select id="selectLastMonthScore" resultType="java.lang.Integer">
         SELECT score FROM appraisal WHERE user_id in (SELECT user_id FROM user WHERE user_number = #{userNumber}) AND `month` = #{month}
     </select>
-    <select id="selectUserNumbers" resultType="java.lang.String">
+    <select id="selectUserNumbersToTeacher" resultType="java.lang.String">
         SELECT user_number FROM user AS u, student AS s
                            <where>
                                u.user_id = s.user_id
-                               <if test="name!=null and name!=''">
-                                   AND u.username LIKE CONCAT("%",#{name},"%")
+                               <if test="keyword != null and keyword != '' and keyword != 'null'">
+                                   AND (u.username LIKE CONCAT("%",#{keyword},"%") OR u.user_number LIKE CONCAT("%",#{keyword},"%"))
                                </if>
                                <if test="classId != null">
                                    AND u.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
@@ -52,16 +56,22 @@
     </select>
     <select id="selectUserNumbersToTeam" resultType="java.lang.String">
         SELECT user_number FROM user AS u, student AS s
-        WHERE u.user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
-        <if test="name!=null and name!='' and name!='null'">
-            AND u.username LIKE CONCAT("%",#{name},"%")
-        </if>
-        <if test="rank == -1">
-            ORDER BY s.appraisal_score
-        </if>
-        <if test="rank == 1">
-            ORDER BY s.appraisal_score desc
-        </if>
+            WHERE u.user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
+            <if test="keyword!=null and keyword!='' and keyword!='null'">
+                AND (u.username LIKE CONCAT("%",#{keyword},"%") OR u.user_number LIKE CONCAT("%",#{keyword},"%"))
+            </if>
+            <if test="rank == -1">
+                ORDER BY s.appraisal_score
+            </if>
+            <if test="rank == 1">
+                ORDER BY s.appraisal_score desc
+            </if>
+        GROUP BY user_number
         LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectMonths" resultType="java.lang.Integer">
+        SELECT `month` FROM appraisal WHERE user_id IN
+                                      (SELECT user_id FROM student WHERE class_id = #{class_id})
+        GROUP BY `month`
     </select>
 </mapper>
