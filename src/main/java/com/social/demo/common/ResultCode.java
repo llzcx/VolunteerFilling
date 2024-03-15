@@ -87,6 +87,7 @@ public enum ResultCode {
     UPLOAD_ERROR(3005,"上传失败"),
     NO_IMPL(3007,"暂无实现，请联系开发人员"),
     REGIONAL_DUPLICATION(3008,"地区选择重复"),
+    REPEATED_GENERATION(3009,"已经生成结果"),
 
 
     ;

@@ -3,6 +3,7 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.social.demo.common.ApiResp;
+import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.MateDto;
 import com.social.demo.data.dto.ResultDto;
@@ -39,6 +40,10 @@ public class VolunteerDiversionController {
      */
     @PostMapping("/Mate")
     public ApiResp<Boolean> MateResult(@RequestBody MateDto mateDto){
+        Long m =mateService.mateJudge(mateDto.getSchoolId(),mateDto.getType());
+        if(m>0){
+            return ApiResp.fail(ResultCode.REPEATED_GENERATION);
+        }
         Student student = new Student();
         student.setSchoolId(mateDto.getSchoolId());
         Integer ago = wishTimeService.selectAgo(mateDto.getTimeId());
@@ -63,7 +68,7 @@ public class VolunteerDiversionController {
         return ApiResp.success(mateService.getWishResultBySchoolId(schoolId,timeId,mateWay,type));
     }
     /**
-     *查看匹配结果
+     *查看最终匹配结果
      */
     @GetMapping("/getResult2")
     public ApiResp<List<WishResult>> getResult2(@RequestParam("schoolId") Long schoolId,
@@ -71,7 +76,7 @@ public class VolunteerDiversionController {
         return ApiResp.success(mateService.getWishResultBySchoolId2(schoolId,timeId));
     }
     /**
-     * 查看匹配结果
+     * 分页查看匹配结果
      */
     @GetMapping("/getResult1")
     public ApiResp<IPage<WishResult>> getResult1(@RequestParam("schoolId") Long schoolId,
