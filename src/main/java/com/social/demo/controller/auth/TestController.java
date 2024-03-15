@@ -3,6 +3,7 @@ package com.social.demo.controller.auth;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
+import com.social.demo.manager.ratelimit.api.APIRateLimiter;
 import com.social.demo.manager.security.context.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,5 +31,12 @@ public class TestController {
     @GetMapping("/test/other/{name}")
     public ApiResp<String> other(@PathVariable String name){
        return ApiResp.success("1");
+    }
+
+
+    @GetMapping("/test/limit")
+    @APIRateLimiter(qps = 100,timeout = 1000)
+    public ApiResp<String> testLimit(){
+        return ApiResp.success("1");
     }
 }

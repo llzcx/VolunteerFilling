@@ -124,6 +124,12 @@
             <artifactId>mybatis-plus-extension</artifactId>
             <version>3.5.3.1</version>
         </dependency>
+<!--        限流-->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.0.0-jre</version>
+        </dependency>
     </dependencies>
 
     <build>
