@@ -12,14 +12,17 @@ import java.lang.reflect.Method;
  * 静态RBAC
  */
 @Component
-public class StaticIdentityImpl implements IdentityAuthentication{
+public class StaticIdentityImpl implements IdentityAuthentication {
     @Override
-    public boolean check(String requestURL, IdentityEnum identity,Method method) {
+    public boolean check(String requestURL, IdentityEnum identity, Method method) {
         Identity annotation = method.getAnnotation(Identity.class);
-        if(identity != null){
+        if (identity != null) {
             //需要身份认证的接口
-            return annotation.value().equals(identity);
-        }else{
+            IdentityEnum[] value = annotation.value();
+            for (IdentityEnum ide : value)
+                if (ide.equals(identity)) return true;
+            return true;
+        } else {
             throw new SystemException(ResultCode.ENCODING_ANOMALY);
         }
     }

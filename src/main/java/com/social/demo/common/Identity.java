@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Identity {
     // 接口默认为学生
-    IdentityEnum value() default IdentityEnum.STUDENT;
+    IdentityEnum[] value() default IdentityEnum.STUDENT;
 }
