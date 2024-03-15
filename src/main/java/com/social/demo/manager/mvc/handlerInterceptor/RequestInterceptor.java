@@ -2,7 +2,7 @@ package com.social.demo.manager.mvc.handlerInterceptor;
 
 import cn.hutool.core.text.AntPathMatcher;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.social.demo.common.Release;
+import com.social.demo.manager.security.identity.Release;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.IdentityEnum;

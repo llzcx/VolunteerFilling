@@ -2,21 +2,17 @@ package com.social.demo.controller.auth;
 
 import com.social.demo.common.*;
 import com.social.demo.constant.IdentityEnum;
-import com.social.demo.constant.PropertiesConstant;
-import com.social.demo.dao.mapper.SysApiMapper;
 import com.social.demo.dao.mapper.SysRoleApiMapper;
 import com.social.demo.dao.repository.ISysApiService;
 import com.social.demo.entity.SysApi;
 import com.social.demo.entity.SysRoleApi;
-import com.social.demo.manager.mvc.config.MybatisPlusConfig;
-import com.social.demo.util.MybatisPlusUtil;
-import jakarta.persistence.Access;
+import com.social.demo.manager.security.identity.Excluded;
+import com.social.demo.manager.security.identity.Identity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.event.PaintEvent;
 import java.util.List;
 import java.util.Set;
 

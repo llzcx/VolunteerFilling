@@ -1,4 +1,4 @@
-package com.social.demo.common;
+package com.social.demo.manager.security.identity;
 
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;

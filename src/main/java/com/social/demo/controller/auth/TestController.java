@@ -1,9 +1,7 @@
 package com.social.demo.controller.auth;
 
 import com.social.demo.common.ApiResp;
-import com.social.demo.common.Release;
-import com.social.demo.common.ResultCode;
-import com.social.demo.common.SystemException;
+import com.social.demo.manager.security.identity.Release;
 import com.social.demo.manager.ratelimit.api.APIRateLimiter;
 import com.social.demo.manager.security.context.SecurityContext;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -2,7 +2,6 @@ package com.social.demo.dao.repository.impl;
 
 import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.social.demo.common.Identity;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
