@@ -29,7 +29,10 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
     List<WishClass> getUserIdByClassId1(Long classId, Long timeId,Long current,Long size);
     List<Long> getUserIdByClassId(Long classId);
     List<WishResult> getWishResultBySchoolId(Long schoolId,Long timeId,Integer mateWay);
+    List<WishResult> getWishResultBySchoolId2(Long schoolId,Long timeId,Integer mateWay);
+    List<WishResult> getWishResultBySchoolId5(Long schoolId,Long timeId);
     List<WishResult> getWishResultBySchoolId1(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
+    List<WishResult> getWishResultBySchoolId3(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
     Long getClass1(Long classId, Long timeId);
     Long selectClassIdByUserId(Long userId);
 

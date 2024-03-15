@@ -27,5 +27,5 @@ public class GradeDto {
     /**
      * 总成绩
      */
-    private Integer score;
+    private Double score;
 }

@@ -51,7 +51,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                 }
             }
         }
-
+        List<Mate> mates = new ArrayList<>();
         for(StudentMate studentMate :studentMates){
             Mate mate = new Mate();
             mate.setMateWay(1);
@@ -59,9 +59,9 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             mate.setMajorId(studentMate.getMajorId());
             mate.setMajorName(studentMate.getMajorName());
             mate.setTimeId(timeId);
-            mateMapper.insert(mate);
+            mates.add(mate);
         }
-
+        mateMapper.insertBatchSomeColumn(mates);
     return true;
     }
     public Long mateJudge(Long schoolId, Integer timeId){
@@ -102,12 +102,25 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
 
         return true;
     }
-    public List<WishResult> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay){
-        return studentMapper.getWishResultBySchoolId(schoolId,timeId,mateWay);
+    public List<WishResult> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay,Integer type){
+        if(type==1){
+            return studentMapper.getWishResultBySchoolId(schoolId,timeId,mateWay);
+        }else {
+            return studentMapper.getWishResultBySchoolId2(schoolId,timeId,mateWay);
+        }
+
     }
-    public List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size){
+    public List<WishResult> getWishResultBySchoolId2(Long schoolId, Long timeId){
+        return studentMapper.getWishResultBySchoolId5(schoolId,timeId);
+    }
+    public List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type){
         current=(current-1)*size;
-        return studentMapper.getWishResultBySchoolId1(schoolId,timeId,mateWay,current,size);
+        if(type==1){
+            return studentMapper.getWishResultBySchoolId1(schoolId,timeId,mateWay,current,size);
+        }else {
+            return studentMapper.getWishResultBySchoolId3(schoolId,timeId,mateWay,current,size);
+        }
+
     }
     public List<StudentMate> studentMates(List<RankingVo> rankingVos, List<Wish> wishes){
         List<StudentMate> studentMates = new ArrayList<>();

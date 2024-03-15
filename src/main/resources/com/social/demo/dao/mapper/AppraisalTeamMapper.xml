@@ -11,4 +11,10 @@
     <select id="selectTeamUserId" resultType="java.lang.Long">
         SELECT team_user_id FROM appraisal_team WHERE class_id = #{classId}
     </select>
+    <select id="selectClassId" resultType="java.lang.Long">
+        SELECT class_id FROM appraisal_team WHERE team_user_id = #{userI_id}
+    </select>
+    <select id="selectClassName" resultType="java.lang.String">
+        SELECT class_name FROM class WHERE class_id IN (SELECT class_id FROM appraisal_team WHERE team_user_id = #{userId})
+    </select>
 </mapper>

@@ -321,9 +321,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }else identity = IdentityEnum.searchByString(role).getRoleId();
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.like(username != null, "username", username)
-                .eq(identity != -1,"identity", identity)
+                .eq(identity != -1,"identity", identity).ne("identity", IdentityEnum.SUPER.getRoleId())
                 .or().like(username!=null, "user_number", username)
-                .eq(identity != -1,"identity", identity);
+                .eq(identity != -1,"identity", identity).ne("identity", IdentityEnum.SUPER.getRoleId());
         userPage = userMapper.selectPage(new Page<>(current, size), userQueryWrapper);
 
         userVoPage.setCurrent(userPage.getCurrent());

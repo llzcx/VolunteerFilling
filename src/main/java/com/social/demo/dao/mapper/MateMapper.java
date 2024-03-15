@@ -10,6 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @author 周威宇
  */
 @Mapper
-public interface MateMapper extends BaseMapper<Mate> {
+public interface MateMapper extends EasyBaseMapper<Mate> {
     public Long mateJudge(Long schoolId, Integer timeId);
 }

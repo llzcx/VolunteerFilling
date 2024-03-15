@@ -47,4 +47,8 @@ public class AppraisalVo {
      * 合计
      */
     private AppraisalTotalVo total;
+    /**
+     * 是否结束
+     */
+    private Boolean isEnd;
 }

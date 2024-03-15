@@ -13,26 +13,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppraisalContentVo {
-    private Integer month;
     private String userNumber;
     private String username;
     private String add1;
     private String sub1;
-    private Integer point1;
+    private Double point1;
     private String add2;
     private String sub2;
-    private Integer point2;
+    private Double point2;
     private String add3;
     private String sub3;
-    private Integer point3;
+    private Double point3;
     private String add4;
     private String sub4;
-    private Integer point4;
+    private Double point4;
     private String add5;
     private String sub5;
-    private Integer point5;
-    private Integer add_total;
-    private Integer sub_total;
-    private Integer pre_total;
-    private Integer point_total;
+    private Double point5;
+    private Double add_total;
+    private Double sub_total;
+    private Double pre_total;
+    private Double point_total;
 }

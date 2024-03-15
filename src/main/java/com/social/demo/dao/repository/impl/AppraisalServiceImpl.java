@@ -8,6 +8,7 @@ import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.vo.AppraisalContentVo;
+import com.social.demo.data.vo.AppraisalTeamVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.entity.Appraisal;
@@ -48,6 +49,9 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     @Autowired
     JwtUtil jwtUtil;
 
+    @Autowired
+    AppraisalTeamMapper appraisalTeamMapper;
+
     @Qualifier("local")
     @Autowired
     UploadFile uploadFile;
@@ -62,7 +66,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     public Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos) {
         for (AppraisalContentVo appraisalContentVo : appraisalContentVos) {
             Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
-            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, appraisalContentVo.getMonth());
+            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getDayOfMonth());
             Appraisal appraisal;
             if (appraisalByUserNumber == null){
                 appraisal = add(appraisalContentVo);
@@ -74,11 +78,6 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         }
         return null;
-    }
-
-    @Override
-    public void modifyAppraisal(AppraisalContentVo appraisalContentVo) {
-
     }
 
     private Appraisal modify(Appraisal appraisalByUserNumber, AppraisalContentVo appraisalContentVo){
@@ -95,7 +94,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
         appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-        appraisal.setMonth(appraisalContentVo.getMonth());
+        appraisal.setMonth(TimeUtil.now().getDayOfMonth());
         appraisal.setScore(appraisalContentVo.getPoint_total());
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
@@ -116,7 +115,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
         appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-        appraisal.setMonth(appraisalContentVo.getMonth());
+        appraisal.setMonth(TimeUtil.now().getDayOfMonth());
         appraisal.setScore(appraisalContentVo.getPoint_total());
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.insert(appraisal);
@@ -143,13 +142,13 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size) {
+    public IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
         Long userId = jwtUtil.getUserId(request);
         List<String> userNumbers;
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
         }
-        userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, name, userNumber, month, rank, (current - 1) * size, size);
+        userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, keyword, month, rank, (current - 1) * size, size);
 
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
         for (String number : userNumbers) {
@@ -163,10 +162,24 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size) {
+    public IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        return getAppraisalPage(classId, name, userNumber, month, rank, current, size);
+        return getAppraisalPage(classId, keyword, month, rank, current, size);
+    }
+
+    @Override
+    public List<Integer> getMonthToTeacher(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
+        return appraisalMapper.selectMonths(classId);
+    }
+
+    @Override
+    public List<Integer> getMonthToTeam(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = appraisalTeamMapper.selectClassId(userId);
+        return appraisalMapper.selectMonths(classId);
     }
 
     private AppraisalVo getAppraisal(String userNumber, Integer month){
@@ -186,12 +199,12 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         return appraisalVo;
     }
 
-    private IPage<AppraisalVo> getAppraisalPage(Long classId, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size){
+    private IPage<AppraisalVo> getAppraisalPage(Long classId, String keyword, Integer month, Integer rank, Integer current, Integer size){
         List<String> userNumbers;
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
         }
-        userNumbers = appraisalMapper.selectUserNumbers(classId, name, userNumber, month, rank, (current - 1) * size, size);
+        userNumbers = appraisalMapper.selectUserNumbersToTeacher(classId, keyword, month, rank, (current - 1) * size, size);
 
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
         for (String number : userNumbers) {

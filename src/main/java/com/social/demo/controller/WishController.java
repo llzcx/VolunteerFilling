@@ -56,9 +56,10 @@ public class WishController {
      */
     @PutMapping("modifyWish")
     public ApiResp<Boolean> modifyWish(@RequestBody WishVo1 wishVo1){
+        System.out.println(wishVo1);
         Long userId = SecurityContext.get().getUserId();
         Wish wish = wishVo1Wish(wishVo1);
-        WishVo wishVo =wishService.selectWish(userId);
+        WishVo wishVo =wishService.selectWish(userId,wishVo1.getTimeId());
         wish.setUserId(userId);
         wish.setFrequency(wishVo.getFrequency()-1);
         wish.setId(wishVo.getId());
@@ -72,18 +73,18 @@ public class WishController {
      *个人查看志愿接口
      */
     @GetMapping("selectWish")
-    public ApiResp<WishVo> selectWish()
+    public ApiResp<WishVo> selectWish(@RequestParam("timeId")Long timeId)
     {
         Long userId = SecurityContext.get().getUserId();
-        WishVo wishVo =wishService.selectWish(userId);
+        WishVo wishVo =wishService.selectWish(userId,timeId);
         return ApiResp.success(wishVo);
     }
     /**
      * 查看一个班的学生志愿
      */
     @GetMapping("selectClassWish")
-    public ApiResp<IPage<WishClass>> selectClassWish(HttpServletRequest request, @RequestParam("timeId") Long timeId,@RequestParam("current")Long current,
-                                                    @RequestParam("size")Long size){
+    public ApiResp<IPage<WishClass>> selectClassWish(@RequestParam("timeId") Long timeId, @RequestParam("current") Long current,
+                                                     @RequestParam("size") Long size){
         Long userId = SecurityContext.get().getUserId();
         Class aClass = classService.getClass(userId);
         IPage<WishClass> wishClassIPage = new Page<>();

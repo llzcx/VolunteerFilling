@@ -10,6 +10,7 @@ import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.dao.repository.IWishTimeService;
+import com.social.demo.data.vo.WishTimeVo;
 import com.social.demo.entity.User;
 import com.social.demo.entity.Wish;
 import com.social.demo.entity.WishTime;
@@ -92,6 +93,10 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
     // 执行查询
     return wishTimeMapper.selectPage(new Page<>(current,size),queryWrapper);
   }
+  @Override
+  public List<WishTimeVo> selectWishTime2(Long userId){
+    return wishTimeMapper.selectWishTime(userId);
+  }
   /**
    * 删除志愿填报时间
    * @param id
@@ -107,7 +112,7 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
    */
   public Integer selectAgo(Long timeId){
     QueryWrapper<WishTime> queryWrapper = Wrappers.query();
-    queryWrapper.eq("time_id",timeId);
+    queryWrapper.eq("id",timeId);
     WishTime wishTime = wishTimeMapper.selectOne(queryWrapper);
     return  wishTime.getAgo();
   }

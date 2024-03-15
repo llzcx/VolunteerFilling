@@ -8,10 +8,7 @@ import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.dto.UserDtoByStudent;
-import com.social.demo.data.vo.AppealVo;
-import com.social.demo.data.vo.AppraisalVo;
-import com.social.demo.data.vo.RankingVo;
-import com.social.demo.data.vo.StudentVo;
+import com.social.demo.data.vo.*;
 import com.social.demo.entity.Student;
 
 import com.social.demo.manager.security.context.SecurityContext;
@@ -169,23 +166,21 @@ public class StudentController {
 
     /**
      * 获取学生排名
-     * @param request
      * @param type
      * @return
      */
     @GetMapping("/getStudentRanking")
-    public ApiResp<Integer> getStudentRanking(HttpServletRequest request,@RequestParam("type") Integer type){
+    public ApiResp<RankingVo1> getStudentRanking(@RequestParam("type") Integer type){
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);
         List<RankingVo> rankingVos  = studentService.getRanking(type,student);
-        Integer rank = null;
+        RankingVo1 rank = new RankingVo1();
         for(RankingVo rankingVo:rankingVos){
             if(rankingVo.getUserId().equals(userId)){
-                rank=rankingVo.getRanking();
+                rank.setRanking(rankingVo.getRanking());
+                rank.setRankings(rankingVo.getRankings());
             }
         }
-
-        System.out.println(rankingVos);
          return  ApiResp.success(rank);
     }
 }

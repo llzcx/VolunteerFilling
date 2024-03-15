@@ -132,10 +132,10 @@ public class GradeServiceImpl implements IGradeService {
         for (GradeSubject gradeSubject : gradeSubjects) {
             GradeSubjectBo gradeSubjectBo = new GradeSubjectBo();
             gradeSubjectBo.setGradeId(gradeSubject.getGradeId());
-            gradeSubjectBo.setGrade(0);
+            gradeSubjectBo.setGrade(0.00);
             gradeSubjectBos.add(gradeSubjectBo);
         }
-        student.setScore(0);
+        student.setScore(0.00);
         student.setGrade(JSONUtil.toJsonStr(gradeSubjectBos));
         for (String userNumber : userNumbers) {
             studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));

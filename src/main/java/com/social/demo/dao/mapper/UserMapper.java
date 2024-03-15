@@ -1,6 +1,5 @@
 package com.social.demo.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.social.demo.data.bo.StudentBo;
 import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.entity.User;
@@ -49,7 +48,7 @@ public interface UserMapper extends EasyBaseMapper<User> {
 
     String selectHeadshot(String userNumber);
 
-    List<ClassUserVo> selectClassUserNumbers(Long classId, String userNumber, String username, String role, Integer rank, Integer number1, Integer number2);
+    List<ClassUserVo> selectClassUserNumbers(Long classId, String keyword, String role, Integer rank, Integer number1, Integer number2);
 
     void updateClassIdentity(String userNumber, Integer identity);
 

@@ -2,6 +2,7 @@ package com.social.demo.dao.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.dao.mapper.AreaMapper;
@@ -12,6 +13,7 @@ import com.social.demo.util.MybatisPlusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +58,19 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements IA
         QueryWrapper<Area> wrapper = new QueryWrapper<>();
         wrapper.like("name", name);
         return areaMapper.selectList(wrapper);
+    }
+    @Override
+    public List<List<String>> getAreaProvinces(List<Long> ids){
+        QueryWrapper<Area> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("area_id",ids);
+        queryWrapper.select("including_provinces");
+        List<Area>includingProvinces = areaMapper.selectList(queryWrapper);
+        List<List<String>> strings = new ArrayList<>();
+        for(int i=0;i<includingProvinces.size();i++){
+            List<String> strings1 = JsonUtil.ListJson(includingProvinces.get(i).getIncludingProvinces(),String.class);
+            strings.add(strings1);
+        }
+        return strings;
     }
     /**
      * 查询一个地区

@@ -69,7 +69,7 @@ public class Student {
     /**
      * 总成绩
      */
-    private Integer score;
+    private Double score;
     /**
      * 每科成绩
      */
@@ -77,5 +77,5 @@ public class Student {
     /**
      * 综测成绩
      */
-    private Integer appraisalScore;
+    private Double appraisalScore;
 }

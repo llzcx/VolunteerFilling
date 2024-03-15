@@ -8,6 +8,8 @@ import com.social.demo.entity.Appraisal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface IAppraisalService extends IService<Appraisal> {
     AppraisalVo getAppraisal(HttpServletRequest request, Integer month);
 
@@ -23,9 +25,11 @@ public interface IAppraisalService extends IService<Appraisal> {
      */
     AppraisalVo getAppraisalThisMonth(HttpServletRequest request);
 
-    IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size);
+    IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
 
-    IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String name, String userNumber, Integer month, Integer rank, Integer current, Integer size);
+    IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
 
-    void modifyAppraisal(AppraisalContentVo appraisalContentVo);
+    List<Integer> getMonthToTeacher(HttpServletRequest request);
+
+    List<Integer> getMonthToTeam(HttpServletRequest request);
 }

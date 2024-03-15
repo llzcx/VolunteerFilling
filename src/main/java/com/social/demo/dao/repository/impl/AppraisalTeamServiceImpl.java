@@ -8,6 +8,7 @@ import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalTeamService;
 import com.social.demo.data.dto.AppraisalTeamDto;
+import com.social.demo.data.vo.AppraisalTeamUserVo;
 import com.social.demo.data.vo.AppraisalTeamVo;
 import com.social.demo.entity.AppraisalTeam;
 import com.social.demo.entity.AppraisalTeamUser;
@@ -156,6 +157,19 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
             }
         }
         return true;
+    }
+
+    @Override
+    public AppraisalTeamUserVo getMessage(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(request);
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+        String className = appraisalTeamMapper.selectClassName(userId);
+        AppraisalTeamUserVo appraisalTeamUserVo = new AppraisalTeamUserVo();
+        appraisalTeamUserVo.setUsername(user.getUsername());
+        appraisalTeamUserVo.setUserNumber(user.getUserNumber());
+        appraisalTeamUserVo.setClassName(className);
+        appraisalTeamUserVo.setAppraisalTeamMemberVos(appraisalTeamUserMapper.selectClassMember(userId));
+        return appraisalTeamUserVo;
     }
 
     /**

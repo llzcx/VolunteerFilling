@@ -5,10 +5,8 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
-import com.social.demo.data.vo.AppealVo;
-import com.social.demo.data.vo.AppraisalContentVo;
-import com.social.demo.data.vo.AppraisalVo;
-import com.social.demo.util.TimeUtil;
+import com.social.demo.dao.repository.IAppraisalTeamService;
+import com.social.demo.data.vo.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -33,11 +31,13 @@ public class AppraisalTeamController {
     @Autowired
     IAppealService appealService;
 
+    @Autowired
+    IAppraisalTeamService appraisalTeamService;
+
     /**
      * 综测小组获取学生综测
      * @param request
-     * @param name 学生姓名
-     * @param userNumber 学号
+     * @param keyword 学号或姓名
      * @param month 月份 0表示本月
      * @param rank 排序类型： 0 -不排、 -1从小到大 1从大到小
      * @param current 当前页码
@@ -46,13 +46,12 @@ public class AppraisalTeamController {
      */
     @GetMapping("/appraisal")
     public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
-                                                     @RequestParam(value = "name", required = false)String name,
-                                                     @RequestParam(value = "userNumber", required = false)String userNumber,
+                                                     @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam("month")Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeam(request, name, userNumber, month, rank, current, size);
+        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeam(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
 
@@ -64,17 +63,6 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal")
     public ApiResp<String> uploadAppraisal(@RequestBody AppraisalContentVo[] appraisalContentVos){
         appraisalService.uploadAppraisal(appraisalContentVos);
-        return ApiResp.success("上传成功");
-    }
-
-    /**
-     * 修改学生综测情况
-     * @param appraisalContentVo
-     * @return
-     */
-    @PutMapping("/appraisal")
-    public ApiResp<String> modifyAppraisal(@RequestBody AppraisalContentVo appraisalContentVo){
-        appraisalService.modifyAppraisal(appraisalContentVo);
         return ApiResp.success("上传成功");
     }
 
@@ -112,5 +100,27 @@ public class AppraisalTeamController {
                                          @RequestBody Long[] appealId){
         Boolean b = appealService.deleteAppealsByTeam(request, appealId);
         return ApiResp.judge(b, "删除成功", ResultCode.NOT_DELETE_UNFINISHED);
+    }
+
+    /**
+     * 获取可查询综测月份
+     * @param request
+     * @return
+     */
+    @GetMapping("/appraisal/month")
+    public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
+        List<Integer> list = appraisalService.getMonthToTeam(request);
+        return ApiResp.success(list);
+    }
+
+    /**
+     * 获取综测小组成员个人消息
+     * @param request
+     * @return
+     */
+    @GetMapping("/message")
+    public ApiResp<AppraisalTeamUserVo> getMessage(HttpServletRequest request){
+        AppraisalTeamUserVo userMessage = appraisalTeamService.getMessage(request);
+        return ApiResp.success(userMessage);
     }
 }

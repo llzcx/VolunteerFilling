@@ -10,7 +10,7 @@ import java.util.List;
 public interface AppraisalMapper extends BaseMapper<Appraisal> {
     Integer selectLastMonthScore(String userNumber, Integer month);
 
-    List<String> selectUserNumbers(Long classId, String name, String userNumber, Integer month, Integer rank, Integer number1, Integer number2);
+    List<String> selectUserNumbersToTeacher(Long classId, String keyword, Integer month, Integer rank, Integer number1, Integer number2);
 
     Integer selectTotal(Long classId, String name, String userNumber, Integer month, Integer rank);
 
@@ -19,5 +19,9 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
 
     Long selectAppraisalId(String userNumber, Integer month);
 
-    List<String> selectUserNumbersToTeam(Long userId, String name, String userNumber, Integer month, Integer rank, Integer number1, Integer number2);
+    List<String> selectUserNumbersToTeam(Long userId, String keyword, Integer month, Integer rank, Integer number1, Integer number2);
+
+    void updateIsEnd(Long classId, Integer month, Boolean isEnd);
+
+    List<Integer> selectMonths(Long classId);
 }

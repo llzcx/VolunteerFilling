@@ -4,18 +4,23 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.JsonUtil;
+import com.social.demo.common.ResultCode;
+import com.social.demo.dao.mapper.AreaMapper;
 import com.social.demo.dao.repository.IAreaService;
 import com.social.demo.dao.repository.IMajorService;
 import com.social.demo.data.vo.MajorVo;
 import com.social.demo.data.vo.SubjectRuleVo;
 import com.social.demo.entity.Area;
 import com.social.demo.entity.Major;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 专业接口
@@ -29,6 +34,7 @@ public class MajorController {
     private IMajorService majorService;
     @Autowired
     private IAreaService areaService;
+
     /**
      * 添加专业
      */
@@ -52,6 +58,25 @@ public class MajorController {
     public ApiResp<MajorVo> modifyMajor(@RequestBody MajorVo majorVo){
         if(majorVo.getSubjectRule()!=null){
             majorVo = SubjectScopeCount(majorVo);
+        }
+        List<SubjectRuleVo> subjectRuleVos = majorVo.getSubjectRule();
+        List<List<String>> list = new ArrayList<>();
+        List<Long> list1 = new ArrayList<>();
+        for (SubjectRuleVo subjectRuleVo:subjectRuleVos){
+             list1.add(subjectRuleVo.getAreaId());
+        }
+        list = areaService.getAreaProvinces(list1);
+        for(int i=0;i<list.size();i++){
+            for(int j=i+1;j<list.size();j++){
+                List<String> combinedList = new ArrayList<>(list.get(i));
+                combinedList.addAll(list.get(j));
+                Set<String> set = new HashSet<>();
+                for (String item : combinedList) {
+                    if (!set.add(item)) {
+                        return ApiResp.fail(ResultCode.REGIONAL_DUPLICATION);
+                    }
+                }
+            }
         }
         Major major = MajorVoMajor(majorVo);
         major = majorService.modifyMajor(major);
@@ -168,7 +193,6 @@ public class MajorController {
                         }
                     }
                 }
-
                 subjectRuleVo.setSubjectGroups(hashCodes);
             }
         }

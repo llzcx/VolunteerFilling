@@ -86,6 +86,7 @@ public enum ResultCode {
     DATABASE_DATA_EXCEPTION(3004,"数据库数据异常"),
     UPLOAD_ERROR(3005,"上传失败"),
     NO_IMPL(3007,"暂无实现，请联系开发人员"),
+    REGIONAL_DUPLICATION(3008,"地区选择重复"),
 
 
     ;
