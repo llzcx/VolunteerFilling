@@ -59,7 +59,7 @@ public class StudentController {
      */
     @PutMapping("/information")
     public ApiResp<Boolean> modifyInformation(HttpServletRequest request,
-                                                @RequestBody UserDtoByStudent userDtoByStudent){
+                                                @RequestBody(required = false) UserDtoByStudent userDtoByStudent){
         Boolean b = userService.modifyInformation(request, userDtoByStudent);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
