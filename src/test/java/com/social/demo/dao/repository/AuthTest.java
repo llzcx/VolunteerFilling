@@ -56,7 +56,7 @@ public class AuthTest {
                 a[j].setGradeId((long) j);
                 Random rand = new Random();
                 int randomNum = rand.nextInt(41) + 60;
-                a[j].setGrade(randomNum);
+                a[j].setGrade((double) randomNum);
             }
             Student student = new Student();
             student.setGrade(JSONUtil.toJsonStr(a));
@@ -70,7 +70,7 @@ public class AuthTest {
             Student student = new Student();
             Random rand = new Random();
             int randomNum = rand.nextInt(41) + 60;
-            student.setScore(randomNum);
+            student.setScore((double) randomNum);
             studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", i));
         }
     }

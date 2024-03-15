@@ -4,7 +4,16 @@ import lombok.Data;
 
 @Data
 public class MateDto {
+    /**
+     * 学校id
+     */
     private Long schoolId;
+    /**
+     * 匹配方式
+     */
     private Integer type;
-    private Integer timeId;
+    /**
+     * 志愿时间id
+     */
+    private Long timeId;
 }

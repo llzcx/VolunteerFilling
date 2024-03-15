@@ -23,4 +23,8 @@ public class RankingVo {
      * 学生排名
      */
     private Integer ranking;
+    /**
+     * 学生排名范围
+     */
+    private  Integer rankings;
 }

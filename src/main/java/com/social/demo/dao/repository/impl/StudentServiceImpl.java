@@ -73,6 +73,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
         }
         sort(rankings);
+        int s = rankings.size();
         List <RankingVo> rankingVos = new ArrayList<>();
         Ranking ranking = rankings.get(0);
         RankingVo rankingVo = new RankingVo();
@@ -87,6 +88,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
             rankingVo1.setGrades(rankings.get(i).getGrade());
             rankingVo1.setRanking(i+1);
             rankingVo1.setUserId(rankings.get(i).getUserId());
+            rankingVo1.setRankings(s);
             rankingVos.add(rankingVo1);
             if(rankings.get(i).getScore().equals(rankings.get(i-1).getScore())){
                 List<GradeSubjectBo>gradeSubjectBos1 =JsonUtil.ListJson(rankings.get(i-1).getGrade(),GradeSubjectBo.class);

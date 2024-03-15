@@ -30,7 +30,15 @@ public interface IMateService extends IService<Mate> {
      * @param mateWay
      * @return
      */
-    List<WishResult> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay);
+    List<WishResult> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay,Integer type);
+
+    /**
+     *
+     * @param schoolId
+     * @param timeId
+     * @return
+     */
+    List<WishResult> getWishResultBySchoolId2(Long schoolId, Long timeId);
     /**
      * 查看匹配结果
      * @param schoolId
@@ -38,5 +46,5 @@ public interface IMateService extends IService<Mate> {
      * @param mateWay
      * @return
      */
-    List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size);
+    List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type);
 }

@@ -5,6 +5,7 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.dao.mapper.WishMapper;
 import com.social.demo.dao.repository.IWishService;
+import com.social.demo.data.dto.ResultDto;
 import com.social.demo.data.vo.WishVo;
 import com.social.demo.entity.School;
 import com.social.demo.entity.Wish;
@@ -33,7 +34,7 @@ public class WishServiceImpl extends ServiceImpl<WishMapper, Wish> implements IW
     return insertSuccess;
   }
   @Override
-  public List<Wish> selectSchool(Long schoolId,Integer timeId){
+  public List<Wish> selectSchool(Long schoolId,Long timeId){
    return wishMapper.selectSchoolWish(schoolId,timeId);
   }
   /**
@@ -42,16 +43,25 @@ public class WishServiceImpl extends ServiceImpl<WishMapper, Wish> implements IW
   @Override
   public Boolean modifyWish(Wish wish){
     int update = wishMapper.update( wish,
-            MybatisPlusUtil.queryWrapperEq("user_id",wish.getUserId()));
+            MybatisPlusUtil.queryWrapperEq("user_id",wish.getUserId(),"time_id",wish.getTimeId()));
     return update > 0;
   }
-
+  /**
+   * 修改学生志愿
+   */
+  @Override
+  public Boolean modifyWish1(List<ResultDto> resultDtos){
+    for(ResultDto resultDto:resultDtos){
+       wishMapper.updateWish(resultDto.getUserNumber(),resultDto.getAdmissionResultId(),resultDto.getAdmissionResultName());
+    }
+    return true;
+  }
   /**
    *查询学生志愿
    */
   @Override
-  public WishVo selectWish(Long userId){
-    return wishMapper.selectWish(userId);
+  public WishVo selectWish(Long userId,Long timeId){
+    return wishMapper.selectWish(userId,timeId);
   }
 
   @Override

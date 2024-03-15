@@ -14,7 +14,6 @@ public class SubjectRuleVo {
      *地区Id
      */
     private Long areaId;
-
     /**
      *必选科目
      */

@@ -33,6 +33,10 @@ public interface IAreaService extends IService<Area> {
      */
     List<Area> getArea(String name);
     /**
+     * 查询指定地区范围
+     */
+    List<List<String>> getAreaProvinces(List<Long> ids);
+    /**
      * 修改地区
      * @param area
      * @return

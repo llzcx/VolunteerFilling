@@ -5,9 +5,13 @@
         SELECT wish.wish.first,wish.wish.first_name,wish.wish.second,wish.wish.second_name,wish.wish.third,
                wish.wish.third_name,wish.wish_time.end_time,wish.wish.id,wish.wish.user_id,wish.wish.time_id,wish.wish.frequency
         FROM wish.wish
-                 JOIN wish.wish_time on wish.user_id= #{userId} and wish.time_id = wish_time.id;
+                 JOIN wish.wish_time on wish.user_id= #{userId} and wish.time_id = wish_time.id and wish.time_id = #{timeId};
     </select>
     <select id="selectSchoolWish" resultType="com.social.demo.entity.Wish">
        SELECT * FROM wish.wish WHERE wish.wish.user_id IN (SELECT user_id FROM student WHERE school_id = #{schoolId}) and wish.wish.time_id = #{timeId}
     </select>
+    <update id="updateWish">
+       UPDATE wish.wish set wish.admission_result_id = #{admissionResult}, wish.admission_result_name =#{admissionResultName}
+       where wish.user_id =(select user_id from user where user.user_number = #{userNumber});
+    </update>
 </mapper>

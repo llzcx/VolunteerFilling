@@ -60,4 +60,12 @@ public class WishResult {
      * 标注
      */
     private Integer mateWay;
+    /**
+     * 家长电话
+     */
+    private String parentPhone;
+    /**
+     * 电话
+     */
+    private String phone;
 }
