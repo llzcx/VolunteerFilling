@@ -1,25 +1,20 @@
 package com.social.demo.controller.auth;
 
 
-import cn.hutool.core.text.AntPathMatcher;
-import cn.hutool.cron.pattern.parser.PartParser;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.*;
 import com.social.demo.constant.IdentityEnum;
-import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.SysRoleApiMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.ISysRoleService;
 import com.social.demo.data.vo.IdentityVo;
 import com.social.demo.entity.SysApi;
-import com.social.demo.entity.SysRoleApi;
 import com.social.demo.entity.SysRoleVo;
 import com.social.demo.entity.User;
 import com.social.demo.manager.security.context.SecurityContext;
-import com.social.demo.manager.security.jwt.JwtUtil;
-import com.social.demo.util.MybatisPlusUtil;
-import jakarta.servlet.http.HttpServletRequest;
+import com.social.demo.manager.security.identity.Excluded;
+import com.social.demo.manager.security.identity.Identity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 权限-角色与用户操作

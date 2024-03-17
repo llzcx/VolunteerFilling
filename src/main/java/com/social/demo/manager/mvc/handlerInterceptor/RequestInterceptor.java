@@ -2,6 +2,7 @@ package com.social.demo.manager.mvc.handlerInterceptor;
 
 import cn.hutool.core.text.AntPathMatcher;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.social.demo.manager.security.identity.Release;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.IdentityEnum;
@@ -9,6 +10,7 @@ import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.SysApiMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.data.bo.TokenPair;
+import com.social.demo.manager.ratelimit.api.APIRateLimiterAspect;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.manager.security.config.PathConfig;
 import com.social.demo.manager.security.context.RequestInfo;
@@ -27,13 +29,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 
 /**
  * 拦截器类
+ *
  * @author 陈翔
  */
 @Component
@@ -59,6 +60,8 @@ public class RequestInterceptor implements HandlerInterceptor {
     @Autowired
     IdentityAuthentication identityAuthentication;
 
+    @Autowired
+    APIRateLimiterAspect apiRateLimiterAspect;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -75,20 +78,27 @@ public class RequestInterceptor implements HandlerInterceptor {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
 
+        //限流
+        if(!apiRateLimiterAspect.check(method)){
+            throw new SystemException(ResultCode.REQ_LIMIT);
+        }
+
 
         //本次请求的路径
         String requestURL = request.getRequestURI();
-        log.info("requestURL:{}",requestURL);
+        log.info("requestURL:{}", requestURL);
         //放行路径
         for (String path : PathConfig.RELEASABLE_PATH) {
-            if(antPathMatcher.match(path,requestURL)){
+            if (antPathMatcher.match(path, requestURL)) {
                 log.info("放行了");
                 return true;
             }
         }
+        Release annotation = method.getAnnotation(Release.class);
+        if (annotation != null) return true;
         //匿名请求 不允许进入
         final String token = request.getHeader(jwtUtil.getTokenHeader());
-        if(token == null){
+        if (token == null) {
             throw new SystemException(ResultCode.PROHIBIT_ANONYMOUS_REQUESTS);
         }
         //非匿名请求 处理
@@ -100,19 +110,19 @@ public class RequestInterceptor implements HandlerInterceptor {
         }
         Long userId = jwtUtil.getUserId(tokenDecode);
         TokenPair tokenForRedis = jwtUtil.getTokenForRedis(userId);
-        if(!Objects.equals(tokenForRedis.getAccessToken(),token)){
+        if (!Objects.equals(tokenForRedis.getAccessToken(), token)) {
             throw new SystemException(ResultCode.OLD_TOKEN);
         }
         Integer identityCode = userMapper.selectIdentityByUserId(userId);
-        RequestInfo requestInfo = new RequestInfo(userId,IdentityEnum.searchByCode(identityCode));
-        log.info("本次访问的身份是：{}",requestInfo.getIdentity().getMessage());
+        RequestInfo requestInfo = new RequestInfo(userId, IdentityEnum.searchByCode(identityCode));
+        log.info("本次访问的身份是：{}", requestInfo.getIdentity().getMessage());
         //保存到当前线程上下文
         SecurityContext.set(requestInfo);
-        if(PropertiesConstant.AUTHORIZATION_CLOSE){
+        if (PropertiesConstant.AUTHORIZATION_CLOSE) {
             return true;
         }
         //权限验证
-        return identityAuthentication.check(requestURL,requestInfo.getIdentity(),method);
+        return identityAuthentication.check(requestURL, requestInfo.getIdentity(), method);
 
     }
 

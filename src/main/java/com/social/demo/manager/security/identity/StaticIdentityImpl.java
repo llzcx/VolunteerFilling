@@ -1,6 +1,5 @@
 package com.social.demo.manager.security.identity;
 
-import com.social.demo.common.Identity;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.constant.IdentityEnum;

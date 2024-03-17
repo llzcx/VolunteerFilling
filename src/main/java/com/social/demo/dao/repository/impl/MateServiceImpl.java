@@ -64,8 +64,8 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         mateMapper.insertBatchSomeColumn(mates);
     return true;
     }
-    public Long mateJudge(Long schoolId, Integer timeId){
-        return mateMapper.mateJudge(schoolId,timeId);
+    public Long mateJudge(Long schoolId, Integer type){
+        return mateMapper.mateJudge(schoolId,type);
     }
     public Boolean parallelMate(List<RankingVo> rankingVos, List<Major> majors, List<Wish> wishes){
         Long timeId = wishes.get(0).getTimeId();
