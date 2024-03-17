@@ -36,7 +36,7 @@ public class TestController {
 
 
     @GetMapping("/test/limit")
-    @APIRateLimiter(qps = 2,timeout = 100)
+    @APIRateLimiter(qps = 0.1,timeout = 100)
     @Release
     public ApiResp<String> testLimit(){
         return ApiResp.success(String.valueOf(new Random().nextDouble()));
