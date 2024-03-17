@@ -11,7 +11,7 @@ import java.util.List;
 public interface IAppealService extends IService<Appeal> {
 
     List<AppealVo> getAppealsToStudent(HttpServletRequest request);
-    void submitAppeal(HttpServletRequest request, AppealDto appeal);
+    Boolean submitAppeal(HttpServletRequest request, AppealDto appeal);
     Boolean quashAppeal(HttpServletRequest request, Long appealId);
     Boolean disposeAppeal(HttpServletRequest request, Long appealId);
     Boolean disposeAppealByTeam(HttpServletRequest request, Long appealId);

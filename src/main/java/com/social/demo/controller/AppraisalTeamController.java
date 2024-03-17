@@ -5,12 +5,15 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
+import com.social.demo.dao.repository.IAppraisalSignatureService;
 import com.social.demo.dao.repository.IAppraisalTeamService;
 import com.social.demo.data.vo.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,6 +36,9 @@ public class AppraisalTeamController {
 
     @Autowired
     IAppraisalTeamService appraisalTeamService;
+
+    @Autowired
+    IAppraisalSignatureService appraisalSignatureService;
 
     /**
      * 综测小组获取学生综测
@@ -122,5 +128,31 @@ public class AppraisalTeamController {
     public ApiResp<AppraisalTeamUserVo> getMessage(HttpServletRequest request){
         AppraisalTeamUserVo userMessage = appraisalTeamService.getMessage(request);
         return ApiResp.success(userMessage);
+    }
+
+    /**
+     * 上传签名
+     * @param file
+     * @param month
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/appraisal/signature")
+    public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
+        String fileName = appraisalTeamService.uploadSignature(file, month, request);
+        return ApiResp.success(fileName);
+    }
+
+    /**
+     * 获取综测签名
+     * @param request
+     * @param month
+     * @return
+     */
+    @GetMapping("/appraisal/signature")
+    public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
+        String url = appraisalSignatureService.getSignature(request, month);
+        return ApiResp.success(url);
     }
 }

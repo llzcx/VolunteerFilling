@@ -15,7 +15,7 @@ public interface IAppraisalService extends IService<Appraisal> {
 
     Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos);
 
-    String uploadSignature(MultipartFile file, HttpServletRequest request) throws Exception;
+    String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception;
 
 
     /**

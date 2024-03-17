@@ -10,14 +10,19 @@ import com.social.demo.dao.repository.IAppraisalTeamService;
 import com.social.demo.data.dto.AppraisalTeamDto;
 import com.social.demo.data.vo.AppraisalTeamUserVo;
 import com.social.demo.data.vo.AppraisalTeamVo;
+import com.social.demo.entity.AppraisalSignature;
 import com.social.demo.entity.AppraisalTeam;
 import com.social.demo.entity.AppraisalTeamUser;
 import com.social.demo.entity.User;
+import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
+import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -46,6 +51,13 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
 
     @Autowired
     UserMapper userMapper;
+
+    @Qualifier("local")
+    @Autowired
+    UploadFile uploadFile;
+
+    @Autowired
+    AppraisalSignatureMapper appraisalSignatureMapper;
 
     @Override
     public Boolean addAppraisalTeam(HttpServletRequest request, String[] userNumbers) {
@@ -170,6 +182,15 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
         appraisalTeamUserVo.setClassName(className);
         appraisalTeamUserVo.setAppraisalTeamMemberVos(appraisalTeamUserMapper.selectClassMember(userId));
         return appraisalTeamUserVo;
+    }
+
+    @Override
+    public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = appraisalTeamMapper.selectClassId(userId);
+        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        appraisalSignatureMapper.add(classId, fileName, month, userId);
+        return fileName;
     }
 
     /**

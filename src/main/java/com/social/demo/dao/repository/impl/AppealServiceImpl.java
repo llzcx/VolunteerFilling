@@ -62,13 +62,15 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
     }
 
     @Override
-    public void submitAppeal(HttpServletRequest request, AppealDto appeal) {
+    public Boolean submitAppeal(HttpServletRequest request, AppealDto appeal) {
         Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
+        if (classId == null) return false;
         Appeal newAppeal = new Appeal(userId, classId, appeal.getContent(), TimeUtil.now(),
                 PropertiesConstant.APPEAL_STATE_PENDING, TimeUtil.now());
         newAppeal.setType(appeal.getType());
-        int insert = appealMapper.insert(newAppeal);
+        appealMapper.insert(newAppeal);
+        return true;
     }
 
     @Override

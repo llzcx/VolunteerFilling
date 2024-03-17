@@ -1,17 +1,24 @@
 package com.social.demo.dao.repository.impl;
 
+import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.AppraisalMapper;
+import com.social.demo.dao.mapper.AppraisalSignatureMapper;
 import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassAdviserService;
 import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.vo.ClassUserVo;
+import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.jwt.JwtUtil;
+import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,6 +42,22 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     @Autowired
     AppraisalMapper appraisalMapper;
 
+    @Qualifier("local")
+    @Autowired
+    UploadFile uploadFile;
+
+    @Autowired
+    AppraisalSignatureMapper appraisalSignatureMapper;
+
+    @Override
+    public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
+        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        appraisalSignatureMapper.add(classId, fileName, month, userId);
+        return fileName;
+    }
+
     @Override
     public IPage<ClassUserVo> getStudents(HttpServletRequest request, String keyword, String role,
                                           Integer rank, Integer current, Integer size) {
@@ -50,12 +73,6 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         page.setTotal(total);
         page.setRecords(userList);
         return page;
-    }
-
-    @Override
-    public String uploadSignature(SignatureDto signatureDto) {
-
-        return null;
     }
 
     @Override

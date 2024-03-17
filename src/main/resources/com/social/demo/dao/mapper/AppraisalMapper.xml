@@ -74,4 +74,11 @@
                                       (SELECT user_id FROM student WHERE class_id = #{class_id})
         GROUP BY `month`
     </select>
+    <select id="selectTotalToTeam" resultType="java.lang.Integer">
+        SELECT COUNT(user_number) FROM user
+            WHERE user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
+            <if test="keyword!=null and keyword!='' and keyword!='null'">
+                AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
+            </if>
+    </select>
 </mapper>

@@ -1,5 +1,7 @@
 package com.social.demo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,5 +34,13 @@ public class AppraisalSignature {
     /**
      * 签名id
      */
+    @TableId(value = "signature_id", type = IdType.AUTO)
     private Long signatureId;
+
+    public AppraisalSignature(Long classId, String signature, Integer month, Long userId) {
+        this.classId = classId;
+        this.signature = signature;
+        this.month = month;
+        this.userId = userId;
+    }
 }

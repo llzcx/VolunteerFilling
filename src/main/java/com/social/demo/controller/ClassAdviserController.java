@@ -2,7 +2,9 @@ package com.social.demo.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
+import com.social.demo.common.Identity;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.AppraisalTeamDto;
 import com.social.demo.data.dto.SignatureDto;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,6 +48,9 @@ public class ClassAdviserController {
 
     @Autowired
     JwtUtil jwtUtil;
+
+    @Autowired
+    IAppraisalSignatureService appraisalSignatureService;
 
     /**
      * 班级成员列表
@@ -251,17 +257,6 @@ public class ClassAdviserController {
     }
 
     /**
-     * 上传头像
-     * @param signatureDto
-     * @return
-     */
-    @PostMapping("/signature")
-    public ApiResp<String> uploadSignature(@RequestBody SignatureDto signatureDto){
-        String fileName = classAdviserService.uploadSignature(signatureDto);
-        return ApiResp.success(fileName);
-    }
-
-    /**
      * 修改某月综测进度
      * @param month 月份
      * @param isEnd 是否结束
@@ -281,8 +276,35 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appraisal/month")
+    @Identity({IdentityEnum.CLASS_ADVISER,IdentityEnum.APPRAISAL_TEAM,IdentityEnum.STUDENT})
     public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
         List<Integer> list = appraisalService.getMonthToTeacher(request);
         return ApiResp.success(list);
+    }
+
+    /**
+     * 获取综测签名
+     * @param file
+     * @param month
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/appraisal/signature")
+    public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
+        String fileName = classAdviserService.uploadSignature(file, month, request);
+        return ApiResp.success(fileName);
+    }
+
+    /**
+     * 获取签名
+     * @param request
+     * @param month
+     * @return
+     */
+    @GetMapping("/appraisal/signature")
+    public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
+        String url = appraisalSignatureService.getSignature(request, month);
+        return ApiResp.success(url);
     }
 }

@@ -109,14 +109,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public Boolean modifyInformation(HttpServletRequest request, UserDtoByStudent userDtoByStudent) {
-
         Long userId = jwtUtil.getUserId(request);
         User user = new User();
-        user.setPhone(userDtoByStudent.getPhone());
-        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
+        user.setPhone(userDtoByStudent.getPhone().isEmpty() ? null : userDtoByStudent.getPhone());
+        if (!userDtoByStudent.getPhone().isEmpty()) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         Consignee consignee = new Consignee();
-        BeanUtils.copyProperties(userDtoByStudent.getConsigneeBo(), consignee);
-        consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userId));
+        consignee.setAddress(userDtoByStudent.getConsigneeBo().getAddress().isEmpty() ? null : userDtoByStudent.getConsigneeBo().getAddress());
+        consignee.setPhone(userDtoByStudent.getConsigneeBo().getPhone().isEmpty() ? null : userDtoByStudent.getConsigneeBo().getPhone());
+        consignee.setUsername(userDtoByStudent.getConsigneeBo().getUsername().isEmpty() ? null : userDtoByStudent.getConsigneeBo().getUsername());
+        if (!userDtoByStudent.getConsigneeBo().getPhone().isEmpty() ||
+                !userDtoByStudent.getConsigneeBo().getAddress().isEmpty() ||
+                !userDtoByStudent.getConsigneeBo().getUsername().isEmpty())
+            consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         return true;
     }
 
@@ -397,7 +401,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
         Long userId = jwtUtil.getUserId(request);
-        String upload = uploadFile.upload(file, PropertiesConstant.USERS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        String upload = uploadFile.upload(file, PropertiesConstant.HEADSHOT, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         User user = new User();
         user.setHeadshot(upload);
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));

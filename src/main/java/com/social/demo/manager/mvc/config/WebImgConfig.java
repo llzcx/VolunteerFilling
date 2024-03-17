@@ -12,6 +12,6 @@ public class WebImgConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:D:/data/users/");
+        registry.addResourceHandler("/image/**").addResourceLocations("file:D:/data/");
     }
 }

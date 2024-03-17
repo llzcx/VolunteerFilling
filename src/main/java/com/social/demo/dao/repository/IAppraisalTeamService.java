@@ -6,6 +6,7 @@ import com.social.demo.data.vo.AppraisalTeamUserVo;
 import com.social.demo.data.vo.AppraisalTeamVo;
 import com.social.demo.entity.AppraisalTeam;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface IAppraisalTeamService extends IService<AppraisalTeam> {
     Boolean allocationClassMember(AppraisalTeamDto appraisalTeamDto);
 
     AppraisalTeamUserVo getMessage(HttpServletRequest request);
+
+    String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception;
 }

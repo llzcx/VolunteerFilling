@@ -59,7 +59,7 @@ public class StudentController {
      */
     @PutMapping("/information")
     public ApiResp<Boolean> modifyInformation(HttpServletRequest request,
-                                                @RequestBody(required = false) UserDtoByStudent userDtoByStudent){
+                                                @RequestBody UserDtoByStudent userDtoByStudent){
         Boolean b = userService.modifyInformation(request, userDtoByStudent);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
@@ -97,8 +97,8 @@ public class StudentController {
     @PostMapping("/appeal")
     public ApiResp<String> submitAppeal(HttpServletRequest request,
                                         @RequestBody AppealDto appeal){
-        appealService.submitAppeal(request, appeal);
-        return ApiResp.success("上传成功");
+        Boolean b = appealService.submitAppeal(request, appeal);
+        return ApiResp.judge(b,"上传成功",ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
@@ -154,13 +154,15 @@ public class StudentController {
     /**
      * 上传电子签名
      * @param file 上传的签名文件
+     * @param month 月份
      * @param request
      * @return
      */
     @PostMapping("/signature")
-    public ApiResp<String> uploadSignature(@RequestBody MultipartFile file,
+    public ApiResp<String> uploadSignature(MultipartFile file,
+                                           Integer month,
                                            HttpServletRequest request) throws Exception {
-        String signature = appraisalService.uploadSignature(file, request);
+        String signature = appraisalService.uploadSignature(file, month, request);
         return ApiResp.success(signature);
     }
 

@@ -10,11 +10,17 @@ public interface PropertiesConstant {
     //文件夹前缀-综测用户签名
     String APPRAISALS = "appraisals";
 
-    //文件前缀-用户证件照
-    String USER = "user";
+    //文件夹前缀-用户头像
+    String HEADSHOT = "headshot";
 
-    //文件夹前缀-用户证件照
-    String USERS = "users";
+    //文件夹前缀-学生综测签名
+    String SIGNATURE_STUDENTS = "signature/student";
+
+    //文件夹前缀-综测小组综测签名
+    String SIGNATURE_TEAM = "signature/team";
+
+    //文件夹前缀-班主任综测签名
+    String SIGNATURE_TEACHER = "signature/teacher";
 
     //申诉状态 - 待处理
     Integer APPEAL_STATE_PENDING = 0;

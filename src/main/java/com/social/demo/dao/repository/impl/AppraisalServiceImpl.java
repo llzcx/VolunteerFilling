@@ -1,5 +1,6 @@
 package com.social.demo.dao.repository.impl;
 
+import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,7 +9,6 @@ import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.vo.AppraisalContentVo;
-import com.social.demo.data.vo.AppraisalTeamVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.entity.Appraisal;
@@ -123,11 +123,10 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public String uploadSignature(MultipartFile file, HttpServletRequest request) throws Exception {
+    public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
         Long userId = jwtUtil.getUserId(request);
-        Long appraisalId = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getMonthValue()).getAppraisalId();
-        String filename = PropertiesConstant.APPRAISAL  + "-"  + appraisalId;
-        String fileName = uploadFile.upload(file, PropertiesConstant.APPRAISALS, filename);
+        Long appraisalId = appraisalMapper.selectAppraisalByUserId(userId, month).getAppraisalId();
+        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_STUDENTS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         Appraisal appraisal = new Appraisal();
         appraisal.setSignature(fileName);
         appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisalId));
@@ -148,15 +147,15 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
         }
-        userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, keyword, month, rank, (current - 1) * size, size);
-
+        userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, keyword, rank, (current - 1) * size, size);
+        Integer total = appraisalMapper.selectTotalToTeam(userId, keyword);
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
         for (String number : userNumbers) {
             AppraisalVo appraisalVo = getAppraisal(number, month);
             appraisalVos.add(appraisalVo);
         }
 
-        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, appraisalVos.size());
+        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, total);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
     }
