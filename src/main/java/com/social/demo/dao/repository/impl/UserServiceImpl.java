@@ -28,6 +28,7 @@ import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
+import com.social.demo.util.ValidationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -142,7 +143,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher) {
+    public Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher) throws IllegalAccessException {
         String userNumber = userDtoByTeacher.getUserNumber();
         userDtoByTeacher.setUserNumber(null);
         User user = new User();
@@ -157,8 +158,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
     @Override
     public Boolean reset(String[] userNumbers) {
-        List<String> numbers = new ArrayList<>();
-        numbers.addAll(Arrays.asList(userNumbers));
+        List<String> numbers = new ArrayList<>(Arrays.asList(userNumbers));
         for (String number : numbers) {
             List<User> users = userMapper.selectList(MybatisPlusUtil.queryWrapperEq("user_number", number));
             if (users.size() > 1){

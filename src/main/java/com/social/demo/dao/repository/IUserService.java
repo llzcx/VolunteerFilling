@@ -65,7 +65,7 @@ public interface IUserService extends IService<User> {
      * @param userDtoByTeacher 老师上传的学生修改信息
      * @return 学生个人信息
      */
-    Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher);
+    Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher) throws IllegalAccessException;
 
     /**
      * 重置学生密码

@@ -6,6 +6,7 @@ import com.social.demo.dao.repository.IAppraisalSignatureService;
 import com.social.demo.entity.AppraisalSignature;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
+import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class AppraisalSignatureServiceImpl extends ServiceImpl<AppraisalSignatur
 
     @Override
     public String getSignature(HttpServletRequest request, Integer month) {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
         Long userId = jwtUtil.getUserId(request);
         AppraisalSignature appraisalSignature = appraisalSignatureMapper.selectOne(MybatisPlusUtil.queryWrapperEq("month", month, "user_id", userId));
         return appraisalSignature.getSignature();

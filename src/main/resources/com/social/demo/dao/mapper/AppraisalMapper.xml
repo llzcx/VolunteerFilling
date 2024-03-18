@@ -81,4 +81,8 @@
                 AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
             </if>
     </select>
+    <select id="selectIsEnd" resultType="java.lang.Boolean">
+        SELECT is_end FROM appraisal WHERE user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
+        AND `month` = #{month}
+    </select>
 </mapper>

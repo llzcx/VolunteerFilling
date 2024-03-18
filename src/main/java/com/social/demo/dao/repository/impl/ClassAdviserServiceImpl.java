@@ -51,8 +51,13 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
 
     @Override
     public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
+
+        if (appraisalMapper.selectIsEnd(classId, month)) return null;
+
         String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         appraisalSignatureMapper.add(classId, fileName, month, userId);
         return fileName;
@@ -77,9 +82,19 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
 
     @Override
     public Boolean setIsEnd(HttpServletRequest request, Integer month, Boolean isEnd) {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         appraisalMapper.updateIsEnd(classId, month, isEnd);
         return true;
+    }
+
+    @Override
+    public Boolean getClassAppraisalState(HttpServletRequest request, Integer month) {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
+        return appraisalMapper.selectIsEnd(classId, month);
     }
 }

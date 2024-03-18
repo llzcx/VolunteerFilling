@@ -1,7 +1,6 @@
 package com.social.demo.data.dto;
 
 import com.social.demo.constant.RegConstant;
-import com.social.demo.constant.RoleConstant;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;

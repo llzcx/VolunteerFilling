@@ -58,6 +58,9 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
     @Autowired
     AppraisalSignatureMapper appraisalSignatureMapper;
 
+    @Autowired
+    AppraisalMapper appraisalMapper;
+
     @Override
     public Boolean addAppraisalTeam(HttpServletRequest request, String[] userNumbers) {
         Long userId = jwtUtil.getUserId(request);
@@ -185,11 +188,24 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
 
     @Override
     public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
+
+        if (appraisalMapper.selectIsEnd(classId, month)) return null;
+
         String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         appraisalSignatureMapper.add(classId, fileName, month, userId);
         return fileName;
+    }
+
+    @Override
+    public Boolean getClassAppraisalState(HttpServletRequest request, Integer month) {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = appraisalTeamMapper.selectClassId(userId);
+        return appraisalMapper.selectIsEnd(classId, month);
     }
 
     /**

@@ -14,4 +14,6 @@ public interface IClassAdviserService {
     IPage<ClassUserVo> getStudents(HttpServletRequest request, String keyword, String role, Integer rank, Integer current, Integer size);
 
     Boolean setIsEnd(HttpServletRequest request, Integer month, Boolean isEnd);
+
+    Boolean getClassAppraisalState(HttpServletRequest request, Integer month);
 }

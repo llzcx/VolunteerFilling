@@ -78,4 +78,6 @@ public class Student {
      * 综测成绩
      */
     private Double appraisalScore;
+
+    
 }

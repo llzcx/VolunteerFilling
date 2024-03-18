@@ -79,6 +79,8 @@ public enum ResultCode {
     CLASS_DELETE_LOSE(2040, "班级内仍存在学生，请先移除"),
     AUTH_CHANGE(2041, "学生、超管、评测成员身份不允许修改，不需要删除即可"),
     REQ_LIMIT(2042,"请求频繁，请稍后再试~"),
+    APPRAISAL_NOT_END(2043,"本月综测还未结束，无法签名"),
+    APPRAISAL_IS_END(2044, "本月综测已结束，禁止修改"),
 
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),

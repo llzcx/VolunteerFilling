@@ -26,4 +26,6 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
     List<Integer> selectMonths(Long classId);
 
     Integer selectTotalToTeam(Long userId, String keyword);
+
+    Boolean selectIsEnd(Long classId, Integer month);
 }

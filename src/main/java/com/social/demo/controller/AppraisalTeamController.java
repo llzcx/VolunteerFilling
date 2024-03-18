@@ -133,7 +133,7 @@ public class AppraisalTeamController {
     /**
      * 上传签名
      * @param file
-     * @param month
+     * @param month 0-表示本月
      * @param request
      * @return
      * @throws Exception
@@ -141,7 +141,7 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = appraisalTeamService.uploadSignature(file, month, request);
-        return ApiResp.success(fileName);
+        return ApiResp.judge(fileName != null, fileName, ResultCode.APPRAISAL_NOT_END);
     }
 
     /**
@@ -154,5 +154,18 @@ public class AppraisalTeamController {
     public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
         String url = appraisalSignatureService.getSignature(request, month);
         return ApiResp.success(url);
+    }
+
+    /**
+     * 获取某鱼综测状态
+     * @param request
+     * @param month 0-表示本月
+     * @return
+     */
+    @GetMapping("/appraisal/state")
+    public ApiResp<Boolean> getClassAppraisalState(HttpServletRequest request,
+                                                   @RequestParam("month") Integer month){
+        Boolean b = appraisalTeamService.getClassAppraisalState(request, month);
+        return ApiResp.success(b);
     }
 }

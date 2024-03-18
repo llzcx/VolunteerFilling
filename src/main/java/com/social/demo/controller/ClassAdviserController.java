@@ -2,7 +2,6 @@ package com.social.demo.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
-import com.social.demo.common.Identity;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.*;
@@ -10,6 +9,7 @@ import com.social.demo.data.dto.AppraisalTeamDto;
 import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
+import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,7 +89,7 @@ public class ClassAdviserController {
      * @return 学生个人信息
      */
     @PutMapping("/student")
-    public ApiResp<String> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher){
+    public ApiResp<String> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher) throws IllegalAccessException {
         Boolean b = userService.modifyStudent(userDtoByTeacher);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
@@ -259,7 +259,7 @@ public class ClassAdviserController {
     /**
      * 修改某月综测进度
      * @param month 月份
-     * @param isEnd 是否结束
+     * @param isEnd 是否开启
      * @return
      */
     @PutMapping("/end")
@@ -268,6 +268,19 @@ public class ClassAdviserController {
                                     @RequestParam("end") Boolean isEnd){
         classAdviserService.setIsEnd(request, month, isEnd);
         return ApiResp.success("修改成功");
+    }
+
+    /**
+     * 获取班级某月综测状态 true-开启 false-关闭 null-暂无
+     * @param request
+     * @param month 0-表示本月
+     * @return
+     */
+    @GetMapping("/appraisal/state")
+    public ApiResp<Boolean> getClassAppraisalState(HttpServletRequest request,
+                                                   @RequestParam("month") Integer month){
+        Boolean b = classAdviserService.getClassAppraisalState(request, month);
+        return ApiResp.success(b);
     }
 
     /**
@@ -283,7 +296,7 @@ public class ClassAdviserController {
     }
 
     /**
-     * 获取综测签名
+     * 上传综测签名
      * @param file
      * @param month
      * @param request

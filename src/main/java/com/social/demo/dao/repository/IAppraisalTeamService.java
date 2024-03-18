@@ -28,4 +28,6 @@ public interface IAppraisalTeamService extends IService<AppraisalTeam> {
     AppraisalTeamUserVo getMessage(HttpServletRequest request);
 
     String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception;
+
+    Boolean getClassAppraisalState(HttpServletRequest request, Integer month);
 }

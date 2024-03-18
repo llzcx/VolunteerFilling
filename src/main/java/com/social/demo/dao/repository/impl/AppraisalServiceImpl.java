@@ -58,6 +58,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+
         Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), month);
     }
@@ -66,7 +68,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     public Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos) {
         for (AppraisalContentVo appraisalContentVo : appraisalContentVos) {
             Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
-            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getDayOfMonth());
+            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getMonthValue());
             Appraisal appraisal;
             if (appraisalByUserNumber == null){
                 appraisal = add(appraisalContentVo);
@@ -94,7 +96,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
         appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-        appraisal.setMonth(TimeUtil.now().getDayOfMonth());
+        appraisal.setMonth(TimeUtil.now().getMonthValue());
         appraisal.setScore(appraisalContentVo.getPoint_total());
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
@@ -115,7 +117,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
         appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
-        appraisal.setMonth(TimeUtil.now().getDayOfMonth());
+        appraisal.setMonth(TimeUtil.now().getMonthValue());
         appraisal.setScore(appraisalContentVo.getPoint_total());
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.insert(appraisal);
@@ -124,6 +126,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+
         Long userId = jwtUtil.getUserId(request);
         Long appraisalId = appraisalMapper.selectAppraisalByUserId(userId, month).getAppraisalId();
         String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_STUDENTS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
@@ -162,6 +166,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+        if (month == 0) month = TimeUtil.now().getDayOfMonth();
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         return getAppraisalPage(classId, keyword, month, rank, current, size);
@@ -185,16 +190,17 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Long userId = userMapper.selectUserIdByUserNumber(userNumber);
         Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
         AppraisalVo appraisalVo = new AppraisalVo();
-        appraisalVo.setUserNumber(userNumber);
-        appraisalVo.setUsername(userMapper.selectUserNameByUserNumber(userNumber));
+        String username = userMapper.selectUserNameByUserNumber(userNumber);
+        Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
             BeanUtils.copyProperties(appraisal, appraisalVo);
-            appraisalVo.setContent(JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class));
-            appraisalVo.setTotal(JSONUtil.toBean(appraisal.getTotal(), AppraisalTotalVo.class));
+            appraisalVo.setContent(appraisal.getContent() != null ? JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class) : new AppraisalContentVo(userNumber, username, lastMonthScore));
+            appraisalVo.setTotal(appraisal.getTotal() != null ? JSONUtil.toBean(appraisal.getTotal(), AppraisalTotalVo.class) : new AppraisalTotalVo());
         }else {
             appraisalVo.setMonth(month);
+            appraisalVo.setContent(new AppraisalContentVo(userNumber, username, lastMonthScore));
+            appraisalVo.setTotal(new AppraisalTotalVo());
         }
-        appraisalVo.setLastScore(getLastMonthScore(userNumber,TimeUtil.now().getMonthValue()));
         return appraisalVo;
     }
 
@@ -204,14 +210,14 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             month = TimeUtil.now().getMonthValue();
         }
         userNumbers = appraisalMapper.selectUserNumbersToTeacher(classId, keyword, month, rank, (current - 1) * size, size);
-
+        Long count = studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id", classId));
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
         for (String number : userNumbers) {
             AppraisalVo appraisalVo = getAppraisal(number, month);
             appraisalVos.add(appraisalVo);
         }
 
-        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, appraisalVos.size());
+        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, count);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
     }
@@ -222,9 +228,9 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
      * @param month
      * @return
      */
-    private Integer getLastMonthScore(String userNumber, Integer month){
+    private Double getLastMonthScore(String userNumber, Integer month){
         Integer lastMonth = month != 1 ? month - 1 : 12;
         Integer score = appraisalMapper.selectLastMonthScore(userNumber, lastMonth);
-        return score != null ? score : 100;
+        return score != null ? score : 100.00;
     }
 }
