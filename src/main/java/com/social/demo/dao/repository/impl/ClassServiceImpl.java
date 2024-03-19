@@ -103,30 +103,12 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         public Long getClass1 (Long classId, Long timeId){
             return studentMapper.getClass1(classId, timeId);
         }
-        private Long getTeacherId (String userNumber){
-            Long userId = userMapper.selectUserIdByUserNumber(userNumber);
 
-            List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("user_id", userId));
-
-            if (classes.size() >= 1) {
-                throw new SystemException(ResultCode.USER_IS_CLASS_TEACHER);
-            }
-
-            return userId;
-        }
-
-        @Override
-        public IPage<ClassVo> getClassPage (Integer year,int current, int size){
-            IPage<Class> classIPage;
-            if (year != 0) {
-                classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq("year", year));
-            } else {
-                classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq());
-            }
-            IPage<ClassVo> classVoIPage = new Page<>(current, size);
-            classVoIPage.setTotal(classIPage.getTotal());
-            List<ClassVo> classVoList = new ArrayList<>();
-            for (Class aClass : classIPage.getRecords()) {
+    @Override
+    public List<ClassVo> getClassList(Integer year) {
+        List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("year", year));
+        List<ClassVo> classVoList = new ArrayList<>();
+        for (Class aClass : classes) {
 
             ClassVo classVo = new ClassVo();
             BeanUtils.copyProperties(aClass, classVo);
@@ -137,8 +119,47 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
                 classVo.setUsername(user.getUsername());
                 classVo.setPhone(user.getPhone());
             }
-            classVo.setSize(Math.toIntExact(studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id", classVo.getClassId()))));
             classVoList.add(classVo);
+        }
+        return classVoList;
+    }
+
+    private Long getTeacherId (String userNumber){
+            Long userId = userMapper.selectUserIdByUserNumber(userNumber);
+
+            List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+
+            if (classes.size() >= 1) {
+                throw new SystemException(ResultCode.USER_IS_CLASS_TEACHER);
+            }
+
+            return userId;
+    }
+
+    @Override
+    public IPage<ClassVo> getClassPage (Integer year,int current, int size){
+        IPage<Class> classIPage;
+        if (year != 0) {
+            classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq("year", year));
+        } else {
+            classIPage = classMapper.selectPage(new Page<>(current, size), MybatisPlusUtil.queryWrapperEq());
+        }
+        IPage<ClassVo> classVoIPage = new Page<>(current, size);
+        classVoIPage.setTotal(classIPage.getTotal());
+        List<ClassVo> classVoList = new ArrayList<>();
+        for (Class aClass : classIPage.getRecords()) {
+
+        ClassVo classVo = new ClassVo();
+        BeanUtils.copyProperties(aClass, classVo);
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", aClass.getUserId()));
+
+        if (user != null){
+            classVo.setUserNumber(user.getUserNumber());
+            classVo.setUsername(user.getUsername());
+            classVo.setPhone(user.getPhone());
+        }
+        classVo.setSize(Math.toIntExact(studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id", classVo.getClassId()))));
+        classVoList.add(classVo);
         }
         classVoIPage.setRecords(classVoList);
         return classVoIPage;
@@ -148,7 +169,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Transactional
     public Boolean delete(Long[] classIds) {
         for (Long classId : classIds) {
-            Long count = userMapper.selectCount(MybatisPlusUtil.queryWrapperEq(classId));
+            Long count = studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id",classId));
             if (count != 0){
                 return false;
             }

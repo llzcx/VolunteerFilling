@@ -74,5 +74,8 @@
     <select id="selectTeacher" resultType="com.social.demo.entity.User">
         SELECT * FROM `user` WHERE `identity` = 1
     </select>
+    <select id="selectUserIdHistory" resultType="java.lang.Long">
+
+    </select>
 
 </mapper>

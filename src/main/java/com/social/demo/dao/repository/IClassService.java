@@ -47,4 +47,6 @@ public interface IClassService extends IService<Class> {
     List<WishClass> getClassUserId(Long classId, Long timeId,Long current,Long size);
 
     Long getClass1(Long classId, Long timeId);
+
+    List<ClassVo> getClassList(Integer year);
 }

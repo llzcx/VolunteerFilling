@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.dao.mapper.SchoolMapper;
 import com.social.demo.dao.mapper.StudentMapper;
+import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.data.bo.GradeSubjectBo;
@@ -36,6 +37,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Autowired
     SchoolMapper schoolMapper;
+
+    @Autowired
+    UserMapper userMapper;
+
     @Autowired
     private IWishService wishService;
     @Override
@@ -108,8 +113,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     }
 
     @Override
-    public IPage<StudentVo> getStudentHistory(Integer year, String className, String keyword) {
-        
+    public IPage<StudentVo> getStudentHistory(Integer year, String className, String keyword, Integer current, Integer size) {
+        List<Long> userIds = userMapper.selectUserIdHistory(year, className, keyword, current, size);
         return null;
     }
 

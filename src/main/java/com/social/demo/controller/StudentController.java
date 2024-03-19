@@ -197,8 +197,10 @@ public class StudentController {
     @GetMapping("/history")
     public ApiResp<IPage<StudentVo>> getStudentHistory(@RequestParam("year") Integer year,
                                                        @RequestParam("className") String className,
-                                                       @RequestParam("keyword") String keyword){
-        IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, className, keyword);
+                                                       @RequestParam("keyword") String keyword,
+                                                       @RequestParam("current")Integer current,
+                                                       @RequestParam("size")Integer size){
+        IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, className, keyword, current, size);
         return ApiResp.success(studentVoIPage);
     }
 }
