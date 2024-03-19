@@ -49,10 +49,6 @@ public class WishResult {
      */
     private String thirdName;
     /**
-     * 录取结果id
-     */
-    private Long majorId;
-    /**
      * 录取结果名字
      */
     private String majorName;

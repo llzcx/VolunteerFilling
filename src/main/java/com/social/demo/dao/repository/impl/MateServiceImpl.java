@@ -64,8 +64,8 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         mateMapper.insertBatchSomeColumn(mates);
     return true;
     }
-    public Long mateJudge(Long schoolId, Integer type){
-        return mateMapper.mateJudge(schoolId,type);
+    public Long mateJudge(Long timeId, Integer type){
+        return mateMapper.mateJudge(timeId,type);
     }
     public Boolean parallelMate(List<RankingVo> rankingVos, List<Major> majors, List<Wish> wishes){
         Long timeId = wishes.get(0).getTimeId();
@@ -90,6 +90,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                 }
             }
             }
+        List<Mate> mates = new ArrayList<>();
         for(StudentMate studentMate :studentMates){
             Mate mate = new Mate();
             mate.setMateWay(2);
@@ -97,9 +98,9 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             mate.setMajorId(studentMate.getMajorId());
             mate.setMajorName(studentMate.getMajorName());
             mate.setTimeId(timeId);
-            mateMapper.insert(mate);
+            mates.add(mate);
         }
-
+        mateMapper.insertBatchSomeColumn(mates);
         return true;
     }
     public List<WishResult> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay,Integer type){
@@ -112,6 +113,9 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     }
     public List<WishResult> getWishResultBySchoolId2(Long schoolId, Long timeId){
         return studentMapper.getWishResultBySchoolId5(schoolId,timeId);
+    }
+    public List<WishResult> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size){
+        return studentMapper.getWishResultBySchoolId6(schoolId,timeId,current,size);
     }
     public List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type){
         current=(current-1)*size;

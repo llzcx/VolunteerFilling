@@ -11,7 +11,7 @@
        SELECT * FROM wish.wish WHERE wish.wish.user_id IN (SELECT user_id FROM student WHERE school_id = #{schoolId}) and wish.wish.time_id = #{timeId}
     </select>
     <update id="updateWish">
-       UPDATE wish.wish set wish.admission_result_id = #{admissionResult}, wish.admission_result_name =#{admissionResultName}
+       UPDATE wish.wish set  wish.admission_result_name =#{admissionResultName}
        where wish.user_id =(select user_id from user where user.user_number = #{userNumber});
     </update>
 </mapper>

@@ -22,7 +22,7 @@ public interface IMateService extends IService<Mate> {
     /**
      * 查看是否已经生成志愿
      */
-    Long mateJudge(Long schoolId,Integer type);
+    Long mateJudge(Long timeId,Integer type);
     /**
      * 查看匹配结果
      * @param schoolId
@@ -39,6 +39,7 @@ public interface IMateService extends IService<Mate> {
      * @return
      */
     List<WishResult> getWishResultBySchoolId2(Long schoolId, Long timeId);
+    List<WishResult> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size);
     /**
      * 查看匹配结果
      * @param schoolId

@@ -40,7 +40,8 @@ public class VolunteerDiversionController {
      */
     @PostMapping("/Mate")
     public ApiResp<Boolean> MateResult(@RequestBody MateDto mateDto){
-        Long m =mateService.mateJudge(mateDto.getSchoolId(),mateDto.getType());
+        System.out.println(mateDto);
+        Long m =mateService.mateJudge(mateDto.getTimeId(),mateDto.getType());
         if(m>0){
             return ApiResp.fail(ResultCode.REPEATED_GENERATION);
         }
@@ -71,9 +72,25 @@ public class VolunteerDiversionController {
      *查看最终匹配结果
      */
     @GetMapping("/getResult2")
-    public ApiResp<List<WishResult>> getResult2(@RequestParam("schoolId") Long schoolId,
+    public ApiResp<List<WishResult>> getPagingResult(@RequestParam("schoolId") Long schoolId,
                                                @RequestParam("timeId") Long timeId){
         return ApiResp.success(mateService.getWishResultBySchoolId2(schoolId,timeId));
+    }
+    /**
+     *分页查看最终匹配结果
+     */
+    @GetMapping("/getPagingResult")
+    public ApiResp<IPage<WishResult>> getResult2(@RequestParam("schoolId") Long schoolId,
+                                                @RequestParam("timeId") Long timeId,
+                                                @RequestParam("current")Long current,@RequestParam("size") Long size){
+        List<WishResult> wishResults = mateService.getWishResultBySchoolId2(schoolId,timeId);
+        List<WishResult> wishResults1 = mateService.getPagingWishResultBySchoolId(schoolId,timeId,current,size);
+        IPage<WishResult> wishResultIPage = new Page<>();
+        wishResultIPage.setRecords(wishResults1);
+        wishResultIPage.setCurrent(current);
+        wishResultIPage.setTotal(wishResults.size());
+        wishResultIPage.setSize(size);
+        return ApiResp.success(wishResultIPage);
     }
     /**
      * 分页查看匹配结果

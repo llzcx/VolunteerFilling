@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MateMapper extends EasyBaseMapper<Mate> {
-     Long mateJudge(Long schoolId, Integer type);
+     Long mateJudge(Long timeId, Integer type);
 }
