@@ -19,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -173,10 +174,15 @@ public class StudentController {
      * @return
      */
     @GetMapping("/getStudentRanking")
-    public ApiResp<RankingVo1> getStudentRanking(@RequestParam("type") Integer type){
+    public ApiResp<RankingVo1> getStudentRanking(@RequestParam("type") Integer type,@RequestParam("majorId")Long majorId){
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);
-        List<RankingVo> rankingVos  = studentService.getRanking(type,student);
+        List<RankingVo> rankingVos;
+        if(type!=4){
+            rankingVos = studentService.getRanking(type,student);
+        }else {
+            rankingVos = studentService.getRanking1(student,majorId);
+        }
         RankingVo1 rank = new RankingVo1();
         for(RankingVo rankingVo:rankingVos){
             if(rankingVo.getUserId().equals(userId)){

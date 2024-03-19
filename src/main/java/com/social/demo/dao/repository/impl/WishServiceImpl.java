@@ -52,7 +52,7 @@ public class WishServiceImpl extends ServiceImpl<WishMapper, Wish> implements IW
   @Override
   public Boolean modifyWish1(List<ResultDto> resultDtos){
     for(ResultDto resultDto:resultDtos){
-       wishMapper.updateWish(resultDto.getUserNumber(),resultDto.getAdmissionResultId(),resultDto.getAdmissionResultName());
+       wishMapper.updateWish(resultDto.getUserNumber(),resultDto.getAdmissionResultName());
     }
     return true;
   }

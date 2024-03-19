@@ -13,7 +13,7 @@ public class StudentMate {
     /**
      * 学生分数
      */
-    Integer score;
+    Double score;
     /**
      * 学生志愿列表
      */

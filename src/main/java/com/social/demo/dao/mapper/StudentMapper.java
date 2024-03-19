@@ -31,6 +31,7 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
     List<WishResult> getWishResultBySchoolId(Long schoolId,Long timeId,Integer mateWay);
     List<WishResult> getWishResultBySchoolId2(Long schoolId,Long timeId,Integer mateWay);
     List<WishResult> getWishResultBySchoolId5(Long schoolId,Long timeId);
+    List<WishResult> getWishResultBySchoolId6(Long schoolId,Long timeId,Long current,Long size);
     List<WishResult> getWishResultBySchoolId1(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
     List<WishResult> getWishResultBySchoolId3(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
     Long getClass1(Long classId, Long timeId);
@@ -49,6 +50,10 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
      * * 查看同校学生成绩
      */
     List<Ranking> getSchoolRanking(Long schoolId,Integer ago);
+
+    List<Ranking> getMajorRanking(Long timeId,Long majorId);
+
+    Long getTimeId(Long userId);
 
     List<GradeBo> getGrades(Integer year, String keyword, Integer number1, Integer number2);
 

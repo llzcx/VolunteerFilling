@@ -25,6 +25,6 @@ public interface WishMapper extends BaseMapper<Wish> {
     /**
      * 上传志愿结果
      */
-    void updateWish(String userNumber,Long admissionResult,String admissionResultName);
+    void updateWish(String userNumber,String admissionResultName);
 
 }

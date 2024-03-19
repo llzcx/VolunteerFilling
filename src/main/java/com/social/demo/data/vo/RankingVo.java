@@ -14,7 +14,7 @@ public class RankingVo {
     /**
      *学生成绩
      */
-    private Integer score;
+    private Double score;
     /**
      * 学生各科
      */

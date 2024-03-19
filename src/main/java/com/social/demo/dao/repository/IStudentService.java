@@ -19,5 +19,11 @@ public interface IStudentService extends IService<Student> {
      */
     List<RankingVo> getRanking(Integer type, Student student);
 
+    /**
+     * 查看学生专业排名
+     * @return
+     */
+    List<RankingVo> getRanking1(Student student,Long majorId);
+
     IPage<StudentVo> getStudentHistory(Integer year, String className, String keyword);
 }

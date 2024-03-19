@@ -71,10 +71,24 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         rankings=studentMapper.getClassRanking(student.getClassId());
         }else if(type==3){
         rankings=studentMapper.getSchoolRanking(student.getSchoolId(),student.getEnrollmentYear());
-        }else if(type==4){
-
         }
         sort(rankings);
+        return getRankingVo(rankings);
+    }
+    @Override
+    public List<RankingVo> getRanking1(Student student,Long majorId){
+        List<Ranking> rankings;
+        Long timeId = studentMapper.getTimeId(student.getUserId());
+        rankings = studentMapper.getMajorRanking(timeId,majorId);
+        Ranking ranking = new Ranking();
+        ranking.setScore(student.getScore());
+        ranking.setGrade(student.getGrade());
+        ranking.setUserId(student.getUserId());
+        rankings.add(ranking);
+        sort(rankings);
+        return getRankingVo(rankings);
+    }
+    public  List<RankingVo> getRankingVo(List<Ranking> rankings){
         int s = rankings.size();
         List <RankingVo> rankingVos = new ArrayList<>();
         Ranking ranking = rankings.get(0);
@@ -117,7 +131,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         Collections.sort(rankings, new Comparator<Ranking>() {
             @Override
             public int compare(Ranking r1, Ranking r2) {
-                return r2.getScore() - r1.getScore();
+                return Double.compare(r2.getScore(), r1.getScore());
             }
         });
     }
