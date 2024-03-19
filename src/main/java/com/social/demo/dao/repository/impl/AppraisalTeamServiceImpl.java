@@ -188,7 +188,7 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
 
     @Override
     public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
-        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
 
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
@@ -202,7 +202,7 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
 
     @Override
     public Boolean getClassAppraisalState(HttpServletRequest request, Integer month) {
-        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
         return appraisalMapper.selectIsEnd(classId, month);

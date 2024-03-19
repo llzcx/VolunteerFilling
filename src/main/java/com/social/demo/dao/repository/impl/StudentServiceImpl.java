@@ -1,6 +1,7 @@
 package com.social.demo.dao.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.dao.mapper.SchoolMapper;
@@ -9,6 +10,7 @@ import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.data.bo.GradeSubjectBo;
 import com.social.demo.data.vo.RankingVo;
+import com.social.demo.data.vo.StudentVo;
 import com.social.demo.entity.Ranking;
 import com.social.demo.entity.Student;
 import com.social.demo.entity.Wish;
@@ -104,6 +106,13 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         return rankingVos;
     }
+
+    @Override
+    public IPage<StudentVo> getStudentHistory(Integer year, String className, String keyword) {
+        
+        return null;
+    }
+
     public static void sort(List<Ranking> rankings) {
         Collections.sort(rankings, new Comparator<Ranking>() {
             @Override

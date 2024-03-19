@@ -7,4 +7,7 @@
             class_id = VALUES(class_id),
             signature = VALUES(signature)
     </insert>
+    <select id="getSignature" resultType="java.lang.String">
+        SELECT signature FROM appraisal_signature WHERE class_id = #{classId} AND user_id = #{userId} AND `month` = #{month}
+    </select>
 </mapper>

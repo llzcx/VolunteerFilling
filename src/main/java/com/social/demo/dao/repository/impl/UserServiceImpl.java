@@ -27,8 +27,9 @@ import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.MybatisPlusUtil;
+import com.social.demo.util.NullCheckUtils;
+import com.social.demo.util.NullifyEmptyStrings;
 import com.social.demo.util.TimeUtil;
-import com.social.demo.util.ValidationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -151,8 +152,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         Student student = new Student();
         BeanUtils.copyProperties(userDtoByTeacher, student);
         user.setUserNumber(null);
-        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
-        studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
+        NullifyEmptyStrings.nullifyEmptyStringsInObject(user);
+        NullifyEmptyStrings.nullifyEmptyStringsInObject(student);
+        if (!NullCheckUtils.areAllFieldsNull(user)) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        if (!NullCheckUtils.areAllFieldsNull(student)) studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
         return true;
     }
 

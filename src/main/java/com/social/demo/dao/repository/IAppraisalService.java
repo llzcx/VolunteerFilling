@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalVo;
+import com.social.demo.data.vo.YPage;
 import com.social.demo.entity.Appraisal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,11 +26,13 @@ public interface IAppraisalService extends IService<Appraisal> {
      */
     AppraisalVo getAppraisalThisMonth(HttpServletRequest request);
 
-    IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
+    YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
 
     IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
 
     List<Integer> getMonthToTeacher(HttpServletRequest request);
 
     List<Integer> getMonthToTeam(HttpServletRequest request);
+
+    IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size);
 }

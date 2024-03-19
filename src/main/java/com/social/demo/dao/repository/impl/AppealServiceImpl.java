@@ -2,10 +2,7 @@ package com.social.demo.dao.repository.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.constant.PropertiesConstant;
-import com.social.demo.dao.mapper.AppealMapper;
-import com.social.demo.dao.mapper.ClassMapper;
-import com.social.demo.dao.mapper.StudentMapper;
-import com.social.demo.dao.mapper.UserMapper;
+import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.data.dto.AppealDto;
 import com.social.demo.data.vo.AppealVo;
@@ -44,6 +41,9 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Autowired
     StudentMapper studentMapper;
+
+    @Autowired
+    AppraisalTeamMapper appraisalTeamMapper;
 
     @Override
     public List<AppealVo> getAppealsToStudent(HttpServletRequest request) {
@@ -97,7 +97,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
     @Override
     public Boolean disposeAppealByTeam(HttpServletRequest request, Long appealId) {
         Long userId = jwtUtil.getUserId(request);
-        Long classId = studentMapper.selectClassIdByUserId(userId);
+        Long classId = appraisalTeamMapper.selectClassId(userId);
         return disposeAppeal(classId, appealId);
     }
 
@@ -157,7 +157,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
 
     @Override
     public Boolean deleteAppealsByTeam(HttpServletRequest request, Long[] appealIds) {
-        Long classId = studentMapper.selectClassIdByUserId(jwtUtil.getUserId(request));
+        Long classId = appraisalTeamMapper.selectClassId(jwtUtil.getUserId(request));
         for (Long appealId : appealIds) {
             int flag = appealMapper.selectAppealsByClassId(classId, appealId);
             if (flag <= 0){

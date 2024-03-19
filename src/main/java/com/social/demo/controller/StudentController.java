@@ -1,5 +1,6 @@
 package com.social.demo.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IAppealService;
@@ -184,5 +185,20 @@ public class StudentController {
             }
         }
          return  ApiResp.success(rank);
+    }
+
+    /**
+     * 获取学生信息
+     * @param year 年份
+     * @param className 班级名 - 模糊
+     * @param keyword 关键词：学号 - 模糊；姓名 - 模糊
+     * @return
+     */
+    @GetMapping("/history")
+    public ApiResp<IPage<StudentVo>> getStudentHistory(@RequestParam("year") Integer year,
+                                                       @RequestParam("className") String className,
+                                                       @RequestParam("keyword") String keyword){
+        IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, className, keyword);
+        return ApiResp.success(studentVoIPage);
     }
 }

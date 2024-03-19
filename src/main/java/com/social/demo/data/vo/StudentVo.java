@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.social.demo.data.bo.ConsigneeBo;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 @Data
 public class StudentVo implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

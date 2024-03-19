@@ -11,6 +11,7 @@ import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
+import com.social.demo.data.vo.YPage;
 import com.social.demo.entity.Appraisal;
 import com.social.demo.entity.Student;
 import com.social.demo.manager.file.UploadFile;
@@ -56,9 +57,12 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     @Autowired
     UploadFile uploadFile;
 
+    @Autowired
+    AppraisalSignatureMapper appraisalSignatureMapper;
+
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) {
-        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
 
         Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), month);
@@ -126,7 +130,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
-        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
 
         Long userId = jwtUtil.getUserId(request);
         Long appraisalId = appraisalMapper.selectAppraisalByUserId(userId, month).getAppraisalId();
@@ -145,8 +149,9 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+    public YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
         Long userId = jwtUtil.getUserId(request);
+        Long classId = appraisalTeamMapper.selectClassId(userId);
         List<String> userNumbers;
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
@@ -158,15 +163,16 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             AppraisalVo appraisalVo = getAppraisal(number, month);
             appraisalVos.add(appraisalVo);
         }
-
-        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, total);
+        Boolean isEnd = appraisalMapper.selectIsEnd(classId, month);
+        String signature = appraisalSignatureMapper.getSignature(userId, classId, month);
+        YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, total, isEnd, signature);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
     }
 
     @Override
     public IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
-        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         return getAppraisalPage(classId, keyword, month, rank, current, size);
@@ -184,6 +190,21 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
         return appraisalMapper.selectMonths(classId);
+    }
+
+    @Override
+    public IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size) {
+        List<String> userNumbers = appraisalMapper.selectUserNumbersHistory(year, month, className, keyword, (current - 1) * size, size);
+        Long total = appraisalMapper.selectHistoryTotal(year, month, className, keyword);
+        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
+        for (String number : userNumbers) {
+            AppraisalVo appraisalVo = getAppraisal(number, month);
+            appraisalVos.add(appraisalVo);
+        }
+
+        IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, total);
+        appraisalVoIPage.setRecords(appraisalVos);
+        return appraisalVoIPage;
     }
 
     private AppraisalVo getAppraisal(String userNumber, Integer month){

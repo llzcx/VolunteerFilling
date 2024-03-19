@@ -9,4 +9,7 @@ import java.util.List;
 @Mapper
 public interface AppraisalSignatureMapper extends BaseMapper<AppraisalSignature> {
     void add(Long classId, String signature, Integer month, Long userId);
+
+
+    String getSignature(Long userId, Long classId, Integer month);
 }

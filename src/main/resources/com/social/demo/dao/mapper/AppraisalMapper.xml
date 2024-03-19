@@ -84,5 +84,33 @@
     <select id="selectIsEnd" resultType="java.lang.Boolean">
         SELECT is_end FROM appraisal WHERE user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
         AND `month` = #{month}
+        GROUP BY is_end
+    </select>
+    <select id="selectUserNumbersHistory" resultType="java.lang.String">
+        SELECT user_number FROM user WHERE user_id IN (
+            SELECT s.user_id FROM student AS s, appraisal AS a WHERE s.user_id = a.user_id AND s.class_id IN (
+                SELECT class_id FROM `class` WHERE `year` = #{year}
+                    <if test="className!=null and className!='' and className!='null' ">
+                        AND class_name LIKE CONCAT("%",#{className},"%")
+                    </if>
+                ) AND a.month = #{month} AND enrollment_year = #{year}
+            )
+        <if test="keyword!=null and keyword!='' and keyword!='null' ">
+            AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
+        </if>
+        LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectHistoryTotal" resultType="java.lang.Long">
+        SELECT COUNT(user_number) FROM user WHERE user_id IN (
+            SELECT s.user_id FROM student AS s, appraisal AS a WHERE s.user_id = a.user_id AND s.class_id IN (
+                SELECT class_id FROM `class` WHERE `year` = #{year}
+                                             <if test="className!=null and className!='' and className!='null' ">
+                                                 AND class_name LIKE CONCAT("%",#{className},"%")
+                                             </if>
+                ) AND a.month = #{month} AND enrollment_year = #{year}
+            )
+        <if test="keyword!=null and keyword!='' and keyword!='null' ">
+            AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
+        </if>
     </select>
 </mapper>

@@ -27,7 +27,7 @@ public class AppraisalSignatureServiceImpl extends ServiceImpl<AppraisalSignatur
 
     @Override
     public String getSignature(HttpServletRequest request, Integer month) {
-        if (month == 0) month = TimeUtil.now().getDayOfMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
         Long userId = jwtUtil.getUserId(request);
         AppraisalSignature appraisalSignature = appraisalSignatureMapper.selectOne(MybatisPlusUtil.queryWrapperEq("month", month, "user_id", userId));
         return appraisalSignature.getSignature();

@@ -1,5 +1,6 @@
 package com.social.demo.controller;
 
+import cn.hutool.db.Page;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
@@ -51,13 +52,13 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal")
-    public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
+    public ApiResp<YPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                      @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam("month")Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,
                                                      @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeam(request, keyword, month, rank, current, size);
+        YPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeam(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
 
