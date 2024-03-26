@@ -3,23 +3,22 @@ package com.social.demo.data.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author 杨世博
- * @date 2024/1/26 17:32
- * @description SignatureDto
+ * @date 2024/3/21 15:56
+ * @description removeSignatureDto
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignatureDto {
+public class RemoveSignatureDto {
     /**
-     * 文件
-     */
-    private MultipartFile file;
-    /**
-     * 月份
+     * 月份 0-本月
      */
     private Integer month;
+    /**
+     * 需要被删除的用户的id
+     */
+    private String userNumber;
 }

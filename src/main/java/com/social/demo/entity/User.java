@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.social.demo.constant.PropertiesConstant;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,6 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("user")
-@AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
 
@@ -85,4 +85,28 @@ public class User implements Serializable {
      * 证件照
      */
     private String headshot;
+
+    public User(Long userId, String userNumber, String username, String sex, String politicsStatus, String nation, String phone, String password, LocalDateTime created, LocalDateTime lastDdlTime, Integer identity, String headshot) {
+        this.userId = userId;
+        this.userNumber = userNumber;
+        this.username = username;
+        this.sex = sex;
+        this.politicsStatus = politicsStatus;
+        this.nation = nation;
+        this.phone = phone;
+        this.password = password;
+        this.created = created;
+        this.lastDdlTime = lastDdlTime;
+        this.identity = identity;
+        this.headshot = PropertiesConstant.URL + headshot;
+    }
+
+    public User(String userNumber, String username, String password, LocalDateTime created, LocalDateTime lastDdlTime, Integer identity) {
+        this.userNumber = userNumber;
+        this.username = username;
+        this.password = password;
+        this.created = created;
+        this.lastDdlTime = lastDdlTime;
+        this.identity = identity;
+    }
 }

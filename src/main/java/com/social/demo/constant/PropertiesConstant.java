@@ -53,4 +53,6 @@ public interface PropertiesConstant {
 
     //综测成绩初始分数
     Double APPRAISAL_SCORE = 100.00;
+
+    String URL = "http://192.168.50.36:8081";
 }

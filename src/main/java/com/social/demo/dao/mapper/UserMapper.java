@@ -61,4 +61,8 @@ public interface UserMapper extends EasyBaseMapper<User> {
     Integer selectIdentity(String userNumber);
 
     List<User> selectTeacher();
+
+    List<String> selectUserIdHistory(Integer year, Integer classId, String keyword, Integer number1, Integer number2);
+
+    Integer selectUserCountHistory(Integer year, Integer classId, String keyword);
 }

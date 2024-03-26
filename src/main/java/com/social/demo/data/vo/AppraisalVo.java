@@ -1,10 +1,9 @@
 package com.social.demo.data.vo;
 
+import com.social.demo.constant.PropertiesConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 /**
  * @author 杨世博
@@ -31,12 +30,4 @@ public class AppraisalVo {
      * 内容
      */
     private AppraisalContentVo content;
-    /**
-     * 合计
-     */
-    private AppraisalTotalVo total;
-    /**
-     * 是否结束
-     */
-    private Boolean isEnd;
 }

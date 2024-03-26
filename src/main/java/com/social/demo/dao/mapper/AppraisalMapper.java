@@ -27,9 +27,11 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
 
     Integer selectTotalToTeam(Long userId, String keyword);
 
-    Boolean selectIsEnd(Long classId, Integer month);
-
     List<String> selectUserNumbersHistory(Integer year, Integer month, String className, String keyword, Integer number1, Integer number2);
 
     Long selectHistoryTotal(Integer year, Integer month, String className, String keyword);
+
+    void removeSignature(Integer month, String userNumber);
+
+    Integer selectSignatureCount(Long classId, Integer month);
 }

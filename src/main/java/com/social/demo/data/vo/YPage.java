@@ -16,12 +16,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class YPage<T> extends Page<T> {
-    private Boolean isEnd;
     private String signature;
-
-    public YPage(long current, long size, long total, Boolean isEnd, String signature) {
+    private String teacherSignature;
+    public YPage(long current, long size, long total, String signature, String teacherSignature) {
         super(current, size, total);
-        this.isEnd = isEnd;
         this.signature = signature;
+        this.teacherSignature = teacherSignature;
     }
 }

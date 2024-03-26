@@ -5,6 +5,9 @@
         UPDATE appraisal SET is_end = #{isEnd} WHERE `month` = #{month} AND user_id IN
                                                (SELECT user_id FROM student WHERE class_id = #{classId})
     </update>
+    <update id="removeSignature">
+        UPDATE appraisal SET signature = null WHERE `month` = #{month} AND user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber})
+    </update>
 
 
     <select id="selectLastMonthScore" resultType="java.lang.Integer">
@@ -55,8 +58,9 @@
         SELECT * FROM appraisal WHERE user_id = #{userId} AND `month` = #{month}
     </select>
     <select id="selectUserNumbersToTeam" resultType="java.lang.String">
-        SELECT user_number FROM user AS u, student AS s
-            WHERE u.user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
+        SELECT u.user_number FROM user AS u, student AS s
+            WHERE s.class_id IN (SELECT class_id FROM appraisal_team WHERE team_user_id = #{userId})
+                AND u.user_id = s.user_id
             <if test="keyword!=null and keyword!='' and keyword!='null'">
                 AND (u.username LIKE CONCAT("%",#{keyword},"%") OR u.user_number LIKE CONCAT("%",#{keyword},"%"))
             </if>
@@ -75,10 +79,11 @@
         GROUP BY `month`
     </select>
     <select id="selectTotalToTeam" resultType="java.lang.Integer">
-        SELECT COUNT(user_number) FROM user
-            WHERE user_id IN (SELECT class_user_id FROM appraisal_team_user WHERE team_user_id = #{userId})
+        SELECT COUNT(u.user_number) FROM user AS u, student AS s
+            WHERE s.class_id IN (SELECT class_id FROM appraisal_team WHERE team_user_id = #{userId})
+                AND u.user_id = s.user_id
             <if test="keyword!=null and keyword!='' and keyword!='null'">
-                AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
+                AND (u.username LIKE CONCAT("%",#{keyword},"%") OR u.user_number LIKE CONCAT("%",#{keyword},"%"))
             </if>
     </select>
     <select id="selectIsEnd" resultType="java.lang.Boolean">
@@ -112,5 +117,8 @@
         <if test="keyword!=null and keyword!='' and keyword!='null' ">
             AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
         </if>
+    </select>
+    <select id="selectSignatureCount" resultType="java.lang.Integer">
+        SELECT COUNT(signature) FROM appraisal AS a, student AS s WHERE a.user_id = s.user_id AND class_id = #{classId} AND a.month = #{month}
     </select>
 </mapper>

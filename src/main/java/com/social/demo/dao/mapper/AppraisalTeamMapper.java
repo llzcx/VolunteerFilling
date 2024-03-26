@@ -10,7 +10,6 @@ import java.util.List;
 
 @Mapper
 public interface AppraisalTeamMapper extends BaseMapper<AppraisalTeam> {
-    List<AppraisalTeamVo> selectTeamList(@Param("classId") Long classId);
 
     List<Long> selectTeamUserId(Long classId);
 
@@ -19,4 +18,6 @@ public interface AppraisalTeamMapper extends BaseMapper<AppraisalTeam> {
     Long selectClassId(Long userId);
 
     String selectClassName(Long userId);
+
+    AppraisalTeamVo selectTeamUser(Long classId);
 }

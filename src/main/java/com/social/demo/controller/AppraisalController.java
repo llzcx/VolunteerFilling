@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 综合测评
  *
@@ -42,5 +44,19 @@ public class AppraisalController {
                                                            @RequestParam("size")Integer size){
         IPage<AppraisalVo> appraisalHistory = appraisalService.getAppraisalHistory(year, month, className, keyword, current, size);
         return ApiResp.success(appraisalHistory);
+    }
+
+    /**
+     * 获取某班一个月的综测
+     * @param classId
+     * @param month
+     * @return
+     */
+    @GetMapping("/class")
+    public ApiResp<List<AppraisalVo>> getClassAppraisal(@RequestParam("classId") Long classId,
+                                                        @RequestParam("month")Integer month,
+                                                        @RequestParam("year")Integer year){
+        List<AppraisalVo> appraisalVoList = appraisalService.getClassAppraisal(classId, month, year);
+        return ApiResp.success(appraisalVoList);
     }
 }

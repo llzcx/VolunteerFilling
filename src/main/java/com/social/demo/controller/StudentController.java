@@ -3,6 +3,8 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IStudentService;
@@ -13,6 +15,7 @@ import com.social.demo.data.vo.*;
 import com.social.demo.entity.Student;
 
 import com.social.demo.manager.security.context.SecurityContext;
+import com.social.demo.manager.security.identity.Identity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -42,121 +45,132 @@ public class StudentController {
     IAppraisalService appraisalService;
     @Autowired
     IStudentService studentService;
+
     /**
      * 学生获取个人信息
+     *
      * @param request
      * @return 学生个人信息
      */
     @GetMapping("/information")
-    public ApiResp<StudentVo> getInformation(HttpServletRequest request){
+    public ApiResp<StudentVo> getInformation(HttpServletRequest request) {
         StudentVo student = userService.getInformationOfStudent(request);
         return ApiResp.judge(student != null, student, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 学生修改个人信息（收件信息）
+     *
      * @param request
      * @param userDtoByStudent 学生提交的修改信息
      * @return 是否修改成功
      */
     @PutMapping("/information")
     public ApiResp<Boolean> modifyInformation(HttpServletRequest request,
-                                                @RequestBody UserDtoByStudent userDtoByStudent){
+                                              @RequestBody UserDtoByStudent userDtoByStudent) {
         Boolean b = userService.modifyInformation(request, userDtoByStudent);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 学生修改密码
+     *
      * @param request
      * @param password 密码
      * @return
      */
     @PutMapping("/password")
     public ApiResp<String> modifyPassword(HttpServletRequest request,
-                                          @RequestBody String password){
+                                          @RequestBody String password) {
         Boolean b = userService.modifyPassword(request, password);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 学生获取申诉
+     *
      * @param request
      * @return
      */
     @GetMapping("/appeal")
-    public ApiResp<List<AppealVo>> getAppeal(HttpServletRequest request){
+    public ApiResp<List<AppealVo>> getAppeal(HttpServletRequest request) {
         List<AppealVo> appeals = appealService.getAppealsToStudent(request);
         return ApiResp.success(appeals);
     }
 
     /**
      * 学生申诉
+     *
      * @param request
-     * @param appeal 申述内容
+     * @param appeal  申述内容
      * @return
      */
     @PostMapping("/appeal")
     public ApiResp<String> submitAppeal(HttpServletRequest request,
-                                        @RequestBody AppealDto appeal){
+                                        @RequestBody AppealDto appeal) {
         Boolean b = appealService.submitAppeal(request, appeal);
-        return ApiResp.judge(b,"上传成功",ResultCode.DATABASE_DATA_EXCEPTION);
+        return ApiResp.judge(b, "上传成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
     /**
      * 撤销申诉
+     *
      * @param request
      * @param appealId 申诉id
      * @return
      */
     @PutMapping("/appeal")
     public ApiResp<String> quashAppeal(HttpServletRequest request,
-                                       @RequestBody Long appealId){
+                                       @RequestBody Long appealId) {
         Boolean aBoolean = appealService.quashAppeal(request, appealId);
         return ApiResp.judge(aBoolean, "撤销成功", ResultCode.USER_NOT_MATCH_DATA);
     }
 
     /**
      * 删除已完成申述
+     *
      * @param request
      * @param appealId
      * @return
      */
     @DeleteMapping("/appeal")
     public ApiResp<String> deleteAppeals(HttpServletRequest request,
-                                        @RequestBody Long[] appealId){
+                                         @RequestBody Long[] appealId) {
         Boolean b = appealService.deleteAppeals(request, appealId);
         return ApiResp.judge(b, "删除成功", ResultCode.NOT_DELETE_UNFINISHED);
     }
 
     /**
      * 获取本月学生个人的综测情况
+     *
      * @param request
      * @return
      */
     @GetMapping("/this")
-    public ApiResp<AppraisalVo> getAppraisalThisMonth(HttpServletRequest request){
+    public ApiResp<AppraisalVo> getAppraisalThisMonth(HttpServletRequest request) {
         AppraisalVo appraisal = appraisalService.getAppraisalThisMonth(request);
         return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
     }
 
     /**
      * 获取学生个人的综测情况
+     *
      * @param request
-     * @param month 月份
+     * @param month   月份
      * @return
      */
     @GetMapping
     public ApiResp<AppraisalVo> getAppraisal(HttpServletRequest request,
-                                             Integer month){
+                                             Integer month) {
         AppraisalVo appraisal = appraisalService.getAppraisal(request, month);
         return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
     }
 
     /**
      * 上传电子签名
-     * @param file 上传的签名文件
-     * @param month 月份
+     *
+     * @param file    上传的签名文件
+     * @param month   月份
      * @param request
      * @return
      */
@@ -165,7 +179,7 @@ public class StudentController {
                                            Integer month,
                                            HttpServletRequest request) throws Exception {
         String signature = appraisalService.uploadSignature(file, month, request);
-        return ApiResp.success(signature);
+        return ApiResp.success(signature != null ? PropertiesConstant.URL + signature : null);
     }
 
     /**
@@ -217,17 +231,52 @@ public class StudentController {
         return rank;
     }
     /**
-     * 获取学生信息
-     * @param year 年份
-     * @param className 班级名 - 模糊
+     * 获取历史学生信息
+     *
+     * @param year    年份
+     * @param classId 班级id
      * @param keyword 关键词：学号 - 模糊；姓名 - 模糊
      * @return
      */
     @GetMapping("/history")
     public ApiResp<IPage<StudentVo>> getStudentHistory(@RequestParam("year") Integer year,
-                                                       @RequestParam("className") String className,
-                                                       @RequestParam("keyword") String keyword){
-        IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, className, keyword);
+                                                       @RequestParam(value = "classId", required = false) Integer classId,
+                                                       @RequestParam(value = "keyword", required = false) String keyword,
+                                                       @RequestParam("current") Integer current,
+                                                       @RequestParam("size") Integer size) {
+        IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, classId, keyword, current, size);
         return ApiResp.success(studentVoIPage);
+    }
+
+    /**
+     * 获取分页获取学生综测信息
+     * @param keyword 关键词 学号或名字 模糊查找
+     * @param month 月份 0表示本月
+     * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
+     * @param current 当前页码
+     * @param size 每页大小
+     * @return
+     */
+    @GetMapping("/appraisal")
+    public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
+                                                     @RequestParam(value = "keyword", required = false)String keyword,
+                                                     @RequestParam(value = "month", required = false)Integer month,
+                                                     @RequestParam("rank")Integer rank,
+                                                     @RequestParam("current")Integer current,
+                                                     @RequestParam("size")Integer size){
+        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToStudent(request, keyword, month, rank, current, size);
+        return ApiResp.success(appraisals);
+    }
+
+    /**
+     * 获取综测可查询月份
+     * @param request
+     * @return
+     */
+    @GetMapping("/appraisal/month")
+    @Identity({IdentityEnum.CLASS_ADVISER,IdentityEnum.APPRAISAL_TEAM,IdentityEnum.STUDENT})
+    public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
+        List<Integer> list = appraisalService.getMonthToStudent(request);
+        return ApiResp.success(list);
     }
 }

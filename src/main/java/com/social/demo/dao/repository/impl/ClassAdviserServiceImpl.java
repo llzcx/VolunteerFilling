@@ -9,7 +9,6 @@ import com.social.demo.dao.mapper.AppraisalSignatureMapper;
 import com.social.demo.dao.mapper.ClassMapper;
 import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IClassAdviserService;
-import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.jwt.JwtUtil;
@@ -56,8 +55,6 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
 
-        if (appraisalMapper.selectIsEnd(classId, month)) return null;
-
         String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         appraisalSignatureMapper.add(classId, fileName, month, userId);
         return fileName;
@@ -78,23 +75,5 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         page.setTotal(total);
         page.setRecords(userList);
         return page;
-    }
-
-    @Override
-    public Boolean setIsEnd(HttpServletRequest request, Integer month, Boolean isEnd) {
-        if (month == 0) month = TimeUtil.now().getMonthValue();
-
-        Long userId = jwtUtil.getUserId(request);
-        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        appraisalMapper.updateIsEnd(classId, month, isEnd);
-        return true;
-    }
-
-    @Override
-    public Boolean getClassAppraisalState(HttpServletRequest request, Integer month) {
-        if (month == 0) month = TimeUtil.now().getMonthValue();
-        Long userId = jwtUtil.getUserId(request);
-        Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        return appraisalMapper.selectIsEnd(classId, month);
     }
 }

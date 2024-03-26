@@ -3,6 +3,7 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
@@ -147,7 +148,7 @@ public class UserController {
      */
     @PostMapping("/headshot")
     public ApiResp<String> uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
-        return ApiResp.success(userService.uploadHeadshot(request, file));
+        return ApiResp.success(PropertiesConstant.URL + userService.uploadHeadshot(request, file));
     }
 
     /**

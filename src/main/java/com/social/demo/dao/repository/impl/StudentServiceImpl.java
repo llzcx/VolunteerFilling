@@ -2,11 +2,14 @@ package com.social.demo.dao.repository.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.dao.mapper.SchoolMapper;
 import com.social.demo.dao.mapper.StudentMapper;
+import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IStudentService;
+import com.social.demo.dao.repository.IUserService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.data.bo.GradeSubjectBo;
 import com.social.demo.data.vo.RankingVo;
@@ -36,8 +39,15 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Autowired
     SchoolMapper schoolMapper;
+
+    @Autowired
+    UserMapper userMapper;
+
     @Autowired
     private IWishService wishService;
+
+    @Autowired
+    private IUserService userService;
     @Override
     public Boolean modifyState(Long schoolId, Integer year, Integer state,Long id) {
         Student student = new Student();
@@ -87,6 +97,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         sort(rankings);
         return getRankingVo(rankings);
     }
+
+
     public  List<RankingVo> getRankingVo(List<Ranking> rankings){
         int s = rankings.size();
         List <RankingVo> rankingVos = new ArrayList<>();
@@ -121,9 +133,17 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     }
 
     @Override
-    public IPage<StudentVo> getStudentHistory(Integer year, String className, String keyword) {
-        
-        return null;
+    public IPage<StudentVo> getStudentHistory(Integer year, Integer classId, String keyword, Integer current, Integer size) {
+        List<String> userNumbers = userMapper.selectUserIdHistory(year, classId, keyword, (current-1)*size, size);
+        Integer count = userMapper.selectUserCountHistory(year, classId, keyword);
+        IPage<StudentVo> studentVoIPage = new Page<>(current, size, count);
+        List<StudentVo> studentVos = new ArrayList<>();
+        for (String userNumber : userNumbers) {
+            StudentVo student = userService.getStudent(userNumber);
+            studentVos.add(student);
+        }
+        studentVoIPage.setRecords(studentVos);
+        return studentVoIPage;
     }
 
     public static void sort(List<Ranking> rankings) {

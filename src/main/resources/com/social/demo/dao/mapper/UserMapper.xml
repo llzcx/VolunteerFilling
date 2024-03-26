@@ -74,5 +74,28 @@
     <select id="selectTeacher" resultType="com.social.demo.entity.User">
         SELECT * FROM `user` WHERE `identity` = 1
     </select>
+    <select id="selectUserIdHistory" resultType="java.lang.String">
+        SELECT u.user_number FROM user AS u, student AS s
+              WHERE u.user_id = s.user_id
+                <if test="classId!=null">
+                    AND s.class_id = #{classId}
+                </if>
+                AND s.enrollment_year = #{year}
+            <if test="keyword!=null and keyword!='' and keyword != 'null'">
+                AND (u.user_number LIKE CONCAT("%",#{keyword},"%") OR u.username LIKE CONCAT("%",#{keyword},"%"))
+            </if>
+        LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectUserCountHistory" resultType="java.lang.Integer">
+        SELECT COUNT(u.user_id) FROM user AS u, student AS s
+            WHERE u.user_id = s.user_id
+                <if test="classId!=null">
+                    AND s.class_id = #{classId}
+                </if>
+                    AND s.enrollment_year = #{year}
+            <if test="keyword!=null and keyword!='' and keyword != 'null'">
+                AND (u.user_number LIKE CONCAT("%",#{keyword},"%") OR u.username LIKE CONCAT("%",#{keyword},"%"))
+            </if>
+    </select>
 
 </mapper>

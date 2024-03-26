@@ -14,8 +14,10 @@ import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.data.vo.YPage;
 import com.social.demo.entity.Appraisal;
 import com.social.demo.entity.Student;
+import com.social.demo.entity.User;
 import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.jwt.JwtUtil;
+import com.social.demo.util.ConvertNullToEmptyString;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,19 +91,10 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     private Appraisal modify(Appraisal appraisalByUserNumber, AppraisalContentVo appraisalContentVo){
         Appraisal appraisal;
         appraisal = appraisalByUserNumber;
-        AppraisalTotalVo appraisalTotalVo = JSONUtil.toBean(appraisal.getTotal(), AppraisalTotalVo.class);
-        appraisalTotalVo.setClass1(appraisalContentVo.getPoint1() + appraisalTotalVo.getClass1());
-        appraisalTotalVo.setClass2(appraisalContentVo.getPoint2() + appraisalTotalVo.getClass2());
-        appraisalTotalVo.setClass3(appraisalContentVo.getPoint3() + appraisalTotalVo.getClass3());
-        appraisalTotalVo.setClass4(appraisalContentVo.getPoint4() + appraisalTotalVo.getClass4());
-        appraisalTotalVo.setClass5(appraisalContentVo.getPoint5() + appraisalTotalVo.getClass5());
-        appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total() + appraisalTotalVo.getAdd());
-        appraisalTotalVo.setSub(appraisalContentVo.getSub_total() + appraisalTotalVo.getSub());
-        appraisalTotalVo.setAll(appraisalContentVo.getPoint_total() + appraisalContentVo.getPoint_total());
-        appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
         appraisal.setMonth(TimeUtil.now().getMonthValue());
         appraisal.setScore(appraisalContentVo.getPoint_total());
+        ConvertNullToEmptyString.convert(appraisalContentVo);
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisal.getAppraisalId()));
         return appraisal;
@@ -110,19 +103,10 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     private Appraisal add(AppraisalContentVo appraisalContentVo){
         Appraisal appraisal;
         appraisal = new Appraisal();
-        AppraisalTotalVo appraisalTotalVo = new AppraisalTotalVo();
-        appraisalTotalVo.setClass1(appraisalContentVo.getPoint1());
-        appraisalTotalVo.setClass2(appraisalContentVo.getPoint2());
-        appraisalTotalVo.setClass3(appraisalContentVo.getPoint3());
-        appraisalTotalVo.setClass4(appraisalContentVo.getPoint4());
-        appraisalTotalVo.setClass5(appraisalContentVo.getPoint5());
-        appraisalTotalVo.setAdd(appraisalContentVo.getAdd_total());
-        appraisalTotalVo.setSub(appraisalContentVo.getSub_total());
-        appraisalTotalVo.setAll(appraisalContentVo.getPoint_total());
-        appraisal.setTotal(JSONUtil.toJsonStr(appraisalTotalVo));
         appraisal.setUserId(userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber()));
         appraisal.setMonth(TimeUtil.now().getMonthValue());
         appraisal.setScore(appraisalContentVo.getPoint_total());
+        ConvertNullToEmptyString.convert(appraisalContentVo);
         appraisal.setContent(JSONUtil.toJsonStr(appraisalContentVo));
         appraisalMapper.insert(appraisal);
         return appraisal;
@@ -133,7 +117,17 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         if (month == 0) month = TimeUtil.now().getMonthValue();
 
         Long userId = jwtUtil.getUserId(request);
-        Long appraisalId = appraisalMapper.selectAppraisalByUserId(userId, month).getAppraisalId();
+        Appraisal appraisal1 = appraisalMapper.selectAppraisalByUserId(userId, month);
+        if (appraisal1 == null) {
+            User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+            Student student = studentMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+            appraisal1 = new Appraisal();
+            appraisal1.setContent(JSONUtil.toJsonStr(new AppraisalContentVo(user.getUserNumber(), user.getUsername(), student.getAppraisalScore())));
+            appraisal1.setMonth(month);
+            appraisal1.setUserId(userId);
+            appraisalMapper.insert(appraisal1);
+        }
+        Long appraisalId = appraisal1.getAppraisalId();
         String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_STUDENTS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         Appraisal appraisal = new Appraisal();
         appraisal.setSignature(fileName);
@@ -163,19 +157,29 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             AppraisalVo appraisalVo = getAppraisal(number, month);
             appraisalVos.add(appraisalVo);
         }
-        Boolean isEnd = appraisalMapper.selectIsEnd(classId, month);
         String signature = appraisalSignatureMapper.getSignature(userId, classId, month);
-        YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, total, isEnd, signature);
+        signature = signature != null ? PropertiesConstant.URL + signature : null;
+        String teacherSignature = appraisalSignatureMapper.getTeacherSignature(classId, month);
+        teacherSignature = teacherSignature != null ? PropertiesConstant.URL + teacherSignature : null;
+        YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, total, signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+    public YPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
         if (month == 0) month = TimeUtil.now().getMonthValue();
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        return getAppraisalPage(classId, keyword, month, rank, current, size);
+        IPage<AppraisalVo> appraisalPage = getAppraisalPage(classId, keyword, month, rank, current, size);
+
+        String teacherSignature = appraisalSignatureMapper.getSignature(userId, classId, month);
+        String signature = appraisalSignatureMapper.getTeamSignature(classId, month);
+        signature = signature != null ? PropertiesConstant.URL + signature : null;
+        teacherSignature = teacherSignature != null ? PropertiesConstant.URL + teacherSignature : null;
+        YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, appraisalPage.getTotal(), signature, teacherSignature);
+        appraisalVoIPage.setRecords(appraisalPage.getRecords());
+        return appraisalVoIPage;
     }
 
     @Override
@@ -207,6 +211,39 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         return appraisalVoIPage;
     }
 
+    @Override
+    public IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+        if (month == 0) month = TimeUtil.now().getMonthValue();
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = studentMapper.selectClassIdByUserId(userId);
+        return getAppraisalPage(classId, keyword, month, rank, current, size);
+    }
+
+    @Override
+    public List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year) {
+        List<String> userNumbers = studentMapper.selectUserNumberByClassYear(classId, year);
+        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
+        for (String number : userNumbers) {
+            AppraisalVo appraisalVo = getAppraisal(number, month);
+            appraisalVos.add(appraisalVo);
+        }
+        return appraisalVos;
+    }
+
+    @Override
+    public Integer getSignatureCount(HttpServletRequest request, Integer month) {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = appraisalTeamMapper.selectClassId(userId);
+        return appraisalMapper.selectSignatureCount(classId, month);
+    }
+
+    @Override
+    public List<Integer> getMonthToStudent(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(request);
+        Long classId = studentMapper.selectClassIdByUserId(userId);
+        return appraisalMapper.selectMonths(classId);
+    }
+
     private AppraisalVo getAppraisal(String userNumber, Integer month){
         Long userId = userMapper.selectUserIdByUserNumber(userNumber);
         Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
@@ -215,12 +252,11 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
             BeanUtils.copyProperties(appraisal, appraisalVo);
+            appraisalVo.setSignature(appraisal.getSignature() != null ? PropertiesConstant.URL + appraisal.getSignature() : null);
             appraisalVo.setContent(appraisal.getContent() != null ? JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class) : new AppraisalContentVo(userNumber, username, lastMonthScore));
-            appraisalVo.setTotal(appraisal.getTotal() != null ? JSONUtil.toBean(appraisal.getTotal(), AppraisalTotalVo.class) : new AppraisalTotalVo());
         }else {
             appraisalVo.setMonth(month);
             appraisalVo.setContent(new AppraisalContentVo(userNumber, username, lastMonthScore));
-            appraisalVo.setTotal(new AppraisalTotalVo());
         }
         return appraisalVo;
     }

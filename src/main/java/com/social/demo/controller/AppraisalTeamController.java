@@ -1,15 +1,14 @@
 package com.social.demo.controller;
 
-import cn.hutool.db.Page;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IAppraisalSignatureService;
 import com.social.demo.dao.repository.IAppraisalTeamService;
+import com.social.demo.data.dto.RemoveSignatureDto;
 import com.social.demo.data.vo.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -142,7 +141,7 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = appraisalTeamService.uploadSignature(file, month, request);
-        return ApiResp.judge(fileName != null, fileName, ResultCode.APPRAISAL_NOT_END);
+        return ApiResp.judge(fileName != null, PropertiesConstant.URL + fileName, ResultCode.APPRAISAL_NOT_END);
     }
 
     /**
@@ -152,21 +151,34 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal/signature")
-    public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
+    public ApiResp<String> getSignature(HttpServletRequest request,
+                                        @RequestParam("month") Integer month){
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url);
+        return ApiResp.success(url != null ? PropertiesConstant.URL + url : null);
     }
 
     /**
-     * 获取某鱼综测状态
+     * 移除学生签名
      * @param request
-     * @param month 0-表示本月
      * @return
      */
-    @GetMapping("/appraisal/state")
-    public ApiResp<Boolean> getClassAppraisalState(HttpServletRequest request,
-                                                   @RequestParam("month") Integer month){
-        Boolean b = appraisalTeamService.getClassAppraisalState(request, month);
-        return ApiResp.success(b);
+    @PutMapping("/appraisal/signature")
+    public ApiResp<String> removeSignature(HttpServletRequest request,
+                                           @RequestBody RemoveSignatureDto removeSignatureDto){
+        Boolean b = appraisalSignatureService.removeSignature(request, removeSignatureDto);
+        return ApiResp.success("移除成功");
+    }
+
+    /**
+     * 获取某月班级签名人数
+     * @param request
+     * @param month 0-本月
+     * @return
+     */
+    @GetMapping("/appraisal/signature/count")
+    public ApiResp<Integer> getSignatureCount(HttpServletRequest request,
+                                              @RequestParam Integer month){
+        Integer count = appraisalService.getSignatureCount(request, month);
+        return ApiResp.success(count);
     }
 }

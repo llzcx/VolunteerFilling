@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
+import com.social.demo.data.vo.StudentVo;
 import com.social.demo.entity.WishClass;
 import com.social.demo.entity.Class;
 import jakarta.validation.constraints.NotNull;
@@ -47,4 +48,8 @@ public interface IClassService extends IService<Class> {
     List<WishClass> getClassUserId(Long classId, Long timeId,Long current,Long size);
 
     Long getClass1(Long classId, Long timeId);
+
+    List<ClassVo> getClassList(Integer year);
+
+    List<StudentVo> getClassStudents(Long classId);
 }
