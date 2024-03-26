@@ -19,5 +19,4 @@ public class AppraisalTeamUserVo {
     private String username;
     private String userNumber;
     private String className;
-    List<AppraisalTeamMemberVo> appraisalTeamMemberVos;
 }

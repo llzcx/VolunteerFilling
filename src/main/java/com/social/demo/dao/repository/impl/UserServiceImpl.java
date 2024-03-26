@@ -134,6 +134,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
+        studentVo.setHeadshot(studentVo.getHeadshot() != null ? PropertiesConstant.URL + studentVo.getHeadshot() : null);
         studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolId(student.getSchoolId()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
@@ -144,7 +145,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher) throws IllegalAccessException {
+    public Boolean modifyStudent(UserDtoByTeacher userDtoByTeacher){
         String userNumber = userDtoByTeacher.getUserNumber();
         userDtoByTeacher.setUserNumber(null);
         User user = new User();

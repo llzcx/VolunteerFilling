@@ -28,11 +28,19 @@ public interface IAppraisalService extends IService<Appraisal> {
 
     YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
 
-    IPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
+    YPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
 
     List<Integer> getMonthToTeacher(HttpServletRequest request);
 
     List<Integer> getMonthToTeam(HttpServletRequest request);
 
     IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size);
+
+    IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
+
+    List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year);
+
+    Integer getSignatureCount(HttpServletRequest request, Integer month);
+
+    List<Integer> getMonthToStudent(HttpServletRequest request);
 }

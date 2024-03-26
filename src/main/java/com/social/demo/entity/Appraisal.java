@@ -42,14 +42,6 @@ public class Appraisal {
      * 内容
      */
     private String content;
-    /**
-     * 每类分数合计
-     */
-    private String total;
-    /**
-     * 是否结束
-     */
-    private Boolean isEnd;
 
     public Appraisal(Long userId, Integer month, Double score) {
         this.userId = userId;

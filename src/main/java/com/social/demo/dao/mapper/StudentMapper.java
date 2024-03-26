@@ -64,4 +64,8 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
     List<GradeBo> getAllGrades(Integer year);
 
     String selectClassNameByUserId(Long userId);
+
+    List<String> selectUserNumberByClass(Long classId);
+
+    List<String> selectUserNumberByClassYear(Long classId, Integer year);
 }

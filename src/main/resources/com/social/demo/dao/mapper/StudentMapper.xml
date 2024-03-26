@@ -135,4 +135,13 @@
     <select id="selectClassNameByUserId" resultType="java.lang.String">
         SELECT class_name FROM `class` WHERE class_id IN (SELECT class_id FROM student WHERE user_id = #{userId})
     </select>
+    <select id="selectUserNumberByClass" resultType="java.lang.String">
+        SELECT u.user_number FROM user AS u, student AS s WHERE u.user_id = s.user_id
+             AND s.class_id = #{classId}
+    </select>
+    <select id="selectUserNumberByClassYear" resultType="java.lang.String">
+        SELECT u.user_number FROM user AS u, student AS s WHERE u.user_id = s.user_id
+            AND s.class_id = #{classId}
+            AND s.enrollment_year = #{year}
+    </select>
 </mapper>

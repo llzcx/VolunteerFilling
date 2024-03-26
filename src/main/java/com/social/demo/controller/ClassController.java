@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.dao.repository.IClassService;
+import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
+import com.social.demo.data.vo.StudentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,5 +97,16 @@ public class ClassController {
     public ApiResp<Boolean> judge(@RequestParam String className){
         Boolean b = classService.judgeClassName(className);
         return ApiResp.success(b);
+    }
+
+    /**
+     * 获取某个班级的所有学生 - 用户打印
+     * @param classId
+     * @return
+     */
+    @GetMapping("/student")
+    public ApiResp<List<StudentVo>> getClassStudents(@RequestParam("classId")Long classId){
+        List<StudentVo> studentVos = classService.getClassStudents(classId);
+        return ApiResp.success(studentVos);
     }
 }

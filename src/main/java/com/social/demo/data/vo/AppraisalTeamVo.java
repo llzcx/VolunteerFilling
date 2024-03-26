@@ -18,6 +18,4 @@ public class AppraisalTeamVo {
     private Long userId;
     private String username;
     private String userNumber;
-
-    List<AppraisalTeamMemberVo> appraisalTeamMemberVos;
 }

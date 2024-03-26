@@ -10,4 +10,19 @@
     <select id="getSignature" resultType="java.lang.String">
         SELECT signature FROM appraisal_signature WHERE class_id = #{classId} AND user_id = #{userId} AND `month` = #{month}
     </select>
+    <select id="selectSignature" resultType="java.lang.String">
+        SELECT signature FROM appraisal_signature WHERE user_id = #{userId} AND `month` = #{month}
+    </select>
+    <select id="getTeacherSignature" resultType="java.lang.String">
+        SELECT signature FROM appraisal_signature WHERE user_id IN (
+            SELECT user_id FROM `class` WHERE class_id = #{classId}
+            )
+        AND `month` = #{month}
+    </select>
+    <select id="getTeamSignature" resultType="java.lang.String">
+        SELECT signature FROM appraisal_signature WHERE user_id IN (
+            SELECT team_user_id FROM appraisal_team WHERE class_id = #{classId}
+        )
+        AND `month` = #{month}
+    </select>
 </mapper>

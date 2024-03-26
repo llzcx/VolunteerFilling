@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.*;
-import com.social.demo.data.dto.AppraisalTeamDto;
-import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
 import com.social.demo.manager.security.identity.Identity;
@@ -115,31 +114,13 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appraisal")
-    public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
+    public ApiResp<YPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                             @RequestParam(value = "keyword", required = false)String keyword,
                                                             @RequestParam(value = "month", required = false)Integer month,
-                                                            @RequestParam("identity")Integer rank,
+                                                            @RequestParam("rank")Integer rank,
                                                             @RequestParam("current")Integer current,
                                                             @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, keyword, month, rank, current, size);
-        return ApiResp.success(appraisals);
-    }
-
-    /**
-     * 获取分页获取学生本月综测信息
-     * @param keyword 学号或学生姓名 模糊查找
-     * @param rank 是否根据综测成绩排序 0不排序 -1从小到大 1从大到小
-     * @param current 当前页码
-     * @param size 每页大小
-     * @return
-     */
-    @GetMapping("/appraisal/this")
-    public ApiResp<IPage<AppraisalVo>> getAppraisalsThis(HttpServletRequest request,
-                                                     @RequestParam(value = "keyword", required = false)String keyword,
-                                                     @RequestParam("identity")Integer rank,
-                                                     @RequestParam("current")Integer current,
-                                                     @RequestParam("size")Integer size){
-        IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, keyword, TimeUtil.now().getMonthValue(), rank, current, size);
+        YPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
 
@@ -179,25 +160,14 @@ public class ClassAdviserController {
     }
 
     /**
-     * 添加学生至综测小组
-     * @param userNumbers 学号
-     * @return
-     */
-    @PostMapping("/appraisal/team")
-    public ApiResp<String> addAppraisalTeam(HttpServletRequest request, @RequestBody String[] userNumbers){
-        Boolean b = appraisalTeamService.addAppraisalTeam(request, userNumbers);
-        return ApiResp.judge(b, "添加成功", ResultCode.USER_IS_TEAM);
-    }
-
-    /**
      * 班主任获取本班综测小组成员
      * @param request
      * @return
      */
     @GetMapping("/appraisal/team")
-    public ApiResp<List<AppraisalTeamVo>> getAppraisalTeam(HttpServletRequest request){
-        List<AppraisalTeamVo> list = appraisalTeamService.getAppraisalTeam(request);
-        return ApiResp.success(list);
+    public ApiResp<AppraisalTeamVo> getAppraisalTeam(HttpServletRequest request){
+        AppraisalTeamVo appraisalTeamVo = appraisalTeamService.getAppraisalTeam(request);
+        return ApiResp.success(appraisalTeamVo);
     }
 
     /**
@@ -209,78 +179,6 @@ public class ClassAdviserController {
     public ApiResp<String> resetAppraisalTeamPwd(@RequestParam("userNumber")String userNumber){
         appraisalTeamService.resetAppraisalTeamPwd(userNumber);
         return ApiResp.success("重置成功");
-    }
-
-    /**
-     * 平均分配班级成员
-     * @param request
-     * @return
-     */
-    @PostMapping("/appraisal/class/average")
-    public ApiResp<String> averageClassMember(HttpServletRequest request){
-        Boolean b = appraisalTeamService.averageClassMember(request);
-        return ApiResp.judge(b, "操作成功", ResultCode.GROUP_ALREADY_EXISTS);
-    }
-
-    /**
-     * 撤销分配班级成员
-     * @param request
-     * @return
-     */
-    @DeleteMapping("/appraisal/class/revocation")
-    public ApiResp<String> revocationMember(HttpServletRequest request){
-        appraisalTeamService.revocationMember(request);
-        return ApiResp.success("重置成功");
-    }
-
-    /**
-     * 撤销小组成员身份
-     * @param userNumbers 被撤销的小组成员账号
-     * @return
-     */
-    @DeleteMapping("/appraisal/team/revocation")
-    public ApiResp<String> revocationTeam(HttpServletRequest request,
-                                          @RequestBody String[] userNumbers){
-        Boolean b = appraisalTeamService.revocationTeam(request, userNumbers);
-        return ApiResp.judge(b, "操作成功", ResultCode.REMOVE_MEMBER_FIRST);
-    }
-
-    /**
-     * 手动分配班级成员
-     * @param appraisalTeamDto
-     * @return
-     */
-    @PostMapping("/appraisal/class/allocation")
-    public ApiResp<String> allocationClassMember(@RequestBody AppraisalTeamDto appraisalTeamDto){
-        appraisalTeamService.allocationClassMember(appraisalTeamDto);
-        return ApiResp.success("操作成功");
-    }
-
-    /**
-     * 修改某月综测进度
-     * @param month 月份
-     * @param isEnd 是否开启
-     * @return
-     */
-    @PutMapping("/end")
-    public ApiResp<String> setIsEnd(HttpServletRequest request,
-                                    @RequestParam("month") Integer month,
-                                    @RequestParam("end") Boolean isEnd){
-        classAdviserService.setIsEnd(request, month, isEnd);
-        return ApiResp.success("修改成功");
-    }
-
-    /**
-     * 获取班级某月综测状态 true-开启 false-关闭 null-暂无
-     * @param request
-     * @param month 0-表示本月
-     * @return
-     */
-    @GetMapping("/appraisal/state")
-    public ApiResp<Boolean> getClassAppraisalState(HttpServletRequest request,
-                                                   @RequestParam("month") Integer month){
-        Boolean b = classAdviserService.getClassAppraisalState(request, month);
-        return ApiResp.success(b);
     }
 
     /**
@@ -306,7 +204,7 @@ public class ClassAdviserController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = classAdviserService.uploadSignature(file, month, request);
-        return ApiResp.success(fileName);
+        return ApiResp.success(fileName != null ? PropertiesConstant.URL + fileName : null);
     }
 
     /**
@@ -318,6 +216,6 @@ public class ClassAdviserController {
     @GetMapping("/appraisal/signature")
     public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url);
+        return ApiResp.success(url != null ? PropertiesConstant.URL + url : null);
     }
 }

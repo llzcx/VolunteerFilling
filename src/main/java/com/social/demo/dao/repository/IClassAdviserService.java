@@ -1,7 +1,6 @@
 package com.social.demo.dao.repository;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.social.demo.data.dto.SignatureDto;
 import com.social.demo.data.vo.ClassUserVo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +12,4 @@ public interface IClassAdviserService {
 
     IPage<ClassUserVo> getStudents(HttpServletRequest request, String keyword, String role, Integer rank, Integer current, Integer size);
 
-    Boolean setIsEnd(HttpServletRequest request, Integer month, Boolean isEnd);
-
-    Boolean getClassAppraisalState(HttpServletRequest request, Integer month);
 }
