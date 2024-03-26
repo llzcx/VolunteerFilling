@@ -41,7 +41,7 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
      * 查看全部学生成绩
      * @return
      */
-    List<Ranking> getRanking();
+    List<Ranking> getRanking(Integer enrollmentYear);
     /**
      * 查看同班学生成绩
      */
@@ -52,8 +52,6 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
     List<Ranking> getSchoolRanking(Long schoolId,Integer ago);
 
     List<Ranking> getMajorRanking(Long timeId,Long majorId);
-
-    Long getTimeId(Long userId);
 
     List<GradeBo> getGrades(Integer year, String keyword, Integer number1, Integer number2);
 

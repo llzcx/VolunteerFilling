@@ -99,7 +99,7 @@
 
 
     <select id="getRanking" resultType="com.social.demo.entity.Ranking">
-        SELECT score,grade,user_id  FROM student
+        SELECT score,grade,user_id  FROM student where enrollment_year = #{enrollmentYear}
     </select>
     <select id="getClassRanking" resultType="com.social.demo.entity.Ranking">
         SELECT score,grade,user_id  FROM student WHERE class_id = #{classId}

@@ -1,6 +1,9 @@
 package com.social.demo.dao.repository.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.social.demo.dao.mapper.AdmissionsMajorMapper;
 import com.social.demo.dao.mapper.MateMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.mapper.SysApiMapper;
@@ -11,6 +14,7 @@ import com.social.demo.data.vo.RankingVo;
 import com.social.demo.demo.School;
 import com.social.demo.demo.Student;
 import com.social.demo.entity.*;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +32,8 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     private MateMapper mateMapper;
     @Autowired
     private StudentMapper studentMapper;
+    @Autowired
+    private AdmissionsMajorMapper admissionsMajorMapper;
     public  Boolean firstMate(List<RankingVo> rankingVos, List<Major> majors, List<Wish> wishes){
         Long timeId = wishes.get(0).getTimeId();
         List<StudentMate> studentMates = studentMates(rankingVos,wishes);
@@ -47,10 +53,25 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                         studentMate.setMajorId(major.getMajorId());
                         studentMate.setMajorName(major.getName());
                         studentMate.setState(1);
+                        majorHashMap.put(major.getMajorId(),major);
                     }
                 }
             }
         }
+        List<AdmissionsMajor> admissionsMajors = new ArrayList<>();
+        for (Long key : majorHashMap.keySet()) {
+            Major value = majorHashMap.get(key);
+            if(value.getEnrollmentNumber()>0){
+                AdmissionsMajor admissionsMajor = new AdmissionsMajor();
+                admissionsMajor.setCollege(value.getCollege());
+                admissionsMajor.setName(value.getName());
+                admissionsMajor.setEnrollmentNumber(value.getEnrollmentNumber());
+                admissionsMajor.setMateWay(1);
+                admissionsMajor.setTimeId(timeId);
+                admissionsMajors.add(admissionsMajor);
+            }
+        }
+        admissionsMajorMapper.insertBatchSomeColumn(admissionsMajors);
         List<Mate> mates = new ArrayList<>();
         for(StudentMate studentMate :studentMates){
             Mate mate = new Mate();
@@ -86,10 +107,25 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                         student.setMajorId(major.getMajorId());
                         student.setMajorName(major.getName());
                         student.setState(1);
+                        majorHashMap.put(major.getMajorId(),major);
                     }
                 }
             }
             }
+        List<AdmissionsMajor> admissionsMajors = new ArrayList<>();
+        for (Long key : majorHashMap.keySet()) {
+            Major value = majorHashMap.get(key);
+            if(value.getEnrollmentNumber()>0){
+                AdmissionsMajor admissionsMajor = new AdmissionsMajor();
+                admissionsMajor.setCollege(value.getCollege());
+                admissionsMajor.setName(value.getName());
+                admissionsMajor.setEnrollmentNumber(value.getEnrollmentNumber());
+                admissionsMajor.setMateWay(2);
+                admissionsMajor.setTimeId(timeId);
+                admissionsMajors.add(admissionsMajor);
+            }
+        }
+        admissionsMajorMapper.insertBatchSomeColumn(admissionsMajors);
         List<Mate> mates = new ArrayList<>();
         for(StudentMate studentMate :studentMates){
             Mate mate = new Mate();
@@ -125,6 +161,12 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             return studentMapper.getWishResultBySchoolId3(schoolId,timeId,mateWay,current,size);
         }
 
+    }
+    public List<AdmissionsMajor> getAdmissionsMajor(Integer type,Long timeId){
+        QueryWrapper<AdmissionsMajor> queryWrapper = Wrappers.query();
+        queryWrapper.eq("mate_way",type);
+        queryWrapper.eq("time_id",timeId);
+        return admissionsMajorMapper.selectList(queryWrapper);
     }
     public List<StudentMate> studentMates(List<RankingVo> rankingVos, List<Wish> wishes){
         List<StudentMate> studentMates = new ArrayList<>();

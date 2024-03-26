@@ -23,7 +23,7 @@ public interface IStudentService extends IService<Student> {
      * 查看学生专业排名
      * @return
      */
-    List<RankingVo> getRanking1(Student student,Long majorId);
+    List<RankingVo> getRanking1(Student student,Long timeId,Long majorId);
 
     IPage<StudentVo> getStudentHistory(Integer year, String className, String keyword);
 }

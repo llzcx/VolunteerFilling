@@ -170,19 +170,17 @@ public class StudentController {
 
     /**
      * 获取学生排名
-     * @param type
+     * @param timeId
+     * @param majorId
      * @return
      */
     @GetMapping("/getStudentRanking")
-    public ApiResp<RankingVo1> getStudentRanking(@RequestParam("type") Integer type,@RequestParam("majorId")Long majorId){
+    public ApiResp<RankingVo1> getStudentRanking(@RequestParam("majorId")Long majorId,
+                                                 @RequestParam("timeId")Long timeId){
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);
         List<RankingVo> rankingVos;
-        if(type!=4){
-            rankingVos = studentService.getRanking(type,student);
-        }else {
-            rankingVos = studentService.getRanking1(student,majorId);
-        }
+        rankingVos = studentService.getRanking1(student,timeId,majorId);
         RankingVo1 rank = new RankingVo1();
         for(RankingVo rankingVo:rankingVos){
             if(rankingVo.getUserId().equals(userId)){
@@ -192,7 +190,32 @@ public class StudentController {
         }
          return  ApiResp.success(rank);
     }
-
+    /**
+     * 获取学生排名
+     * @return
+     */
+    @GetMapping("/getStudentRanking1")
+    public ApiResp<List<RankingVo1>> getStudentRanking(){
+        Long userId = SecurityContext.get().getUserId();
+        Student student = studentService.getStudent(userId);
+        List<RankingVo1> ranks = new ArrayList<>();
+        ranks.add(getRank(student,1));
+        ranks.add(getRank(student,2));
+        ranks.add(getRank(student,3));
+        return  ApiResp.success(ranks);
+    }
+    public RankingVo1 getRank(Student student,Integer type){
+        List<RankingVo> rankingVos;
+        rankingVos = studentService.getRanking(type,student);
+        RankingVo1 rank = new RankingVo1();
+        for(RankingVo rankingVo:rankingVos){
+            if(rankingVo.getUserId().equals(student.getUserId())){
+                rank.setRanking(rankingVo.getRanking());
+                rank.setRankings(rankingVo.getRankings());
+            }
+        }
+        return rank;
+    }
     /**
      * 获取学生信息
      * @param year 年份

@@ -48,4 +48,9 @@ public interface IMateService extends IService<Mate> {
      * @return
      */
     List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type);
+    /**
+     * 专业剩余招生人数
+     */
+    List<AdmissionsMajor> getAdmissionsMajor(Integer type,Long timeId);
+
 }

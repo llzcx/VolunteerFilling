@@ -66,7 +66,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     public List<RankingVo> getRanking(Integer type,Student student){
         List<Ranking> rankings = new ArrayList<>();
         if(type==1){
-        rankings=studentMapper.getRanking();
+        rankings=studentMapper.getRanking(student.getEnrollmentYear());
         }else if(type==2){
         rankings=studentMapper.getClassRanking(student.getClassId());
         }else if(type==3){
@@ -76,9 +76,8 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         return getRankingVo(rankings);
     }
     @Override
-    public List<RankingVo> getRanking1(Student student,Long majorId){
+    public List<RankingVo> getRanking1(Student student,Long timeId,Long majorId){
         List<Ranking> rankings;
-        Long timeId = studentMapper.getTimeId(student.getUserId());
         rankings = studentMapper.getMajorRanking(timeId,majorId);
         Ranking ranking = new Ranking();
         ranking.setScore(student.getScore());

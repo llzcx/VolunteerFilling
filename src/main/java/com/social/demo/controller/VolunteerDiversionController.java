@@ -8,10 +8,7 @@ import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.MateDto;
 import com.social.demo.data.dto.ResultDto;
 import com.social.demo.data.vo.RankingVo;
-import com.social.demo.entity.Major;
-import com.social.demo.entity.Student;
-import com.social.demo.entity.Wish;
-import com.social.demo.entity.WishResult;
+import com.social.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -115,5 +112,12 @@ public class VolunteerDiversionController {
     @PostMapping("/uploadResult")
     public ApiResp<Boolean> uploadResult(@RequestBody List<ResultDto> resultDtos){
       return ApiResp.success(wishService.modifyWish1(resultDtos));
+    }
+    /**
+     * 查看专业剩余招生人数
+     */
+    @GetMapping("/getAdmissionsMajor")
+    public ApiResp<List<AdmissionsMajor>> getAdmissionsMajor(@RequestParam("type") Integer type,@RequestParam("timeId")Long timeId){
+           return ApiResp.success(mateService.getAdmissionsMajor(type,timeId));
     }
 }
