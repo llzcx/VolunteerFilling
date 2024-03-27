@@ -2,9 +2,12 @@ package com.social.demo.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
+import com.social.demo.dao.repository.IAutographService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.dao.repository.IWishTimeService;
 import com.social.demo.data.vo.WishTimeVo;
+import com.social.demo.data.vo.WishTimeVo1;
+import com.social.demo.entity.Autograph;
 import com.social.demo.entity.Wish;
 import com.social.demo.entity.WishTime;
 import com.social.demo.manager.security.context.SecurityContext;
@@ -28,7 +31,8 @@ import java.util.List;
 public class WishTimeController {
     @Autowired
     private IWishTimeService wishTimeService;
-
+    @Autowired
+    private IAutographService autographService;
     /**
      * 填写志愿时间接口
      */
@@ -68,10 +72,10 @@ public class WishTimeController {
      *根据学生id搜索志愿时间接口
      */
     @GetMapping("selectWishTime2")
-    public ApiResp<List<WishTimeVo>> selectWishTime2(){
+    public ApiResp<List<WishTimeVo1>> selectWishTime2(){
         Long userId = SecurityContext.get().getUserId();
-        List<WishTimeVo> wishTimeVos = wishTimeService.selectWishTime2(userId);
-        for(WishTimeVo wishTimeVo:wishTimeVos){
+        List<WishTimeVo1> wishTimeVos = wishTimeService.selectWishTime2(userId);
+        for(WishTimeVo1 wishTimeVo:wishTimeVos){
             LocalDateTime currentTime = LocalDateTime.now(); // 获取当前时间
             if (currentTime.isAfter(wishTimeVo.getStartTime())&&currentTime.isBefore(wishTimeVo.getEndTime())) {
                 wishTimeVo.setState(1L);
@@ -80,10 +84,11 @@ public class WishTimeController {
             }else {
                 wishTimeVo.setState(2L);
             }
+            List<Autograph> autographList = autographService.getAutograph(userId,wishTimeVo.getId());
+            wishTimeVo.setAutographList(autographList);
         }
         return ApiResp.success(wishTimeVos);
     }
-
     /**
      * 删除志愿时间
      * @param id

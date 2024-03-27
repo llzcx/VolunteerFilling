@@ -40,4 +40,8 @@ public class WishClass {
      * 第三志愿
      */
     private String thirdName;
+    /**
+     *录取结果
+     */
+    private String admissionResultName;
 }

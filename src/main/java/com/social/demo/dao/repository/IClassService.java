@@ -26,7 +26,6 @@ public interface IClassService extends IService<Class> {
     Boolean delete(Long[] classIds);
 
     Boolean modify(ClassModifyDto classModifyDto);
-
     /**
      * 创建班级
      *

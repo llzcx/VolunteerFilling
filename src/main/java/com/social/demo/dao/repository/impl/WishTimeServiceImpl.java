@@ -7,20 +7,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.dao.mapper.WishTimeMapper;
 import com.social.demo.dao.repository.IStudentService;
-import com.social.demo.dao.repository.IUserService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.dao.repository.IWishTimeService;
-import com.social.demo.data.vo.WishTimeVo;
-import com.social.demo.entity.User;
-import com.social.demo.entity.Wish;
+import com.social.demo.data.vo.WishTimeVo1;
 import com.social.demo.entity.WishTime;
 import com.social.demo.util.MybatisPlusUtil;
-import com.social.demo.util.Uuid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -94,7 +88,7 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
     return wishTimeMapper.selectPage(new Page<>(current,size),queryWrapper);
   }
   @Override
-  public List<WishTimeVo> selectWishTime2(Long userId){
+  public List<WishTimeVo1> selectWishTime2(Long userId){
     return wishTimeMapper.selectWishTime(userId);
   }
   /**

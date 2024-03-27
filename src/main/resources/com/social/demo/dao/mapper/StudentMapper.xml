@@ -89,7 +89,6 @@
     </select>
     <select id="getClass1" resultType="java.lang.Long">
         SELECT count(*) FROM student INNER JOIN wish  on student.user_id = wish.user_id
-                                                                                           INNER JOIN wish.school ON student.school_id = school.id
                                                                                            INNER JOIN wish.user on user.user_id = student.user_id
         WHERE student.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId}) and wish.wish.time_id = #{timeId};
     </select>

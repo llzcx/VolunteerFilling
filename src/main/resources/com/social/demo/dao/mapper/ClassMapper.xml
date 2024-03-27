@@ -24,4 +24,8 @@
     <select id="selectTeacherUserIdByClassId" resultType="java.lang.Long">
         SELECT user_id FROM `class` WHERE class_id = #{classId}
     </select>
+    <select id="getTimeId" resultType="java.lang.Long">
+        SELECT id FROM wish.wish_time WHERE id in (SELECT time_id FROM wish.wish WHERE user_id in
+        (SELECT user_id FROM student WHERE ))
+    </select>
 </mapper>

@@ -15,7 +15,8 @@ public interface PropertiesConstant {
 
     //文件夹前缀-学生综测签名
     String SIGNATURE_STUDENTS = "signature/student";
-
+    //文件夹前缀-志愿签名
+    String SIGNATURE_WISH = "signature/wish";
     //文件夹前缀-综测小组综测签名
     String SIGNATURE_TEAM = "signature/team";
 

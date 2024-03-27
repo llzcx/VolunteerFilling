@@ -29,4 +29,6 @@ public interface ClassMapper extends BaseMapper<Class> {
     Long selectClassIdByTeacherUserId(Long userId);
 
     Long selectTeacherUserIdByClassId(Long classId);
+
+    List<Long> getTimeId(Long classId);
 }

@@ -3,6 +3,7 @@ package com.social.demo.dao.repository;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.vo.WishTimeVo;
+import com.social.demo.data.vo.WishTimeVo1;
 import com.social.demo.entity.Wish;
 import com.social.demo.entity.WishTime;
 
@@ -40,7 +41,7 @@ public interface IWishTimeService extends IService<WishTime> {
     /**
      * 按照学生id搜索志愿时间
      */
-    List<WishTimeVo> selectWishTime2(Long userId);
+    List<WishTimeVo1> selectWishTime2(Long userId);
     /**
      * 删除志愿时间
      * @param id

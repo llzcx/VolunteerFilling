@@ -1,20 +1,26 @@
 package com.social.demo.controller;
 
+import cn.hutool.crypto.digest.MD5;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
+import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.vo.*;
 import com.social.demo.entity.*;
 import com.social.demo.entity.Class;
+import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.context.SecurityContext;
+import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +45,12 @@ public class WishController {
     @Autowired
     private IAreaService areaService;
     @Autowired
-    private IClassService classService;
-     @Autowired
     private IStudentService studentService;
+    @Autowired
+    private IAutographService autographService;
+    @Qualifier("local")
+    @Autowired
+    UploadFile uploadFile;
     /**
      * 填写志愿接口
      */
@@ -51,15 +60,30 @@ public class WishController {
         wish.setUserId(userId);
         return ApiResp.success(wishService.addWish(wish));
     }
+
     /**
      * 修改个人志愿接口
      */
     @PutMapping("modifyWish")
-    public ApiResp<Boolean> modifyWish(@RequestBody WishVo1 wishVo1){
-        System.out.println(wishVo1);
+    public ApiResp<Boolean> modifyWish(MultipartFile file,WishVo1 wishVo1){
         Long userId = SecurityContext.get().getUserId();
+        String fileName = null;
+        try {
+            fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Wish wish = wishVo1Wish(wishVo1);
         WishVo wishVo =wishService.selectWish(userId,wishVo1.getTimeId());
+        Autograph autograph = new Autograph();
+        autograph.setSignature(fileName);
+        autograph.setFrequency(wish.getFrequency());
+        autograph.setUserId(userId);
+        autograph.setFirstName(wish.getFirstName());
+        autograph.setSecondName(wish.getSecondName());
+        autograph.setThirdName(wish.getThirdName());
+        autograph.setTimeId(wish.getTimeId());
+        autographService.addAutograph(autograph);
         wish.setUserId(userId);
         wish.setFrequency(wishVo.getFrequency()-1);
         wish.setId(wishVo.getId());
@@ -78,21 +102,6 @@ public class WishController {
         Long userId = SecurityContext.get().getUserId();
         WishVo wishVo =wishService.selectWish(userId,timeId);
         return ApiResp.success(wishVo);
-    }
-    /**
-     * 查看一个班的学生志愿
-     */
-    @GetMapping("selectClassWish")
-    public ApiResp<IPage<WishClass>> selectClassWish(@RequestParam("timeId") Long timeId, @RequestParam("current") Long current,
-                                                     @RequestParam("size") Long size){
-        Long userId = SecurityContext.get().getUserId();
-        Class aClass = classService.getClass(userId);
-        IPage<WishClass> wishClassIPage = new Page<>();
-        wishClassIPage.setRecords(classService.getClassUserId(aClass.getClassId(),timeId,current,size));
-        wishClassIPage.setCurrent(current);
-        wishClassIPage.setTotal(classService.getClass1(aClass.getClassId(),timeId));
-        wishClassIPage.setSize(size);
-        return ApiResp.success(wishClassIPage);
     }
     /**
      * 查看学生专业范围
