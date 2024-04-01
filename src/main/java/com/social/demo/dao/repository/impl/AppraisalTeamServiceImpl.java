@@ -19,8 +19,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * @author 杨世博
  * @date 2024/1/23 21:40
@@ -87,7 +85,7 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
 
-        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         appraisalSignatureMapper.add(classId, fileName, month, userId);
         return fileName;
     }

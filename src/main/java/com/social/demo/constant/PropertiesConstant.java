@@ -1,5 +1,7 @@
 package com.social.demo.constant;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public interface PropertiesConstant {
     //初始密码
     String PASSWORD = "123456";
@@ -11,16 +13,21 @@ public interface PropertiesConstant {
     String APPRAISALS = "appraisals";
 
     //文件夹前缀-用户头像
+    @Value("${file.address.headshot}")
     String HEADSHOT = "headshot";
 
     //文件夹前缀-学生综测签名
+    @Value("${file.address.signature.student}")
     String SIGNATURE_STUDENTS = "signature/student";
     //文件夹前缀-志愿签名
+    @Value("${file.address.signature.wish}")
     String SIGNATURE_WISH = "signature/wish";
     //文件夹前缀-综测小组综测签名
+    @Value("${file.address.signature.team}")
     String SIGNATURE_TEAM = "signature/team";
 
     //文件夹前缀-班主任综测签名
+    @Value("${file.address.signature.teacher}")
     String SIGNATURE_TEACHER = "signature/teacher";
 
     //申诉状态 - 待处理
@@ -54,6 +61,6 @@ public interface PropertiesConstant {
 
     //综测成绩初始分数
     Double APPRAISAL_SCORE = 100.00;
-
+    @Value("${file.url}")
     String URL = "http://192.168.50.36:8081";
 }

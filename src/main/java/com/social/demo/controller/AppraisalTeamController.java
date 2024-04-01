@@ -7,6 +7,7 @@ import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IAppraisalSignatureService;
 import com.social.demo.dao.repository.IAppraisalTeamService;
+import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.dto.RemoveSignatureDto;
 import com.social.demo.data.vo.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,12 +64,12 @@ public class AppraisalTeamController {
 
     /**
      * 上传学生综测情况
-     * @param appraisalContentVos
+     * @param appraisalUploadDto
      * @return
      */
     @PostMapping("/appraisal")
-    public ApiResp<String> uploadAppraisal(@RequestBody AppraisalContentVo[] appraisalContentVos){
-        appraisalService.uploadAppraisal(appraisalContentVos);
+    public ApiResp<String> uploadAppraisal(@RequestBody AppraisalUploadDto appraisalUploadDto){
+        appraisalService.uploadAppraisal(appraisalUploadDto);
         return ApiResp.success("上传成功");
     }
 

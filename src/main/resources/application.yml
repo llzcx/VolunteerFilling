@@ -79,3 +79,12 @@ logging:
             total-size-cap: 1GB
             max-file-size: 10MB
 
+file:
+    url: http://192.168.50.35:8081
+    address:
+        headshot: headshot
+        signature:
+            student: signature/student
+            wish: signature/wish
+            team: signature/team
+            teacher: signature/teacher

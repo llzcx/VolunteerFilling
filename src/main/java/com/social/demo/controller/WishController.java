@@ -22,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +66,8 @@ public class WishController {
      * 修改个人志愿接口
      */
     @PutMapping("modifyWish")
-    public ApiResp<Boolean> modifyWish(WishVo1 wishVo1,MultipartFile file){
+    public ApiResp<Boolean> modifyWish(MultipartFile file,WishVo1 wishVo1){
+        System.out.println(wishVo1);
         Long userId = SecurityContext.get().getUserId();
         String fileName = null;
         try {
@@ -83,6 +85,8 @@ public class WishController {
         autograph.setSecondName(wish.getSecondName());
         autograph.setThirdName(wish.getThirdName());
         autograph.setTimeId(wish.getTimeId());
+        LocalDateTime currentTime = LocalDateTime.now();
+        autograph.setUpdateTime(currentTime);
         autographService.addAutograph(autograph);
         wish.setUserId(userId);
         wish.setFrequency(wishVo.getFrequency()-1);
