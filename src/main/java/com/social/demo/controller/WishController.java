@@ -65,7 +65,7 @@ public class WishController {
      * 修改个人志愿接口
      */
     @PutMapping("modifyWish")
-    public ApiResp<Boolean> modifyWish(MultipartFile file,WishVo1 wishVo1){
+    public ApiResp<Boolean> modifyWish(WishVo1 wishVo1,MultipartFile file){
         Long userId = SecurityContext.get().getUserId();
         String fileName = null;
         try {
@@ -77,7 +77,7 @@ public class WishController {
         WishVo wishVo =wishService.selectWish(userId,wishVo1.getTimeId());
         Autograph autograph = new Autograph();
         autograph.setSignature(fileName);
-        autograph.setFrequency(wish.getFrequency());
+        autograph.setFrequency(wishVo.getFrequency());
         autograph.setUserId(userId);
         autograph.setFirstName(wish.getFirstName());
         autograph.setSecondName(wish.getSecondName());
