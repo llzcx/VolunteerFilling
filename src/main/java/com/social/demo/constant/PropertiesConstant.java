@@ -5,13 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 public interface PropertiesConstant {
     //初始密码
     String PASSWORD = "123456";
-
-    //文件前缀-综测用户签名
-    String APPRAISAL = "appraisal";
-
-    //文件夹前缀-综测用户签名
-    String APPRAISALS = "appraisals";
-
     //文件夹前缀-用户头像
     @Value("${file.address.headshot}")
     String HEADSHOT = "headshot";
@@ -62,5 +55,5 @@ public interface PropertiesConstant {
     //综测成绩初始分数
     Double APPRAISAL_SCORE = 100.00;
     @Value("${file.url}")
-    String URL = "http://192.168.50.36:8081";
+    String URL = "http://192.168.50.35:8081";
 }
