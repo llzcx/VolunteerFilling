@@ -113,9 +113,10 @@ public class RequestInterceptor implements HandlerInterceptor {
         if (!Objects.equals(tokenForRedis.getAccessToken(), token)) {
             throw new SystemException(ResultCode.OLD_TOKEN);
         }
+        System.out.println("userId:"+userId);
         Integer identityCode = userMapper.selectIdentityByUserId(userId);
         RequestInfo requestInfo = new RequestInfo(userId, IdentityEnum.searchByCode(identityCode));
-        log.info("本次访问的身份是：{}", requestInfo.getIdentity().getMessage());
+        log.info("用户为：{}，本次访问的身份是：{}", userId,requestInfo.getIdentity().getMessage());
         //保存到当前线程上下文
         SecurityContext.set(requestInfo);
         if (PropertiesConstant.AUTHORIZATION_CLOSE) {

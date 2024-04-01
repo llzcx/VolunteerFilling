@@ -54,6 +54,5 @@ public interface PropertiesConstant {
 
     //综测成绩初始分数
     Double APPRAISAL_SCORE = 100.00;
-    @Value("${file.url}")
     String URL = "http://192.168.50.35:8081";
 }

@@ -34,6 +34,7 @@ spring:
 mybatis-plus:
     configuration:
         map-underscore-to-camel-case: true #开启驼峰转下划线
+    mapper-locations: classpath:com/social/demo/dao/mapper/*.xml
 
 #阿里云 OSS
 #不同的服务器，地址不同
@@ -63,7 +64,7 @@ security:
         - /user/register #注册
         - /user/register/send/** #注册手机验证码发送
 file:
-    URL: http://192.168.50.36:8081
+    URL: http://192.168.50.35:8081
 logging:
     level:
         root: INFO # 日志级别，可选值为：TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
@@ -80,7 +81,7 @@ logging:
             total-size-cap: 1GB
             max-file-size: 10MB
 
-file:
+file-test:
     url: http://192.168.50.35:8081
     address:
         headshot: headshot
