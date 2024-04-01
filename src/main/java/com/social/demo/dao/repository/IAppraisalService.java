@@ -2,6 +2,7 @@ package com.social.demo.dao.repository;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.data.vo.YPage;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface IAppraisalService extends IService<Appraisal> {
     AppraisalVo getAppraisal(HttpServletRequest request, Integer month);
 
-    Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos);
+    Boolean uploadAppraisal(AppraisalUploadDto appraisalUploadDto);
 
     String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception;
 

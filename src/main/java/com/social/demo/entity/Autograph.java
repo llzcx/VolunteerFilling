@@ -1,5 +1,9 @@
 package com.social.demo.entity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+
 /**
  * 签名
  */
@@ -37,4 +41,9 @@ public class Autograph {
      * 志愿时间id
      */
     private Long timeId;
+    /**
+     * 修改时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
 }

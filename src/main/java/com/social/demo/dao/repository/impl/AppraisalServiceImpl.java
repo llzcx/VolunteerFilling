@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
+import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
@@ -64,17 +65,21 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) {
-        if (month == 0) month = TimeUtil.now().getMonthValue();
+
 
         Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), month);
     }
 
     @Override
-    public Boolean uploadAppraisal(AppraisalContentVo[] appraisalContentVos) {
-        for (AppraisalContentVo appraisalContentVo : appraisalContentVos) {
+    public Boolean uploadAppraisal(AppraisalUploadDto appraisalUploadDto) {
+        Integer month = appraisalUploadDto.getMonth();
+        if (month == 0) month = TimeUtil.now().getMonthValue();
+
+        for (AppraisalContentVo appraisalContentVo : appraisalUploadDto.getAppraisalContentVos()) {
+
             Long userId = userMapper.selectUserIdByUserNumber(appraisalContentVo.getUserNumber());
-            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, TimeUtil.now().getMonthValue());
+            Appraisal appraisalByUserNumber = appraisalMapper.selectAppraisalByUserId(userId, month);
             Appraisal appraisal;
             if (appraisalByUserNumber == null){
                 appraisal = add(appraisalContentVo);
@@ -251,9 +256,17 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         String username = userMapper.selectUserNameByUserNumber(userNumber);
         Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
+
             BeanUtils.copyProperties(appraisal, appraisalVo);
             appraisalVo.setSignature(appraisal.getSignature() != null ? PropertiesConstant.URL + appraisal.getSignature() : null);
-            appraisalVo.setContent(appraisal.getContent() != null ? JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class) : new AppraisalContentVo(userNumber, username, lastMonthScore));
+            if (appraisal.getContent() != null) {
+                AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
+                bean.setUsername(username);
+                appraisalVo.setContent(bean);
+            }else {
+                AppraisalContentVo appraisalContentVo = new AppraisalContentVo(userNumber, username, lastMonthScore);
+                appraisalVo.setContent(appraisalContentVo);
+            }
         }else {
             appraisalVo.setMonth(month);
             appraisalVo.setContent(new AppraisalContentVo(userNumber, username, lastMonthScore));
