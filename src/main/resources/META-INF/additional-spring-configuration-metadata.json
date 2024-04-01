@@ -24,5 +24,10 @@
       "name": "jwt.accessTokenHeader",
       "type": "java.lang.String",
       "description": "Description for jwt.accessTokenHeader."
+    },
+    {
+      "name": "file.URL",
+      "type": "java.lang.String",
+      "description": "Description for file.URL."
     }
   ] }

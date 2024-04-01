@@ -4,6 +4,10 @@ server:
 
 
 spring:
+    profiles:
+        active: dev
+    application:
+        name: volunteer-filling
     servlet:
         multipart:
             max-file-size: 10MB
@@ -11,9 +15,6 @@ spring:
     main:
         allow-circular-references: true
     datasource:
-#        url: jdbc:mysql://localhost:3306/social
-#        userNumber: test
-#        password: root
         url: jdbc:mysql://47.99.86.144:3306/wish
         username: root
         password: 123abcqwe
@@ -61,7 +62,8 @@ security:
         - /user/loginVerify/base64 #图片Base54
         - /user/register #注册
         - /user/register/send/** #注册手机验证码发送
-
+file:
+    URL: http://192.168.50.36:8081
 logging:
     level:
         root: INFO # 日志级别，可选值为：TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
@@ -72,10 +74,11 @@ logging:
     pattern:
         console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" # 控制台日志输出格式
         file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" # 日志文件输出格式
-#    file:
-#        path: /var/log/myapp
-#    file:
-#        name: myapp.log
+    logback:
+        rolling policy:
+            max-history: 30
+            total-size-cap: 1GB
+            max-file-size: 10MB
 
 file:
     url: http://192.168.50.35:8081

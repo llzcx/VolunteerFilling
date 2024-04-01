@@ -115,7 +115,13 @@ public class WishController {
     public ApiResp<List<StudentMajorVo>> selectStudentMajor(){
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);
-        String  address1 = student.getProvince().substring(0,2);
+        String  address1;
+        if(student.getProvince().equals("内蒙古")){
+            address1 = student.getProvince();
+        }else {
+            address1 = student.getProvince().substring(0,2);
+        }
+
     List<Area> areas = areaService.getAreas();
     List<Long> areaIds = new ArrayList<>();
     for(Area area:areas){

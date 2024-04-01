@@ -1,5 +1,6 @@
 package com.social.demo;
 
+import com.social.demo.util.JVMUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -19,6 +20,7 @@ public class Application {
 	private static ConfigurableApplicationContext applicationContext;
 
 	public static void main(String[] args) {
+		JVMUtil.printJVM();
 		applicationContext = SpringApplication.run(Application.class, args);
 	}
 
