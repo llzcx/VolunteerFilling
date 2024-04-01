@@ -108,6 +108,7 @@
     </select>
     <select id="getMajorRanking" resultType="com.social.demo.entity.Ranking">
         SELECT score,grade,user_id  FROM student WHERE user_id in (SELECT wish.wish.user_id from wish.wish where  time_id = #{timeId})
+                                                   and wish.wish.first = #{majorId} or wish.wish.second = #{majorId} or wish.wish.third = #{majorId}
     </select>
     <select id="getTimeId" resultType="java.lang.Long">
         SELECT wish_time.id FROM wish.wish_time WHERE type = 0 and id in (SELECT wish.wish.time_id from wish.wish where  user_id = #{userId})

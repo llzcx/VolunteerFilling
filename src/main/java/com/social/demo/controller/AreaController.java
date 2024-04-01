@@ -72,20 +72,6 @@ public class AreaController {
         }
         return  ApiResp.success(areas);
     }
-    /**
-     * 删除地区
-     * @param areaIds
-     * @return
-     */
-    @DeleteMapping("/deleteArea")
-    public ApiResp<Boolean> deleteArea(@RequestParam("areaIds")List<Long> areaIds){
-        Boolean deleteArea = null;
-        for(int i=0;i<areaIds.size();i++){
-            deleteArea = areaService.deleteArea(areaIds.get(i));
-
-            }
-        return ApiResp.success(deleteArea);
-    }
     public Area AreaVoArea(AreaVo areaVo){
         Area area = new Area();
         area.setAreaId(areaVo.getAreaId());
