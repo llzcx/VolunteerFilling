@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -191,14 +192,46 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     public List<Integer> getMonthToTeacher(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
-        return appraisalMapper.selectMonths(classId);
+        List<Integer> list = appraisalMapper.selectMonths(classId);
+        Integer month = TimeUtil.now().getMonthValue();
+        int flag = 0;
+        for (Integer integer : list) {
+            if (integer.equals(month)) {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0) list.add(month);
+        list.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
+        return list;
     }
 
     @Override
     public List<Integer> getMonthToTeam(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
-        return appraisalMapper.selectMonths(classId);
+        List<Integer> list = appraisalMapper.selectMonths(classId);
+        Integer month = TimeUtil.now().getMonthValue();
+        int flag = 0;
+        for (Integer integer : list) {
+            if (integer.equals(month)) {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0) list.add(month);
+        list.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
+        return list;
     }
 
     @Override
@@ -246,7 +279,23 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     public List<Integer> getMonthToStudent(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
-        return appraisalMapper.selectMonths(classId);
+        List<Integer> list = appraisalMapper.selectMonths(classId);
+        Integer month = TimeUtil.now().getMonthValue();
+        int flag = 0;
+        for (Integer integer : list) {
+            if (integer.equals(month)) {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag == 0) list.add(month);
+        list.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
+        return list;
     }
 
     private AppraisalVo getAppraisal(String userNumber, Integer month){
@@ -256,7 +305,6 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         String username = userMapper.selectUserNameByUserNumber(userNumber);
         Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
-
             BeanUtils.copyProperties(appraisal, appraisalVo);
             appraisalVo.setSignature(appraisal.getSignature() != null ? PropertiesConstant.URL + appraisal.getSignature() : null);
             if (appraisal.getContent() != null) {
