@@ -4,6 +4,10 @@ server:
 
 
 spring:
+    profiles:
+        active: dev
+    application:
+        name: volunteer-filling
     servlet:
         multipart:
             max-file-size: 10MB
@@ -11,9 +15,6 @@ spring:
     main:
         allow-circular-references: true
     datasource:
-#        url: jdbc:mysql://localhost:3306/social
-#        userNumber: test
-#        password: root
         url: jdbc:mysql://47.99.86.144:3306/wish
         username: root
         password: 123abcqwe
@@ -73,8 +74,18 @@ logging:
     pattern:
         console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" # 控制台日志输出格式
         file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" # 日志文件输出格式
-#    file:
-#        path: /var/log/myapp
-#    file:
-#        name: myapp.log
+    logback:
+        rolling policy:
+            max-history: 30
+            total-size-cap: 1GB
+            max-file-size: 10MB
 
+file:
+    url: http://192.168.50.35:8081
+    address:
+        headshot: headshot
+        signature:
+            student: signature/student
+            wish: signature/wish
+            team: signature/team
+            teacher: signature/teacher
