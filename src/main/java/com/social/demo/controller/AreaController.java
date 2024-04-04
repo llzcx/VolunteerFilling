@@ -3,12 +3,14 @@ package com.social.demo.controller;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.IAreaService;
 import com.social.demo.dao.repository.ISubjectGroupService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.data.vo.AreaVo;
 import com.social.demo.entity.Area;
 import com.social.demo.entity.Wish;
+import com.social.demo.manager.security.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,7 @@ public class AreaController {
      * 添加地区
      */
     @PostMapping("/addArea")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> addWise(@RequestBody AreaVo areaVo){
         subjectGroupService.addSubjectGroup(areaVo.getSubjectScope(),areaVo.getSubjectNumber());
         Area area = AreaVoArea(areaVo);
@@ -45,6 +48,7 @@ public class AreaController {
      * 修改地区
      */
     @PutMapping("/modifyArea")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> modifyArea(@RequestBody AreaVo areaVo){
         subjectGroupService.addSubjectGroup(areaVo.getSubjectScope(),areaVo.getSubjectNumber());
         Area area = AreaVoArea(areaVo);
@@ -57,6 +61,7 @@ public class AreaController {
      *查看地区
      */
     @GetMapping("/selectArea")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<Area>> selectArea(@RequestParam("name")String name){
         List<Area> areas = new ArrayList<>();
         if (name.isEmpty()){

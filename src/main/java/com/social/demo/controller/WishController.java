@@ -7,6 +7,7 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.vo.*;
@@ -14,6 +15,7 @@ import com.social.demo.entity.*;
 import com.social.demo.entity.Class;
 import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.context.SecurityContext;
+import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,7 @@ public class WishController {
      * 填写志愿接口
      */
     @PostMapping("/addWish")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<Boolean> addWish(@RequestBody Wish wish){
         Long userId = SecurityContext.get().getUserId();
         wish.setUserId(userId);
@@ -66,6 +69,7 @@ public class WishController {
      * 修改个人志愿接口
      */
     @PutMapping("modifyWish")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<Boolean> modifyWish(MultipartFile file,WishVo1 wishVo1){
         System.out.println(wishVo1);
         Long userId = SecurityContext.get().getUserId();
@@ -101,6 +105,7 @@ public class WishController {
      *个人查看志愿接口
      */
     @GetMapping("selectWish")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<WishVo> selectWish(@RequestParam("timeId")Long timeId)
     {
         Long userId = SecurityContext.get().getUserId();
@@ -112,6 +117,7 @@ public class WishController {
      * @return
      */
     @GetMapping("selectStudentMajor")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<List<StudentMajorVo>> selectStudentMajor(){
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);

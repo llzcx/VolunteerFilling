@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.JsonUtil;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.mapper.AreaMapper;
 import com.social.demo.dao.repository.IAreaService;
 import com.social.demo.dao.repository.IMajorService;
@@ -12,6 +13,7 @@ import com.social.demo.data.vo.MajorVo;
 import com.social.demo.data.vo.SubjectRuleVo;
 import com.social.demo.entity.Area;
 import com.social.demo.entity.Major;
+import com.social.demo.manager.security.identity.Identity;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +41,7 @@ public class MajorController {
      * 添加专业
      */
     @PostMapping("/addMajor")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> addMajor(@RequestBody List<MajorVo> majorVos){
           List<Major> majors = new ArrayList<>();
 
@@ -55,6 +58,7 @@ public class MajorController {
      * @return
      */
     @PutMapping("/modifyMajor")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<MajorVo> modifyMajor(@RequestBody MajorVo majorVo){
         if(majorVo.getSubjectRule()!=null){
             majorVo = SubjectScopeCount(majorVo);
@@ -88,6 +92,7 @@ public class MajorController {
      *查看学校专业
      */
     @GetMapping("/selectSchoolMajor")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<IPage<MajorVo>> selectSchoolMajor(@RequestParam("schoolId")Long schoolId,@RequestParam("type") String type,
                                                      @RequestParam("word") String word,@RequestParam("current")Long current,
                                                      @RequestParam("size")Long size){
@@ -115,6 +120,7 @@ public class MajorController {
      *查看学校专业
      */
     @GetMapping("/selectSchoolMajor1")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<MajorVo>> selectSchoolMajor1(@RequestParam("schoolId")Long schoolId){
         List<Major> majors = majorService.getSchoolMajor(schoolId);
         List<MajorVo> majorVos = new ArrayList<>();
@@ -130,6 +136,7 @@ public class MajorController {
      * @return
      */
     @DeleteMapping("/deleteMajor")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> deleteMajor(@RequestParam("MajorId")Long majorId) {
         Boolean deleteArea = majorService.deleteMajor(majorId);
         return ApiResp.success(deleteArea);

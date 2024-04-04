@@ -3,11 +3,13 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.JsonUtil;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.IAreaService;
 import com.social.demo.dao.repository.ISubjectService;
 import com.social.demo.data.vo.AreaVo;
 import com.social.demo.entity.Area;
 import com.social.demo.entity.Subject;
+import com.social.demo.manager.security.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ public class SubjectController {
      * 添加科目
      */
     @PostMapping("/addSubject")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> addSubject(@RequestBody Subject subject){
          return ApiResp.success(subjectService.addSubject(subject));
     }
@@ -37,6 +40,7 @@ public class SubjectController {
      *查看科目
      */
     @GetMapping("/selectSubject")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<Subject>> selectSubject(){
       List<Subject> subjects = subjectService.getSubject();
       return ApiResp.success(subjects);
@@ -48,6 +52,7 @@ public class SubjectController {
      * @return
      */
     @DeleteMapping("/delete")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> deleteSubject(@RequestParam("subjectIds")List<Long> subjectIds){
         Boolean deleteSubject = null;
         for(int i=0;i<subjectIds.size();i++){

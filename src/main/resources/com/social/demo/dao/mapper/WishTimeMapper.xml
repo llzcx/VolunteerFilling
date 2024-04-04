@@ -5,5 +5,12 @@
         SELECT id,type,start_time,end_time
         FROM wish_time WHERE id IN (SELECT time_id FROM wish.wish where user_id = #{userId});
     </select>
-
+    <select id="selectNotAccepted" resultType="com.social.demo.data.vo.NotAcceptedVo">
+        SELECT  user_number,username,sex,class_name,school.name AS schoolName,phone,student.parent_phone,student.address FROM
+            student  INNER JOIN wish  on student.user_id = wish.user_id
+                     INNER JOIN wish.school ON student.school_id = school.school_id
+                     INNER JOIN wish.user on user.user_id = student.user_id
+                     INNER JOIN wish.class on class.class_id = student.class_id
+        WHERE wish.wish.`first` is null and wish.wish.`second` is null and wish.wish.`third` is null and wish.wish.time_id = #{timeId}
+    </select>
 </mapper>

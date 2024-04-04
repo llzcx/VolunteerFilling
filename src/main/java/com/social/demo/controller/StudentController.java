@@ -195,6 +195,7 @@ public class StudentController {
         Student student = studentService.getStudent(userId);
         List<RankingVo> rankingVos;
         rankingVos = studentService.getRanking1(student,timeId,majorId);
+        System.out.println(rankingVos);
         RankingVo1 rank = new RankingVo1();
         for(RankingVo rankingVo:rankingVos){
             if(rankingVo.getUserId().equals(userId)){

@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.MateDto;
 import com.social.demo.data.dto.ResultDto;
 import com.social.demo.data.vo.RankingVo;
 import com.social.demo.entity.*;
+import com.social.demo.manager.security.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,7 @@ public class VolunteerDiversionController {
      * 进行志愿匹配
      */
     @PostMapping("/Mate")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> MateResult(@RequestBody MateDto mateDto){
         System.out.println(mateDto);
         Long m =mateService.mateJudge(mateDto.getTimeId(),mateDto.getType());
@@ -60,6 +63,7 @@ public class VolunteerDiversionController {
      * 查看匹配结果
      */
     @GetMapping("/getResult")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<WishResult>> getResult(@RequestParam("schoolId") Long schoolId,
                                          @RequestParam("timeId") Long timeId,@RequestParam("mateWay") Integer mateWay,
                                                @RequestParam("type")Integer type){
@@ -69,6 +73,7 @@ public class VolunteerDiversionController {
      *查看最终匹配结果
      */
     @GetMapping("/getResult2")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<WishResult>> getPagingResult(@RequestParam("schoolId") Long schoolId,
                                                @RequestParam("timeId") Long timeId){
         return ApiResp.success(mateService.getWishResultBySchoolId2(schoolId,timeId));
@@ -77,6 +82,7 @@ public class VolunteerDiversionController {
      *分页查看最终匹配结果
      */
     @GetMapping("/getPagingResult")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<IPage<WishResult>> getResult2(@RequestParam("schoolId") Long schoolId,
                                                 @RequestParam("timeId") Long timeId,
                                                 @RequestParam("current")Long current,@RequestParam("size") Long size){
@@ -93,6 +99,7 @@ public class VolunteerDiversionController {
      * 分页查看匹配结果
      */
     @GetMapping("/getResult1")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<IPage<WishResult>> getResult1(@RequestParam("schoolId") Long schoolId,
                                                @RequestParam("timeId") Long timeId,@RequestParam("mateWay") Integer mateWay,
                                                @RequestParam("current")Long current,@RequestParam("size") Long size,
@@ -110,6 +117,7 @@ public class VolunteerDiversionController {
      * 输入结果
      */
     @PostMapping("/uploadResult")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> uploadResult(@RequestBody List<ResultDto> resultDtos){
       return ApiResp.success(wishService.modifyWish1(resultDtos));
     }
@@ -117,6 +125,7 @@ public class VolunteerDiversionController {
      * 查看专业剩余招生人数
      */
     @GetMapping("/getAdmissionsMajor")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<AdmissionsMajor>> getAdmissionsMajor(@RequestParam("type") Integer type,@RequestParam("timeId")Long timeId){
            return ApiResp.success(mateService.getAdmissionsMajor(type,timeId));
     }

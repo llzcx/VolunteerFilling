@@ -44,7 +44,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         int volunteersNumber = studentMates.get(0).getVolunteerList().size();
         for(int i=0;i<volunteersNumber;i++){
             for (StudentMate studentMate : studentMates) {
-                if(studentMate.getState().equals(0)&&studentMate.getVolunteerList()!=null){
+                if(studentMate.getState().equals(0)&&studentMate.getVolunteerList().get(i).getMajorId()!=null){
                     Major major = majorHashMap.get(studentMate.getVolunteerList().get(i).getMajorId());
                     if(major.getEnrollmentNumber()>0){
                         Integer a = major.getEnrollmentNumber();
@@ -98,7 +98,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         int volunteersNumber = studentMates.get(0).getVolunteerList().size();
             for (StudentMate student : studentMates){
                 for(int i=0;i<volunteersNumber;i++){
-                if(student.getState().equals(0)&&student.getVolunteerList()!=null){
+                if(student.getState().equals(0)&&student.getVolunteerList().get(i).getMajorId()!=null){
                     Major major = majorHashMap.get(student.getVolunteerList().get(i).getMajorId());
                     if(major.getEnrollmentNumber()>0){
                         Integer a = major.getEnrollmentNumber();

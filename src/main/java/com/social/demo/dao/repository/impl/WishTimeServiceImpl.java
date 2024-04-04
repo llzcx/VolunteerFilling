@@ -9,13 +9,16 @@ import com.social.demo.dao.mapper.WishTimeMapper;
 import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IWishService;
 import com.social.demo.dao.repository.IWishTimeService;
+import com.social.demo.data.vo.NotAcceptedVo;
+import com.social.demo.data.vo.NotAcceptedVos;
 import com.social.demo.data.vo.WishTimeVo1;
 import com.social.demo.entity.WishTime;
 import com.social.demo.util.MybatisPlusUtil;
+import org.checkerframework.checker.units.qual.N;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -109,5 +112,27 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
     queryWrapper.eq("id",timeId);
     WishTime wishTime = wishTimeMapper.selectOne(queryWrapper);
     return  wishTime.getAgo();
+  }
+  public List<NotAcceptedVos> selectNotAccepted(Long timeId){
+    List<NotAcceptedVo> notAcceptedVoList = wishTimeMapper.selectNotAccepted(timeId);
+    HashMap<String,List<NotAcceptedVo>> hashMap = new HashMap<>();
+    for(NotAcceptedVo notAcceptedVo:notAcceptedVoList){
+      List<NotAcceptedVo> notAcceptedVoList1;
+      if(hashMap.containsKey(notAcceptedVo.getClassName())){
+        notAcceptedVoList1 = hashMap.get(notAcceptedVo.getClassName());
+      }else {
+        notAcceptedVoList1 = new ArrayList<>();
+      }
+      notAcceptedVoList1.add(notAcceptedVo);
+      hashMap.put(notAcceptedVo.getClassName(),notAcceptedVoList1);
+    }
+    List<NotAcceptedVos> notAcceptedVos = new ArrayList<>();
+    for (Map.Entry<String, List<NotAcceptedVo>> entry : hashMap.entrySet()) {
+      NotAcceptedVos notAcceptedVos1 = new NotAcceptedVos();
+      notAcceptedVos1.setClassName(entry.getKey());
+      notAcceptedVos1.setNotAcceptedVoList(entry.getValue());
+      notAcceptedVos.add(notAcceptedVos1);
+     }
+    return notAcceptedVos;
   }
 }

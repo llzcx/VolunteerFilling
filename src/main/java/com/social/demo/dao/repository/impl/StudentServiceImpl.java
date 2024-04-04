@@ -97,8 +97,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         sort(rankings);
         return getRankingVo(rankings);
     }
-
-
     public  List<RankingVo> getRankingVo(List<Ranking> rankings){
         int s = rankings.size();
         List <RankingVo> rankingVos = new ArrayList<>();
@@ -108,6 +106,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         rankingVo.setGrades(ranking.getGrade());
         rankingVo.setRanking(1);
         rankingVo.setUserId(ranking.getUserId());
+        rankingVo.setRankings(s);
         rankingVos.add(rankingVo);
         for(int i=1;i<rankings.size();i++){
             RankingVo rankingVo1 = new RankingVo();

@@ -35,7 +35,7 @@ public class WishResult {
     /**
      * 成绩
      */
-    private Integer score;
+    private Double score;
     /**
      * 第一志愿
      */
