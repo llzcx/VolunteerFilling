@@ -34,4 +34,6 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
     void removeSignature(Integer month, String userNumber);
 
     Integer selectSignatureCount(Long classId, Integer month);
+
+    List<Appraisal> selectAppraisals(Long userId, Long classId, String keyword, Integer rank, Integer number1, Integer number2);
 }

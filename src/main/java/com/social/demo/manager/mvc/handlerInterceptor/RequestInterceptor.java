@@ -113,7 +113,6 @@ public class RequestInterceptor implements HandlerInterceptor {
         if (!Objects.equals(tokenForRedis.getAccessToken(), token)) {
             throw new SystemException(ResultCode.OLD_TOKEN);
         }
-        System.out.println("userId:"+userId);
         Integer identityCode = userMapper.selectIdentityByUserId(userId);
         RequestInfo requestInfo = new RequestInfo(userId, IdentityEnum.searchByCode(identityCode));
         log.info("用户为：{}，本次访问的身份是：{}", userId,requestInfo.getIdentity().getMessage());
@@ -124,7 +123,6 @@ public class RequestInterceptor implements HandlerInterceptor {
         }
         //权限验证
         return identityAuthentication.check(requestURL, requestInfo.getIdentity(), method);
-
     }
 
 

@@ -156,13 +156,17 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
         }
+        System.out.println("1:" + TimeUtil.now());
         userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, keyword, rank, (current - 1) * size, size);
+        System.out.println("2:" + TimeUtil.now());
         Integer total = appraisalMapper.selectTotalToTeam(userId, keyword);
+        System.out.println("3:" + TimeUtil.now());
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
         for (String number : userNumbers) {
             AppraisalVo appraisalVo = getAppraisal(number, month);
             appraisalVos.add(appraisalVo);
         }
+        System.out.println("4:" + TimeUtil.now());
         String signature = appraisalSignatureMapper.getSignature(userId, classId, month);
         signature = signature != null ? PropertiesConstant.URL + signature : null;
         String teacherSignature = appraisalSignatureMapper.getTeacherSignature(classId, month);
