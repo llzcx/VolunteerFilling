@@ -18,7 +18,6 @@ spring:
         port: 6379
 
 file-picture:
-  URL: http://192.168.50.35:8081
   address:
     path: /home/jsuer/log/yuke/
     headshot: headshot

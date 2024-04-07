@@ -10,10 +10,11 @@ import com.social.demo.entity.Appraisal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 public interface IAppraisalService extends IService<Appraisal> {
-    AppraisalVo getAppraisal(HttpServletRequest request, Integer month);
+    AppraisalVo getAppraisal(HttpServletRequest request, Integer month) throws UnknownHostException;
 
     Boolean uploadAppraisal(AppraisalUploadDto appraisalUploadDto);
 
@@ -25,21 +26,21 @@ public interface IAppraisalService extends IService<Appraisal> {
      * @param request
      * @return
      */
-    AppraisalVo getAppraisalThisMonth(HttpServletRequest request);
+    AppraisalVo getAppraisalThisMonth(HttpServletRequest request) throws UnknownHostException;
 
-    YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
+    YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException;
 
-    YPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
+    YPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException;
 
     List<Integer> getMonthToTeacher(HttpServletRequest request);
 
     List<Integer> getMonthToTeam(HttpServletRequest request);
 
-    IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size);
+    IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size) throws UnknownHostException;
 
-    IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size);
+    IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException;
 
-    List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year);
+    List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year) throws UnknownHostException;
 
     Integer getSignatureCount(HttpServletRequest request, Integer month);
 

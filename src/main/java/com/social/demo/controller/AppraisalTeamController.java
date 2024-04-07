@@ -10,6 +10,7 @@ import com.social.demo.dao.repository.IAppraisalTeamService;
 import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.dto.RemoveSignatureDto;
 import com.social.demo.data.vo.*;
+import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -42,9 +46,6 @@ public class AppraisalTeamController {
     @Autowired
     IAppraisalSignatureService appraisalSignatureService;
 
-    @Value("${file-picture.URL}")
-    private String URL;
-
     /**
      * 综测小组获取学生综测
      * @param request
@@ -61,7 +62,7 @@ public class AppraisalTeamController {
                                                      @RequestParam("month")Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,
-                                                     @RequestParam("size")Integer size){
+                                                     @RequestParam("size")Integer size) throws UnknownHostException {
         YPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeam(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
@@ -146,7 +147,7 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = appraisalTeamService.uploadSignature(file, month, request);
-        return ApiResp.judge(fileName != null, URL + fileName, ResultCode.APPRAISAL_NOT_END);
+        return ApiResp.judge(fileName != null, URLUtil.getPictureUrl(request) + fileName, ResultCode.APPRAISAL_NOT_END);
     }
 
     /**
@@ -157,9 +158,9 @@ public class AppraisalTeamController {
      */
     @GetMapping("/appraisal/signature")
     public ApiResp<String> getSignature(HttpServletRequest request,
-                                        @RequestParam("month") Integer month){
+                                        @RequestParam("month") Integer month) throws UnknownHostException {
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url != null ? URL + url : null);
+        return ApiResp.success(url != null ? URLUtil.getPictureUrl(request) + url : null);
     }
 
     /**

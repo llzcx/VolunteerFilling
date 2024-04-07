@@ -13,6 +13,7 @@ import com.social.demo.data.dto.StudentDto;
 import com.social.demo.data.dto.TeacherDto;
 import com.social.demo.data.vo.ClassTeacherVo;
 import com.social.demo.data.vo.UserVo;
+import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -33,9 +34,6 @@ import java.util.List;
 @RequestMapping("/user")
 @Validated
 public class UserController {
-
-    @Value("${file-picture.URL}")
-    private String URL;
 
     @Autowired
     private IUserService userService;
@@ -152,7 +150,7 @@ public class UserController {
      */
     @PostMapping("/headshot")
     public ApiResp<String> uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
-        return ApiResp.success(URL + userService.uploadHeadshot(request, file));
+        return ApiResp.success(URLUtil.getPictureUrl(request) + userService.uploadHeadshot(request, file));
     }
 
     /**

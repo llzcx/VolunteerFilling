@@ -21,6 +21,7 @@ import com.social.demo.util.MybatisPlusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -132,7 +133,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     }
 
     @Override
-    public IPage<StudentVo> getStudentHistory(Integer year, Integer classId, String keyword, Integer current, Integer size) {
+    public IPage<StudentVo> getStudentHistory(Integer year, Integer classId, String keyword, Integer current, Integer size) throws UnknownHostException {
         List<String> userNumbers = userMapper.selectUserIdHistory(year, classId, keyword, (current-1)*size, size);
         Integer count = userMapper.selectUserCountHistory(year, classId, keyword);
         IPage<StudentVo> studentVoIPage = new Page<>(current, size, count);

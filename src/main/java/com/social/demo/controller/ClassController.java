@@ -12,6 +12,7 @@ import com.social.demo.data.vo.StudentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -105,7 +106,7 @@ public class ClassController {
      * @return
      */
     @GetMapping("/student")
-    public ApiResp<List<StudentVo>> getClassStudents(@RequestParam("classId")Long classId){
+    public ApiResp<List<StudentVo>> getClassStudents(@RequestParam("classId")Long classId) throws UnknownHostException {
         List<StudentVo> studentVos = classService.getClassStudents(classId);
         return ApiResp.success(studentVos);
     }

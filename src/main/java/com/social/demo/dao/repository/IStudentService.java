@@ -6,6 +6,7 @@ import com.social.demo.data.vo.RankingVo;
 import com.social.demo.data.vo.StudentVo;
 import com.social.demo.entity.Student;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 public interface IStudentService extends IService<Student> {
@@ -24,5 +25,5 @@ public interface IStudentService extends IService<Student> {
      */
     List<RankingVo> getRanking1(Student student,Long timeId,Long majorId);
 
-    IPage<StudentVo> getStudentHistory(Integer year, Integer classId, String keyword, Integer current, Integer size);
+    IPage<StudentVo> getStudentHistory(Integer year, Integer classId, String keyword, Integer current, Integer size) throws UnknownHostException;
 }

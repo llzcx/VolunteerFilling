@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -41,7 +43,7 @@ public class AppraisalController {
                                                            @RequestParam(value = "className", required = false)String className,
                                                            @RequestParam(value = "keyword",required = false)String keyword,
                                                            @RequestParam("current")Integer current,
-                                                           @RequestParam("size")Integer size){
+                                                           @RequestParam("size")Integer size) throws UnknownHostException {
         IPage<AppraisalVo> appraisalHistory = appraisalService.getAppraisalHistory(year, month, className, keyword, current, size);
         return ApiResp.success(appraisalHistory);
     }
@@ -55,7 +57,7 @@ public class AppraisalController {
     @GetMapping("/class")
     public ApiResp<List<AppraisalVo>> getClassAppraisal(@RequestParam("classId") Long classId,
                                                         @RequestParam("month")Integer month,
-                                                        @RequestParam("year")Integer year){
+                                                        @RequestParam("year")Integer year) throws IOException {
         List<AppraisalVo> appraisalVoList = appraisalService.getClassAppraisal(classId, month, year);
         return ApiResp.success(appraisalVoList);
     }

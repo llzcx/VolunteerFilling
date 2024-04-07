@@ -16,6 +16,7 @@ import com.social.demo.entity.Student;
 
 import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.identity.Identity;
+import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +49,6 @@ public class StudentController {
     @Autowired
     IStudentService studentService;
 
-    @Value("${file-picture.URL}")
-    private String URL;
-
     /**
      * 学生获取个人信息
      *
@@ -57,7 +56,7 @@ public class StudentController {
      * @return 学生个人信息
      */
     @GetMapping("/information")
-    public ApiResp<StudentVo> getInformation(HttpServletRequest request) {
+    public ApiResp<StudentVo> getInformation(HttpServletRequest request) throws UnknownHostException {
         StudentVo student = userService.getInformationOfStudent(request);
         return ApiResp.judge(student != null, student, ResultCode.DATABASE_DATA_EXCEPTION);
     }
@@ -151,7 +150,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/this")
-    public ApiResp<AppraisalVo> getAppraisalThisMonth(HttpServletRequest request) {
+    public ApiResp<AppraisalVo> getAppraisalThisMonth(HttpServletRequest request) throws UnknownHostException {
         AppraisalVo appraisal = appraisalService.getAppraisalThisMonth(request);
         return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
     }
@@ -165,7 +164,7 @@ public class StudentController {
      */
     @GetMapping
     public ApiResp<AppraisalVo> getAppraisal(HttpServletRequest request,
-                                             Integer month) {
+                                             Integer month) throws UnknownHostException {
         AppraisalVo appraisal = appraisalService.getAppraisal(request, month);
         return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
     }
@@ -183,7 +182,7 @@ public class StudentController {
                                            Integer month,
                                            HttpServletRequest request) throws Exception {
         String signature = appraisalService.uploadSignature(file, month, request);
-        return ApiResp.success(signature != null ? URL + signature : null);
+        return ApiResp.success(signature != null ? URLUtil.getPictureUrl(request) + signature : null);
     }
 
     /**
@@ -248,7 +247,7 @@ public class StudentController {
                                                        @RequestParam(value = "classId", required = false) Integer classId,
                                                        @RequestParam(value = "keyword", required = false) String keyword,
                                                        @RequestParam("current") Integer current,
-                                                       @RequestParam("size") Integer size) {
+                                                       @RequestParam("size") Integer size) throws UnknownHostException {
         IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, classId, keyword, current, size);
         return ApiResp.success(studentVoIPage);
     }
@@ -268,7 +267,7 @@ public class StudentController {
                                                      @RequestParam(value = "month", required = false)Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,
-                                                     @RequestParam("size")Integer size){
+                                                     @RequestParam("size")Integer size) throws UnknownHostException {
         IPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToStudent(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }

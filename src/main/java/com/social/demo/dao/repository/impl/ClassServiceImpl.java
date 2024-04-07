@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,7 +148,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public List<StudentVo> getClassStudents(Long classId) {
+    public List<StudentVo> getClassStudents(Long classId) throws UnknownHostException {
         List<String> userNumbers = studentMapper.selectUserNumberByClass(classId);
         List<StudentVo> studentVos = new ArrayList<>();
         for (String userNumber : userNumbers) {

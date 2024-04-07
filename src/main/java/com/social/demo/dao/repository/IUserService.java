@@ -13,6 +13,7 @@ import com.social.demo.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public interface IUserService extends IService<User> {
      * @param request 用户id
      * @return 用户信息
      */
-    StudentVo getInformationOfStudent(HttpServletRequest request);
+    StudentVo getInformationOfStudent(HttpServletRequest request) throws UnknownHostException;
 
     /**
      * 修改个人信息-学生
@@ -57,7 +58,7 @@ public interface IUserService extends IService<User> {
      * @param number 学号
      * @return 学生个人信息
      */
-    StudentVo getStudent(String number);
+    StudentVo getStudent(String number) throws UnknownHostException;
 
     /**
      * 修改学生个人信息

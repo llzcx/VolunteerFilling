@@ -21,6 +21,7 @@ import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.ConvertNullToEmptyString;
 import com.social.demo.util.MybatisPlusUtil;
 import com.social.demo.util.TimeUtil;
+import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -69,11 +72,11 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     @Value("${file-picture.address.signature.student}")
     private String SIGNATURE_STUDENTS;
 
-    @Value("${file-picture.URL}")
-    private String URL;
+    @Value("${server.port}")
+    private String port;
 
     @Override
-    public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) {
+    public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) throws UnknownHostException {
 
 
         Long userId = jwtUtil.getUserId(request);
@@ -151,13 +154,13 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
 
     @Override
-    public AppraisalVo getAppraisalThisMonth(HttpServletRequest request) {
+    public AppraisalVo getAppraisalThisMonth(HttpServletRequest request) throws UnknownHostException {
         Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), TimeUtil.now().getMonthValue());
     }
 
     @Override
-    public YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+    public YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException {
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
         List<String> userNumbers;
@@ -176,16 +179,16 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         }
         System.out.println("4:" + TimeUtil.now());
         String signature = appraisalSignatureMapper.getSignature(userId, classId, month);
-        signature = signature != null ? URL + signature : null;
+        signature = signature != null ? URLUtil.getPictureUrl(request) + signature : null;
         String teacherSignature = appraisalSignatureMapper.getTeacherSignature(classId, month);
-        teacherSignature = teacherSignature != null ? URL + teacherSignature : null;
+        teacherSignature = teacherSignature != null ? URLUtil.getPictureUrl(request) + teacherSignature : null;
         YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, total, signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
     }
 
     @Override
-    public YPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+    public YPage<AppraisalVo> getAppraisalsToTeacher(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException {
         if (month == 0) month = TimeUtil.now().getMonthValue();
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
@@ -193,8 +196,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
         String teacherSignature = appraisalSignatureMapper.getSignature(userId, classId, month);
         String signature = appraisalSignatureMapper.getTeamSignature(classId, month);
-        signature = signature != null ? URL + signature : null;
-        teacherSignature = teacherSignature != null ? URL + teacherSignature : null;
+        signature = signature != null ? URLUtil.getPictureUrl(request) + signature : null;
+        teacherSignature = teacherSignature != null ? URLUtil.getPictureUrl(request) + teacherSignature : null;
         YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, appraisalPage.getTotal(), signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalPage.getRecords());
         return appraisalVoIPage;
@@ -247,7 +250,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size) {
+    public IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size) throws UnknownHostException {
         List<String> userNumbers = appraisalMapper.selectUserNumbersHistory(year, month, className, keyword, (current - 1) * size, size);
         Long total = appraisalMapper.selectHistoryTotal(year, month, className, keyword);
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
@@ -262,7 +265,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) {
+    public IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException {
         if (month == 0) month = TimeUtil.now().getMonthValue();
         Long userId = jwtUtil.getUserId(request);
         Long classId = studentMapper.selectClassIdByUserId(userId);
@@ -270,7 +273,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year) {
+    public List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year) throws UnknownHostException {
         List<String> userNumbers = studentMapper.selectUserNumberByClassYear(classId, year);
         ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
         for (String number : userNumbers) {
@@ -310,7 +313,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         return list;
     }
 
-    private AppraisalVo getAppraisal(String userNumber, Integer month){
+    private AppraisalVo getAppraisal(String userNumber, Integer month) throws UnknownHostException {
         Long userId = userMapper.selectUserIdByUserNumber(userNumber);
         Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
         AppraisalVo appraisalVo = new AppraisalVo();
@@ -318,7 +321,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
             BeanUtils.copyProperties(appraisal, appraisalVo);
-            appraisalVo.setSignature(appraisal.getSignature() != null ? URL + appraisal.getSignature() : null);
+            appraisalVo.setSignature(appraisal.getSignature() != null ? InetAddress.getLocalHost().getHostAddress() + ":" + port + appraisal.getSignature() : null);
             if (appraisal.getContent() != null) {
                 AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
                 bean.setUsername(username);
@@ -334,7 +337,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         return appraisalVo;
     }
 
-    private IPage<AppraisalVo> getAppraisalPage(Long classId, String keyword, Integer month, Integer rank, Integer current, Integer size){
+    private IPage<AppraisalVo> getAppraisalPage(Long classId, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException {
         List<String> userNumbers;
         if (month == 0){
             month = TimeUtil.now().getMonthValue();

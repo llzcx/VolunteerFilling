@@ -11,6 +11,7 @@ import com.social.demo.data.vo.*;
 import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.TimeUtil;
+import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -52,9 +54,6 @@ public class ClassAdviserController {
     @Autowired
     IAppraisalSignatureService appraisalSignatureService;
 
-    @Value("${file-picture.URL}")
-    private String URL;
-
     /**
      * 班级成员列表
      * @param keyword 学号或者姓名 模糊查找
@@ -81,7 +80,7 @@ public class ClassAdviserController {
      * @return 学生个人信息
      */
     @GetMapping("/student")
-    public ApiResp<StudentVo> getStudent(@RequestParam("number")String number){
+    public ApiResp<StudentVo> getStudent(@RequestParam("number")String number) throws UnknownHostException {
         StudentVo user = userService.getStudent(number);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
@@ -123,7 +122,7 @@ public class ClassAdviserController {
                                                             @RequestParam(value = "month", required = false)Integer month,
                                                             @RequestParam("rank")Integer rank,
                                                             @RequestParam("current")Integer current,
-                                                            @RequestParam("size")Integer size){
+                                                            @RequestParam("size")Integer size) throws UnknownHostException {
         YPage<AppraisalVo> appraisals = appraisalService.getAppraisalsToTeacher(request, keyword, month, rank, current, size);
         return ApiResp.success(appraisals);
     }
@@ -208,7 +207,7 @@ public class ClassAdviserController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = classAdviserService.uploadSignature(file, month, request);
-        return ApiResp.success(fileName != null ? URL + fileName : null);
+        return ApiResp.success(fileName != null ? URLUtil.getPictureUrl(request) + fileName : null);
     }
 
     /**
@@ -218,8 +217,8 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appraisal/signature")
-    public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
+    public ApiResp<String> getSignature(HttpServletRequest request, Integer month) throws UnknownHostException {
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url != null ? URL + url : null);
+        return ApiResp.success(url != null ? URLUtil.getPictureUrl(request) + url : null);
     }
 }

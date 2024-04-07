@@ -11,6 +11,7 @@ import com.social.demo.entity.Class;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -50,5 +51,5 @@ public interface IClassService extends IService<Class> {
 
     List<ClassVo> getClassList(Integer year);
 
-    List<StudentVo> getClassStudents(Long classId);
+    List<StudentVo> getClassStudents(Long classId) throws UnknownHostException;
 }

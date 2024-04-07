@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 @Service
@@ -18,8 +20,8 @@ public class AutographServiceImpl extends ServiceImpl<AutographMapper, Autograph
     @Autowired
     AutographMapper autographMapper;
 
-    @Value("${file-picture.URL}")
-    private String URL;
+    @Value("${server.port}")
+    private String port;
 
     public Boolean addAutograph(Autograph autograph){
         boolean insertSuccess;
@@ -34,7 +36,11 @@ public class AutographServiceImpl extends ServiceImpl<AutographMapper, Autograph
         queryWrapper.orderBy(true,true,"frequency");
         List<Autograph> autographs = autographMapper.selectList(queryWrapper);
         for(Autograph autograph : autographs){
-            autograph.setSignature(URL+autograph.getSignature());
+            try {
+                autograph.setSignature(InetAddress.getLocalHost().getHostAddress() + ":" + port +autograph.getSignature());
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
         }
         return  autographs;
     }

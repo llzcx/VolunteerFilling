@@ -40,6 +40,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -80,16 +82,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Value("${file-picture.address.headshot}")
     private String HEADSHOT;
 
-    @Value("${file-picture.URL}")
-    private String URL;
-
     //成绩初始分数
     @Value("${basic.attribute.score}")
-    Double SCORE = 100.00;
+    private Double SCORE;
 
     //综测成绩初始分数
     @Value("${basic.attribute.appraisal_score}")
-    Double APPRAISAL_SCORE = 100.00;
+    private Double APPRAISAL_SCORE;
+
+    @Value("${server.port}")
+    private String port;
 
     /**
      * 退出登录
@@ -117,7 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     }
 
     @Override
-    public StudentVo getInformationOfStudent(HttpServletRequest request) {
+    public StudentVo getInformationOfStudent(HttpServletRequest request) throws UnknownHostException {
         Long userId = jwtUtil.getUserId(request);
         String userNumber = userMapper.selectUserNumberByUserId(userId);
         return getStudent(userNumber);
@@ -142,13 +144,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
 
     @Override
-    public StudentVo getStudent(String userNumber){
+    public StudentVo getStudent(String userNumber) throws UnknownHostException {
         User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
         Student student = studentMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", user.getUserId()));
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
-        studentVo.setHeadshot(studentVo.getHeadshot() != null ? URL + studentVo.getHeadshot() : null);
+        studentVo.setHeadshot(studentVo.getHeadshot() != null ? InetAddress.getLocalHost().getHostAddress() + ":" + port + studentVo.getHeadshot() : null);
         studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolId(student.getSchoolId()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
