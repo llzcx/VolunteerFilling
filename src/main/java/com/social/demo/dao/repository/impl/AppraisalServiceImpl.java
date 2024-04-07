@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,6 +64,13 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Autowired
     AppraisalSignatureMapper appraisalSignatureMapper;
+
+    //文件夹前缀-学生综测签名
+    @Value("${file-picture.address.signature.student}")
+    private String SIGNATURE_STUDENTS;
+
+    @Value("${file-picture.URL}")
+    private String URL;
 
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) {
@@ -134,7 +142,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             appraisalMapper.insert(appraisal1);
         }
         Long appraisalId = appraisal1.getAppraisalId();
-        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_STUDENTS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        String fileName = uploadFile.upload(file, SIGNATURE_STUDENTS, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         Appraisal appraisal = new Appraisal();
         appraisal.setSignature(fileName);
         appraisalMapper.update(appraisal, MybatisPlusUtil.queryWrapperEq("appraisal_id", appraisalId));
@@ -168,9 +176,9 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         }
         System.out.println("4:" + TimeUtil.now());
         String signature = appraisalSignatureMapper.getSignature(userId, classId, month);
-        signature = signature != null ? PropertiesConstant.URL + signature : null;
+        signature = signature != null ? URL + signature : null;
         String teacherSignature = appraisalSignatureMapper.getTeacherSignature(classId, month);
-        teacherSignature = teacherSignature != null ? PropertiesConstant.URL + teacherSignature : null;
+        teacherSignature = teacherSignature != null ? URL + teacherSignature : null;
         YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, total, signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
@@ -185,8 +193,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
         String teacherSignature = appraisalSignatureMapper.getSignature(userId, classId, month);
         String signature = appraisalSignatureMapper.getTeamSignature(classId, month);
-        signature = signature != null ? PropertiesConstant.URL + signature : null;
-        teacherSignature = teacherSignature != null ? PropertiesConstant.URL + teacherSignature : null;
+        signature = signature != null ? URL + signature : null;
+        teacherSignature = teacherSignature != null ? URL + teacherSignature : null;
         YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, appraisalPage.getTotal(), signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalPage.getRecords());
         return appraisalVoIPage;
@@ -310,7 +318,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
             BeanUtils.copyProperties(appraisal, appraisalVo);
-            appraisalVo.setSignature(appraisal.getSignature() != null ? PropertiesConstant.URL + appraisal.getSignature() : null);
+            appraisalVo.setSignature(appraisal.getSignature() != null ? URL + appraisal.getSignature() : null);
             if (appraisal.getContent() != null) {
                 AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
                 bean.setUsername(username);

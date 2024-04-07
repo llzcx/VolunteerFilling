@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,6 +77,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Autowired
     UploadFile uploadFile;
 
+    @Value("${file-picture.address.headshot}")
+    private String HEADSHOT;
+
+    @Value("${file-picture.URL}")
+    private String URL;
+
+    //成绩初始分数
+    @Value("${basic.attribute.score}")
+    Double SCORE = 100.00;
+
+    //综测成绩初始分数
+    @Value("${basic.attribute.appraisal_score}")
+    Double APPRAISAL_SCORE = 100.00;
 
     /**
      * 退出登录
@@ -134,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
-        studentVo.setHeadshot(studentVo.getHeadshot() != null ? PropertiesConstant.URL + studentVo.getHeadshot() : null);
+        studentVo.setHeadshot(studentVo.getHeadshot() != null ? URL + studentVo.getHeadshot() : null);
         studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolId(student.getSchoolId()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
@@ -234,8 +248,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             }
             student.setSchoolId(schoolId);
             student.setState(StateEnum.NOT_FILL.getState());
-            student.setScore(PropertiesConstant.SCORE);
-            student.setAppraisalScore(PropertiesConstant.APPRAISAL_SCORE);
+            student.setScore(SCORE);
+            student.setAppraisalScore(APPRAISAL_SCORE);
             user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
             user.setIdentity(IdentityEnum.STUDENT.getRoleId());
             student.setEnrollmentYear(TimeUtil.now().getYear());
@@ -405,7 +419,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
         Long userId = jwtUtil.getUserId(request);
-        String upload = uploadFile.upload(file, PropertiesConstant.HEADSHOT, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        String upload = uploadFile.upload(file, HEADSHOT, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         User user = new User();
         user.setHeadshot(upload);
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));

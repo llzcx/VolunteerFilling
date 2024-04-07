@@ -7,6 +7,7 @@ import com.social.demo.dao.mapper.AutographMapper;
 import com.social.demo.dao.repository.IAutographService;
 import com.social.demo.entity.Autograph;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class AutographServiceImpl extends ServiceImpl<AutographMapper, Autograph
 
     @Autowired
     AutographMapper autographMapper;
+
+    @Value("${file-picture.URL}")
+    private String URL;
 
     public Boolean addAutograph(Autograph autograph){
         boolean insertSuccess;
@@ -30,7 +34,7 @@ public class AutographServiceImpl extends ServiceImpl<AutographMapper, Autograph
         queryWrapper.orderBy(true,true,"frequency");
         List<Autograph> autographs = autographMapper.selectList(queryWrapper);
         for(Autograph autograph : autographs){
-            autograph.setSignature(PropertiesConstant.URL+autograph.getSignature());
+            autograph.setSignature(URL+autograph.getSignature());
         }
         return  autographs;
     }

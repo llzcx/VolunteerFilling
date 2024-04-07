@@ -13,6 +13,7 @@ import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +51,9 @@ public class ClassAdviserController {
 
     @Autowired
     IAppraisalSignatureService appraisalSignatureService;
+
+    @Value("${file-picture.URL}")
+    private String URL;
 
     /**
      * 班级成员列表
@@ -204,7 +208,7 @@ public class ClassAdviserController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = classAdviserService.uploadSignature(file, month, request);
-        return ApiResp.success(fileName != null ? PropertiesConstant.URL + fileName : null);
+        return ApiResp.success(fileName != null ? URL + fileName : null);
     }
 
     /**
@@ -216,6 +220,6 @@ public class ClassAdviserController {
     @GetMapping("/appraisal/signature")
     public ApiResp<String> getSignature(HttpServletRequest request, Integer month){
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url != null ? PropertiesConstant.URL + url : null);
+        return ApiResp.success(url != null ? URL + url : null);
     }
 }

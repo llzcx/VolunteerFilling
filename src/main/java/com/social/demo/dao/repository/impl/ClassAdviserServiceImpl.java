@@ -16,6 +16,7 @@ import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,6 +49,14 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
     @Autowired
     AppraisalSignatureMapper appraisalSignatureMapper;
 
+    //文件夹前缀-综测小组综测签名
+    @Value("${file-picture.address.signature.team}")
+    String SIGNATURE_TEAM;
+
+    //文件夹前缀-班主任综测签名
+    @Value("${file-picture.address.signature.teacher}")
+    String SIGNATURE_TEACHER;
+
     @Override
     public String uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception {
         if (month == 0) month = TimeUtil.now().getMonthValue();
@@ -55,7 +64,7 @@ public class ClassAdviserServiceImpl implements IClassAdviserService {
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
 
-        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_TEAM, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        String fileName = uploadFile.upload(file, SIGNATURE_TEACHER, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         appraisalSignatureMapper.add(classId, fileName, month, userId);
         return fileName;
     }

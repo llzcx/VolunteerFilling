@@ -1,22 +1,13 @@
 package com.social.demo.entity;
 
-import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.social.demo.constant.PropertiesConstant;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -85,21 +76,6 @@ public class User implements Serializable {
      * 证件照
      */
     private String headshot;
-
-    public User(Long userId, String userNumber, String username, String sex, String politicsStatus, String nation, String phone, String password, LocalDateTime created, LocalDateTime lastDdlTime, Integer identity, String headshot) {
-        this.userId = userId;
-        this.userNumber = userNumber;
-        this.username = username;
-        this.sex = sex;
-        this.politicsStatus = politicsStatus;
-        this.nation = nation;
-        this.phone = phone;
-        this.password = password;
-        this.created = created;
-        this.lastDdlTime = lastDdlTime;
-        this.identity = identity;
-        this.headshot = PropertiesConstant.URL + headshot;
-    }
 
     public User(String userNumber, String username, String password, LocalDateTime created, LocalDateTime lastDdlTime, Integer identity) {
         this.userNumber = userNumber;

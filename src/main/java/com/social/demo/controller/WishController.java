@@ -20,6 +20,7 @@ import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,6 +55,9 @@ public class WishController {
     @Qualifier("local")
     @Autowired
     UploadFile uploadFile;
+    //文件夹前缀-志愿签名
+    @Value("${file-picture.address.signature.wish}")
+    String SIGNATURE_WISH;
     /**
      * 填写志愿接口
      */
@@ -75,7 +79,7 @@ public class WishController {
         Long userId = SecurityContext.get().getUserId();
         String fileName = null;
         try {
-            fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+            fileName = uploadFile.upload(file, SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }

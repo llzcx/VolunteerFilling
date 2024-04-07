@@ -12,6 +12,7 @@ import com.social.demo.data.dto.RemoveSignatureDto;
 import com.social.demo.data.vo.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +41,9 @@ public class AppraisalTeamController {
 
     @Autowired
     IAppraisalSignatureService appraisalSignatureService;
+
+    @Value("${file-picture.URL}")
+    private String URL;
 
     /**
      * 综测小组获取学生综测
@@ -142,7 +146,7 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = appraisalTeamService.uploadSignature(file, month, request);
-        return ApiResp.judge(fileName != null, PropertiesConstant.URL + fileName, ResultCode.APPRAISAL_NOT_END);
+        return ApiResp.judge(fileName != null, URL + fileName, ResultCode.APPRAISAL_NOT_END);
     }
 
     /**
@@ -155,7 +159,7 @@ public class AppraisalTeamController {
     public ApiResp<String> getSignature(HttpServletRequest request,
                                         @RequestParam("month") Integer month){
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url != null ? PropertiesConstant.URL + url : null);
+        return ApiResp.success(url != null ? URL + url : null);
     }
 
     /**

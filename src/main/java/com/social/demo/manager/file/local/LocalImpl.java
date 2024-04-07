@@ -9,6 +9,7 @@ import com.social.demo.manager.file.UploadFile;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +26,8 @@ import java.nio.file.Paths;
 @Service("local")
 public class LocalImpl implements UploadFile {
 
-    String path = "D:\\data\\";
+    @Value("${file-picture.address.path}")
+    private String path;
 
     @Override
     public String upload(MultipartFile file, String filesName, String filename) throws Exception {

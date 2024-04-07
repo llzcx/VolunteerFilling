@@ -16,6 +16,7 @@ import com.social.demo.util.TimeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +53,10 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
     @Autowired
     AppraisalMapper appraisalMapper;
 
+    //文件夹前缀-志愿签名
+    @Value("${file-picture.address.signature.wish}")
+    String SIGNATURE_WISH;
+
     @Override
     public AppraisalTeamVo getAppraisalTeam(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(request);
@@ -85,7 +90,7 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
 
-        String fileName = uploadFile.upload(file, PropertiesConstant.SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        String fileName = uploadFile.upload(file, SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
         appraisalSignatureMapper.add(classId, fileName, month, userId);
         return fileName;
     }

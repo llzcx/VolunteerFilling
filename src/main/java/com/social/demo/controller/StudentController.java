@@ -18,6 +18,7 @@ import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.identity.Identity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +46,9 @@ public class StudentController {
     IAppraisalService appraisalService;
     @Autowired
     IStudentService studentService;
+
+    @Value("${file-picture.URL}")
+    private String URL;
 
     /**
      * 学生获取个人信息
@@ -179,7 +183,7 @@ public class StudentController {
                                            Integer month,
                                            HttpServletRequest request) throws Exception {
         String signature = appraisalService.uploadSignature(file, month, request);
-        return ApiResp.success(signature != null ? PropertiesConstant.URL + signature : null);
+        return ApiResp.success(signature != null ? URL + signature : null);
     }
 
     /**
