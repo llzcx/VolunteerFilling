@@ -5,6 +5,8 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.social.demo.common.ResultCode;
+import com.social.demo.common.SystemException;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.bo.UserMessageBo;
@@ -292,6 +294,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     private List<AppraisalVo> getAppraisals(List<UserMessageBo> userMessageBos, Integer month) throws UnknownHostException {
+        if(userMessageBos.isEmpty())
+            throw new SystemException(ResultCode.CLASS_NOT_HAVE_STUDENT);
         List<Appraisal> appraisalList = appraisalMapper.selectAppraisals(userMessageBos, month);
         HashMap<Long, Appraisal> map = new HashMap<>();
         for (Appraisal appraisal : appraisalList) {

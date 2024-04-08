@@ -81,6 +81,7 @@ public enum ResultCode {
     REQ_LIMIT(2042,"请求频繁，请稍后再试~"),
     APPRAISAL_NOT_END(2043,"本月综测还未结束，无法签名"),
     APPRAISAL_IS_END(2044, "本月综测已结束，禁止修改"),
+    CLASS_NOT_HAVE_STUDENT(2045, "班级内不存在学生，暂无综测"),
 
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
@@ -92,8 +93,7 @@ public enum ResultCode {
     REGIONAL_DUPLICATION(3008,"地区选择重复"),
     REPEATED_GENERATION(3009,"已经生成结果"),
     NOT_AT_THE_WISH_TIME(3010,"填报失败，不在填报时间"),
-    FREQUENT_REPORTING(3011,"填报失败，填报过于频繁"),
-    ;
+    FREQUENT_REPORTING(3011,"填报失败，填报过于频繁");
 
 
 
