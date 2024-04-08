@@ -113,6 +113,12 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
     WishTime wishTime = wishTimeMapper.selectOne(queryWrapper);
     return  wishTime.getAgo();
   }
+  public WishTime selectWishTime3(Long timeId){
+    QueryWrapper<WishTime> queryWrapper = Wrappers.query();
+    queryWrapper.eq("id",timeId);
+    WishTime wishTime = wishTimeMapper.selectOne(queryWrapper);
+    return wishTime;
+  }
   public List<NotAcceptedVos> selectNotAccepted(Long timeId){
     List<NotAcceptedVo> notAcceptedVoList = wishTimeMapper.selectNotAccepted(timeId);
     HashMap<String,List<NotAcceptedVo>> hashMap = new HashMap<>();
