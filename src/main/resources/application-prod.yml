@@ -20,7 +20,7 @@ spring:
 
 file-picture:
   address:
-    path: /data/yuke/file
+    path: /data/yuke/file/
     headshot: headshot
     signature:
       student: signature/student
