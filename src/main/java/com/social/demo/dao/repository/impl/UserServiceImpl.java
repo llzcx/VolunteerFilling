@@ -26,10 +26,7 @@ import com.social.demo.entity.Class;
 import com.social.demo.manager.file.UploadFile;
 import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.jwt.JwtUtil;
-import com.social.demo.util.MybatisPlusUtil;
-import com.social.demo.util.NullCheckUtils;
-import com.social.demo.util.NullifyEmptyStrings;
-import com.social.demo.util.TimeUtil;
+import com.social.demo.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -90,8 +87,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Value("${basic.attribute.appraisal_score}")
     private Double APPRAISAL_SCORE;
 
-    @Value("${server.port}")
-    private String port;
+    @Autowired
+    URLUtil urlUtil;
 
     /**
      * 退出登录
@@ -150,7 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         StudentVo studentVo = new StudentVo();
         BeanUtils.copyProperties(user, studentVo);
         BeanUtils.copyProperties(student, studentVo);
-        studentVo.setHeadshot(studentVo.getHeadshot() != null ? InetAddress.getLocalHost().getHostAddress() + ":" + port + studentVo.getHeadshot() : null);
+        studentVo.setHeadshot(studentVo.getHeadshot() != null ? urlUtil.getUrl(studentVo.getHeadshot()) : null);
         studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
         studentVo.setSchool(schoolMapper.selectNameBySchoolId(student.getSchoolId()));
         studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
