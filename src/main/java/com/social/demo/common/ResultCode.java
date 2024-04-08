@@ -91,8 +91,8 @@ public enum ResultCode {
     NO_IMPL(3007,"暂无实现，请联系开发人员"),
     REGIONAL_DUPLICATION(3008,"地区选择重复"),
     REPEATED_GENERATION(3009,"已经生成结果"),
-    NOT_AT_THE_WISH_TIME(3010,"不在填报时间"),
-    FREQUENT_REPORTING(3011,"填报过于频繁"),
+    NOT_AT_THE_WISH_TIME(3010,"填报失败，不在填报时间"),
+    FREQUENT_REPORTING(3011,"填报失败，填报过于频繁"),
     ;
 
 
