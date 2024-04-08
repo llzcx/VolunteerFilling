@@ -4,22 +4,23 @@ server:
 
 logging:
   file:
-    path: /var/log/yuke
+    path: /data/yuke/log
 
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/wish
     username: root
-    password: 123456
+    password: yukemysql
     driver-class-name: com.mysql.cj.jdbc.Driver
-    data:
-      redis:
-        host: 127.0.0.1
-        port: 6379
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: yukeredis
 
 file-picture:
   address:
-    path: /home/jsuer/log/yuke/
+    path: /data/yuke/file
     headshot: headshot
     signature:
       student: signature/student
