@@ -54,6 +54,9 @@ public class ClassAdviserController {
     @Autowired
     IAppraisalSignatureService appraisalSignatureService;
 
+    @Autowired
+    URLUtil urlUtil;
+
     /**
      * 班级成员列表
      * @param keyword 学号或者姓名 模糊查找
@@ -207,7 +210,7 @@ public class ClassAdviserController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = classAdviserService.uploadSignature(file, month, request);
-        return ApiResp.success(fileName != null ? URLUtil.getPictureUrl(request) + fileName : null);
+        return ApiResp.success(fileName != null ? urlUtil.getUrl(fileName) : null);
     }
 
     /**
@@ -219,6 +222,6 @@ public class ClassAdviserController {
     @GetMapping("/appraisal/signature")
     public ApiResp<String> getSignature(HttpServletRequest request, Integer month) throws UnknownHostException {
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url != null ? URLUtil.getPictureUrl(request) + url : null);
+        return ApiResp.success(url != null ? urlUtil.getUrl(url) : null);
     }
 }

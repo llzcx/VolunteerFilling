@@ -38,6 +38,9 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    URLUtil urlUtil;
+
     /**
      * 登录
      * @param loginDto
@@ -150,7 +153,7 @@ public class UserController {
      */
     @PostMapping("/headshot")
     public ApiResp<String> uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception {
-        return ApiResp.success(URLUtil.getPictureUrl(request) + userService.uploadHeadshot(request, file));
+        return ApiResp.success(urlUtil.getUrl(userService.uploadHeadshot(request, file)));
     }
 
     /**

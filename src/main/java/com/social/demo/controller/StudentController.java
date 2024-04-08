@@ -46,8 +46,12 @@ public class StudentController {
 
     @Autowired
     IAppraisalService appraisalService;
+
     @Autowired
     IStudentService studentService;
+
+    @Autowired
+    URLUtil urlUtil;
 
     /**
      * 学生获取个人信息
@@ -182,7 +186,7 @@ public class StudentController {
                                            Integer month,
                                            HttpServletRequest request) throws Exception {
         String signature = appraisalService.uploadSignature(file, month, request);
-        return ApiResp.success(signature != null ? URLUtil.getPictureUrl(request) + signature : null);
+        return ApiResp.success(signature != null ? urlUtil.getUrl(signature) : null);
     }
 
     /**
