@@ -60,6 +60,7 @@ public class StudentController {
      * @return 学生个人信息
      */
     @GetMapping("/information")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<StudentVo> getInformation(HttpServletRequest request) throws UnknownHostException {
         StudentVo student = userService.getInformationOfStudent(request);
         return ApiResp.judge(student != null, student, ResultCode.DATABASE_DATA_EXCEPTION);
@@ -73,6 +74,7 @@ public class StudentController {
      * @return 是否修改成功
      */
     @PutMapping("/information")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<Boolean> modifyInformation(HttpServletRequest request,
                                               @RequestBody UserDtoByStudent userDtoByStudent) {
         Boolean b = userService.modifyInformation(request, userDtoByStudent);
@@ -87,6 +89,7 @@ public class StudentController {
      * @return
      */
     @PutMapping("/password")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<String> modifyPassword(HttpServletRequest request,
                                           @RequestBody String password) {
         Boolean b = userService.modifyPassword(request, password);
@@ -100,6 +103,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/appeal")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<List<AppealVo>> getAppeal(HttpServletRequest request) {
         List<AppealVo> appeals = appealService.getAppealsToStudent(request);
         return ApiResp.success(appeals);
@@ -113,6 +117,7 @@ public class StudentController {
      * @return
      */
     @PostMapping("/appeal")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<String> submitAppeal(HttpServletRequest request,
                                         @RequestBody AppealDto appeal) {
         Boolean b = appealService.submitAppeal(request, appeal);
@@ -127,6 +132,7 @@ public class StudentController {
      * @return
      */
     @PutMapping("/appeal")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<String> quashAppeal(HttpServletRequest request,
                                        @RequestBody Long appealId) {
         Boolean aBoolean = appealService.quashAppeal(request, appealId);
@@ -141,6 +147,7 @@ public class StudentController {
      * @return
      */
     @DeleteMapping("/appeal")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<String> deleteAppeals(HttpServletRequest request,
                                          @RequestBody Long[] appealId) {
         Boolean b = appealService.deleteAppeals(request, appealId);
@@ -154,6 +161,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/this")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<AppraisalVo> getAppraisalThisMonth(HttpServletRequest request) throws UnknownHostException {
         AppraisalVo appraisal = appraisalService.getAppraisalThisMonth(request);
         return ApiResp.judge(appraisal != null, appraisal, ResultCode.APPRAISAL_NOT_EXISTS);
@@ -167,6 +175,7 @@ public class StudentController {
      * @return
      */
     @GetMapping
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<AppraisalVo> getAppraisal(HttpServletRequest request,
                                              Integer month) throws UnknownHostException {
         AppraisalVo appraisal = appraisalService.getAppraisal(request, month);
@@ -182,6 +191,7 @@ public class StudentController {
      * @return
      */
     @PostMapping("/signature")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<String> uploadSignature(MultipartFile file,
                                            Integer month,
                                            HttpServletRequest request) throws Exception {
@@ -196,6 +206,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/getStudentRanking")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<RankingVo1> getStudentRanking(@RequestParam("majorId")Long majorId,
                                                  @RequestParam("timeId")Long timeId){
         Long userId = SecurityContext.get().getUserId();
@@ -217,6 +228,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/getStudentRanking1")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<List<RankingVo1>> getStudentRanking(){
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);
@@ -247,6 +259,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/history")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<IPage<StudentVo>> getStudentHistory(@RequestParam("year") Integer year,
                                                        @RequestParam(value = "classId", required = false) Integer classId,
                                                        @RequestParam(value = "keyword", required = false) String keyword,
@@ -266,6 +279,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/appraisal")
+    @Identity(IdentityEnum.STUDENT)
     public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                      @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam(value = "month", required = false)Integer month,

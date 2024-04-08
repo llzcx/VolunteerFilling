@@ -32,4 +32,23 @@ public class RanDomUtil {
         }
     }
 
+    public static String CreateUserNumber(String s){
+        int len = s.length();
+        int randomLength = Math.max(0, 10 - len);
+        if (randomLength == 0) {
+            return s;
+        }
+
+        // 生成随机数字
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(s);
+        for (int i = 0; i < randomLength; i++) {
+            // 生成0-9之间的随机数字
+            int randomDigit = random.nextInt(10);
+            sb.append(randomDigit);
+        }
+
+        // 返回最终的字符串
+        return sb.toString();
+    }
 }

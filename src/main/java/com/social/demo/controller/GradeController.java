@@ -3,11 +3,13 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.IGradeService;
 import com.social.demo.data.dto.GradeDto;
 import com.social.demo.data.dto.GradeSubjectDto;
 import com.social.demo.data.vo.GradeVo;
 import com.social.demo.entity.GradeSubject;
+import com.social.demo.manager.security.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,7 @@ public class GradeController {
      * @return
      */
     @GetMapping("/subject")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<GradeSubject>> getGradeSubjects(){
         List<GradeSubject> subjects = gradeService.getGradeSubject();
         return ApiResp.success(subjects);
@@ -45,6 +48,7 @@ public class GradeController {
      * @return
      */
     @PostMapping("/subject")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> addGradeSubject(@RequestBody GradeSubjectDto gradeSubjectDto){
         gradeService.addGradeSubject(gradeSubjectDto);
         return ApiResp.success("添加成功");
@@ -56,6 +60,7 @@ public class GradeController {
      * @return
      */
     @DeleteMapping("/subject")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> deleteGradeSubject(@RequestParam("id")Integer gradeSubjectId){
         Boolean b = gradeService.deleteGradeSubject(Long.valueOf(gradeSubjectId));
         return ApiResp.judge(b, "删除成功", ResultCode.MAJOR_NOT_DELETE);
@@ -67,6 +72,7 @@ public class GradeController {
      * @return
      */
     @PostMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> uploadGrades(@RequestBody GradeDto[] gradeDto){
         Boolean b = gradeService.uploadGrades(gradeDto);
         return ApiResp.judge(b, "上传成功", ResultCode.GRADE_NOT_EXISTS);
@@ -81,6 +87,7 @@ public class GradeController {
      * @return
      */
     @GetMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<IPage<GradeVo>> getGrades(@RequestParam(value = "year", required = false)String year,
                                             @RequestParam("keyword") String keyword,
                                             @RequestParam("current")Integer current,
@@ -95,6 +102,7 @@ public class GradeController {
      * @return
      */
     @PutMapping("/reset")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> deleteGrades(@RequestBody String[] userNumbers){
         gradeService.deleteGrades(userNumbers);
         return ApiResp.success("重置成功");
@@ -106,6 +114,7 @@ public class GradeController {
      * @return
      */
     @PutMapping("/grade")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> modifyGrade(@RequestBody GradeDto gradeDto){
         gradeService.modifyGrade(gradeDto);
         return ApiResp.success("修改成功");
@@ -117,6 +126,7 @@ public class GradeController {
      * @return
      */
     @GetMapping("/all")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<GradeVo>> getAllGrade(@RequestParam(value = "year", required = false)String year){
         List<GradeVo> list = gradeService.getAllGradeVo(year);
         return ApiResp.success(list);

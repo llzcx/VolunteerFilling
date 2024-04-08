@@ -3,12 +3,14 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.IClassService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.ClassDto;
 import com.social.demo.data.dto.ClassModifyDto;
 import com.social.demo.data.vo.ClassVo;
 import com.social.demo.data.vo.StudentVo;
+import com.social.demo.manager.security.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +37,7 @@ public class ClassController {
      * @return
      */
     @PostMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> createClass(@RequestBody ClassDto classDto){
         Boolean b = classService.create(classDto);
         return ApiResp.judge(b, "操作成功", ResultCode.IS_EXISTS);
@@ -48,6 +51,7 @@ public class ClassController {
      * @return 班级信息
      */
     @GetMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<IPage<ClassVo>> getClassPage(@RequestParam(required = false) Integer year,
                                             @RequestParam("current")int current,
                                             @RequestParam("size")int size){
@@ -61,6 +65,7 @@ public class ClassController {
      * @return 班级信息
      */
     @GetMapping("/list")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<ClassVo>> getClass(@RequestParam(required = false) Integer year){
         List<ClassVo> classList = classService.getClassList(year);
         return ApiResp.success(classList);
@@ -72,6 +77,7 @@ public class ClassController {
      * @return
      */
     @DeleteMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> delete(@RequestBody Long[] classIds){
         Boolean delete = classService.delete(classIds);
         return ApiResp.judge(delete, "操作成功", ResultCode.CLASS_DELETE_LOSE);
@@ -83,6 +89,7 @@ public class ClassController {
      * @return
      */
     @PutMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> modify(@RequestBody ClassModifyDto classModifyDto){
         System.out.println(classModifyDto);
         Boolean b = classService.modify(classModifyDto);
@@ -95,6 +102,7 @@ public class ClassController {
      * @return
      */
     @GetMapping("/exists")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> judge(@RequestParam String className){
         Boolean b = classService.judgeClassName(className);
         return ApiResp.success(b);
@@ -106,6 +114,7 @@ public class ClassController {
      * @return
      */
     @GetMapping("/student")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<StudentVo>> getClassStudents(@RequestParam("classId")Long classId) throws UnknownHostException {
         List<StudentVo> studentVos = classService.getClassStudents(classId);
         return ApiResp.success(studentVos);

@@ -107,12 +107,9 @@
     </select>
     <select id="selectHistoryTotal" resultType="java.lang.Long">
         SELECT COUNT(user_number) FROM user WHERE user_id IN (
-            SELECT s.user_id FROM student AS s, appraisal AS a WHERE s.user_id = a.user_id AND s.class_id IN (
-                SELECT class_id FROM `class` WHERE `year` = #{year}
-                                             <if test="className!=null and className!='' and className!='null' ">
-                                                 AND class_name LIKE CONCAT("%",#{className},"%")
-                                             </if>
-                ) AND a.month = #{month} AND enrollment_year = #{year}
+            SELECT s.user_id FROM student AS s WHERE s.class_id IN (
+                SELECT class_id FROM `class` WHERE `year` = #{year} AND class_id = #{classId}
+                ) AND enrollment_year = #{year}
             )
         <if test="keyword!=null and keyword!='' and keyword!='null' ">
             AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
@@ -144,5 +141,36 @@
                 ( `user_id`=#{userMessageBos.userId} )
             </foreach>
         </where>
+    </select>
+    <select id="selectUserMessageToTeacher" resultType="com.social.demo.data.bo.UserMessageBo">
+        SELECT u.user_number, u.user_id, u.username, s.appraisal_score FROM user AS u, student AS s
+        <where>
+            u.user_id = s.user_id
+            <if test="keyword != null and keyword != '' and keyword != 'null'">
+                AND (u.username LIKE CONCAT("%",#{keyword},"%") OR u.user_number LIKE CONCAT("%",#{keyword},"%"))
+            </if>
+            <if test="classId != null">
+                AND u.user_id IN (SELECT user_id FROM student WHERE class_id = #{classId})
+            </if>
+        </where>
+        <if test="rank == -1">
+            ORDER BY s.appraisal_score
+        </if>
+        <if test="rank == 1">
+            ORDER BY s.appraisal_score desc
+        </if>
+        LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectUserMessageHistory" resultType="com.social.demo.data.bo.UserMessageBo">
+        SELECT u.user_number, u.user_id, u.username, s.appraisal_score FROM user AS u, student AS s
+            WHERE s.user_id = u.user_id AND s.class_id IN (
+                SELECT class_id FROM `class` WHERE `year` = #{year}
+                AND class_id = #{classId}
+            )
+        AND enrollment_year = #{year}
+        <if test="keyword!=null and keyword!='' and keyword!='null' ">
+            AND (username LIKE CONCAT("%",#{keyword},"%") OR user_number LIKE CONCAT("%",#{keyword},"%"))
+        </if>
+        LIMIT #{number1}, #{number2}
     </select>
 </mapper>

@@ -29,7 +29,7 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
 
     List<String> selectUserNumbersHistory(Integer year, Integer month, String className, String keyword, Integer number1, Integer number2);
 
-    Long selectHistoryTotal(Integer year, Integer month, String className, String keyword);
+    Long selectHistoryTotal(Integer year, Integer month, Long classId, String keyword);
 
     void removeSignature(Integer month, String userNumber);
 
@@ -38,4 +38,8 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
     List<UserMessageBo> selectUserMessageToTeam(Long userId, String keyword, Integer rank, Integer number1, Integer number2);
 
     List<Appraisal> selectAppraisals(List<UserMessageBo> userMessageBos, Integer month);
+
+    List<UserMessageBo> selectUserMessageToTeacher(Long classId, String keyword, Integer rank, Integer number1, Integer number2);
+
+    List<UserMessageBo> selectUserMessageHistory(Integer year, Long classId, String keyword, Integer number1, Integer number2);
 }

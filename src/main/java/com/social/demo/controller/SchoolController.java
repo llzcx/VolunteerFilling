@@ -2,9 +2,11 @@ package com.social.demo.controller;
 
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.ISchoolService;
 import com.social.demo.data.dto.SchoolDto;
 import com.social.demo.entity.School;
+import com.social.demo.manager.security.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +30,7 @@ public class SchoolController {
      * @return
      */
     @PostMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> addSchool(@RequestBody SchoolDto schoolDto){
         Boolean addSchool = schoolService.addSchool(schoolDto);
         return ApiResp.success(addSchool);
@@ -39,6 +42,7 @@ public class SchoolController {
      * @return
      */
     @PutMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> modifySchool(@RequestBody School school){
         Boolean modifySchool = schoolService.modifySchool(school);
         return ApiResp.judge(modifySchool, modifySchool, ResultCode.SCHOOL_NOT_EXISTS);
@@ -50,6 +54,7 @@ public class SchoolController {
      * @return
      */
     @DeleteMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> deleteSchool(@RequestBody Long schoolId){
         Boolean deleteSchool = schoolService.deleteSchool(schoolId);
         return ApiResp.judge(deleteSchool, "删除成功", ResultCode.SCHOOL_NOT_EXISTS);
@@ -61,6 +66,7 @@ public class SchoolController {
      * @return 院校信息
      */
     @GetMapping
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<List<School>> getSchool(@RequestParam(value = "schoolName", required = false)String schoolName){
         List<School> school = schoolService.getSchool(schoolName);
         return ApiResp.judge(school != null, school, ResultCode.SCHOOL_NOT_EXISTS);
@@ -72,6 +78,7 @@ public class SchoolController {
      * @return
      */
     @GetMapping("/exists")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> judge(@RequestParam("schoolName") String schoolName){
         Boolean b = schoolService.judgeSchoolName(schoolName);
         return ApiResp.success(b);

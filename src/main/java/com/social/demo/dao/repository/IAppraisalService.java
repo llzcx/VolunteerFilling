@@ -3,7 +3,6 @@ package com.social.demo.dao.repository;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.dto.AppraisalUploadDto;
-import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.data.vo.YPage;
 import com.social.demo.entity.Appraisal;
@@ -36,7 +35,7 @@ public interface IAppraisalService extends IService<Appraisal> {
 
     List<Integer> getMonthToTeam(HttpServletRequest request);
 
-    IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size) throws UnknownHostException;
+    IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, Long classId, String keyword, Integer current, Integer size) throws UnknownHostException;
 
     IPage<AppraisalVo> getAppraisalsToStudent(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException;
 

@@ -24,6 +24,4 @@ public class AppealController {
 
     @Autowired
     IAppealService appealService;
-
-
 }

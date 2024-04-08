@@ -2,10 +2,12 @@ package com.social.demo.controller;
 
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.StudentVo;
+import com.social.demo.manager.security.identity.Identity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class TeacherController {
      * @return 老师的个人信息
      */
     @GetMapping("/information")
+    @Identity(IdentityEnum.TEACHER)
     public ApiResp<TeacherVo> getInformation(HttpServletRequest request){
         TeacherVo user = userService.getInformationOfTeacher(request);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
@@ -41,6 +44,7 @@ public class TeacherController {
      * @return
      */
     @PutMapping("/phone")
+    @Identity(IdentityEnum.TEACHER)
     public ApiResp<String> modifyPhone(HttpServletRequest request,
                                                 @RequestBody String phone){
         Boolean teacher = userService.modifyPhone(request, phone);
@@ -54,6 +58,7 @@ public class TeacherController {
      * @return
      */
     @PutMapping("/password")
+    @Identity(IdentityEnum.TEACHER)
     public ApiResp<String> modifyPassword(HttpServletRequest request,
                                           @RequestBody String password){
         Boolean b = userService.modifyPassword(request, password);

@@ -67,6 +67,7 @@ public class ClassAdviserController {
      * @return 班级成员列表
      */
     @GetMapping("/students")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<IPage<ClassUserVo>> getStudents(HttpServletRequest request,
                                                      @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam(value = "role", required = false)String role,
@@ -83,6 +84,7 @@ public class ClassAdviserController {
      * @return 学生个人信息
      */
     @GetMapping("/student")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<StudentVo> getStudent(@RequestParam("number")String number) throws UnknownHostException {
         StudentVo user = userService.getStudent(number);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
@@ -94,6 +96,7 @@ public class ClassAdviserController {
      * @return 学生个人信息
      */
     @PutMapping("/student")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> modifyStudent(@RequestBody UserDtoByTeacher userDtoByTeacher) throws IllegalAccessException {
         Boolean b = userService.modifyStudent(userDtoByTeacher);
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
@@ -105,6 +108,7 @@ public class ClassAdviserController {
      * @return
      */
     @PutMapping("/reset")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> reset(@RequestBody String[] userNumbers){
         userService.reset(userNumbers);
         return ApiResp.success("操作成功");
@@ -120,6 +124,7 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appraisal")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<YPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                             @RequestParam(value = "keyword", required = false)String keyword,
                                                             @RequestParam(value = "month", required = false)Integer month,
@@ -135,6 +140,7 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appeals")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request){
         List<AppealVo> appealVos = appealService.getAppealByTeacher(request);
         return ApiResp.success(appealVos);
@@ -146,6 +152,7 @@ public class ClassAdviserController {
      * @return
      */
     @PutMapping("/appeal")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> disposeAppeal(HttpServletRequest request,
                                          @RequestBody Long appealId){
         Boolean aBoolean = appealService.disposeAppeal(request, appealId);
@@ -159,6 +166,7 @@ public class ClassAdviserController {
      * @return
      */
     @DeleteMapping("/appeal")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> deleteAppeals(HttpServletRequest request,
                                          @RequestBody Long[] appealId){
         Boolean b = appealService.deleteAppealsByTeacher(request, appealId);
@@ -171,6 +179,7 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appraisal/team")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<AppraisalTeamVo> getAppraisalTeam(HttpServletRequest request){
         AppraisalTeamVo appraisalTeamVo = appraisalTeamService.getAppraisalTeam(request);
         return ApiResp.success(appraisalTeamVo);
@@ -182,6 +191,7 @@ public class ClassAdviserController {
      * @return
      */
     @PutMapping("/appraisal/team")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> resetAppraisalTeamPwd(@RequestParam("userNumber")String userNumber){
         appraisalTeamService.resetAppraisalTeamPwd(userNumber);
         return ApiResp.success("重置成功");
@@ -208,6 +218,7 @@ public class ClassAdviserController {
      * @throws Exception
      */
     @PostMapping("/appraisal/signature")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = classAdviserService.uploadSignature(file, month, request);
         return ApiResp.success(fileName != null ? urlUtil.getUrl(fileName) : null);
@@ -220,6 +231,7 @@ public class ClassAdviserController {
      * @return
      */
     @GetMapping("/appraisal/signature")
+    @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<String> getSignature(HttpServletRequest request, Integer month) throws UnknownHostException {
         String url = appraisalSignatureService.getSignature(request, month);
         return ApiResp.success(url != null ? urlUtil.getUrl(url) : null);
