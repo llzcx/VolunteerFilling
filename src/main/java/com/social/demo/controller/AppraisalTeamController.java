@@ -2,6 +2,7 @@ package com.social.demo.controller;
 
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
+import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
@@ -10,6 +11,7 @@ import com.social.demo.dao.repository.IAppraisalTeamService;
 import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.dto.RemoveSignatureDto;
 import com.social.demo.data.vo.*;
+import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.checkerframework.checker.units.qual.A;
@@ -61,6 +63,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<YPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
                                                      @RequestParam(value = "keyword", required = false)String keyword,
                                                      @RequestParam("month")Integer month,
@@ -77,6 +80,7 @@ public class AppraisalTeamController {
      * @return
      */
     @PostMapping("/appraisal")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<String> uploadAppraisal(@RequestBody AppraisalUploadDto appraisalUploadDto){
         appraisalService.uploadAppraisal(appraisalUploadDto);
         return ApiResp.success("修改成功");
@@ -88,6 +92,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appeals")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<List<AppealVo>> getAppealsFinished(HttpServletRequest request){
         List<AppealVo> appealVos = appealService.getAppealByTeam(request);
         return ApiResp.success(appealVos);
@@ -99,6 +104,7 @@ public class AppraisalTeamController {
      * @return
      */
     @PutMapping("/appeal")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<String> disposeAppeal(HttpServletRequest request,
                                          @RequestBody Long appealId){
         Boolean aBoolean = appealService.disposeAppealByTeam(request, appealId);
@@ -112,6 +118,7 @@ public class AppraisalTeamController {
      * @return
      */
     @DeleteMapping("/appeal")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<String> deleteAppeals(HttpServletRequest request,
                                          @RequestBody Long[] appealId){
         Boolean b = appealService.deleteAppealsByTeam(request, appealId);
@@ -124,6 +131,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal/month")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
         List<Integer> list = appraisalService.getMonthToTeam(request);
         return ApiResp.success(list);
@@ -135,6 +143,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/message")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<AppraisalTeamUserVo> getMessage(HttpServletRequest request){
         AppraisalTeamUserVo userMessage = appraisalTeamService.getMessage(request);
         return ApiResp.success(userMessage);
@@ -149,6 +158,7 @@ public class AppraisalTeamController {
      * @throws Exception
      */
     @PostMapping("/appraisal/signature")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = appraisalTeamService.uploadSignature(file, month, request);
         return ApiResp.judge(fileName != null, urlUtil.getUrl(fileName), ResultCode.APPRAISAL_NOT_END);
@@ -161,6 +171,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal/signature")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<String> getSignature(HttpServletRequest request,
                                         @RequestParam("month") Integer month) throws UnknownHostException {
         String url = appraisalSignatureService.getSignature(request, month);
@@ -173,6 +184,7 @@ public class AppraisalTeamController {
      * @return
      */
     @PutMapping("/appraisal/signature")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<String> removeSignature(HttpServletRequest request,
                                            @RequestBody RemoveSignatureDto removeSignatureDto){
         Boolean b = appraisalSignatureService.removeSignature(request, removeSignatureDto);
@@ -186,6 +198,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal/signature/count")
+    @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<Integer> getSignatureCount(HttpServletRequest request,
                                               @RequestParam Integer month){
         Integer count = appraisalService.getSignatureCount(request, month);

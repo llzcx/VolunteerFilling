@@ -143,4 +143,9 @@
             AND s.class_id = #{classId}
             AND s.enrollment_year = #{year}
     </select>
+    <select id="selectUserMessageByClassYear" resultType="com.social.demo.data.bo.UserMessageBo">
+        SELECT u.user_number, u.user_id, u,username, s.appraisal_score FROM user AS u, student AS s WHERE u.user_id = s.user_id
+            AND s.class_id = #{classId}
+            AND s.enrollment_year = #{year}
+    </select>
 </mapper>

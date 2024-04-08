@@ -5,13 +5,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.bo.UserMessageBo;
 import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.vo.AppraisalContentVo;
-import com.social.demo.data.vo.AppraisalTotalVo;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.data.vo.YPage;
 import com.social.demo.entity.Appraisal;
@@ -31,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -79,8 +76,6 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) throws UnknownHostException {
-
-
         Long userId = jwtUtil.getUserId(request);
         return getAppraisal(userMapper.selectUserNumberByUserId(userId), month);
     }
@@ -186,7 +181,6 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Long userId = jwtUtil.getUserId(request);
         Long classId = classMapper.selectClassIdByTeacherUserId(userId);
         IPage<AppraisalVo> appraisalPage = getAppraisalPage(classId, keyword, month, rank, current, size);
-
         String teacherSignature = appraisalSignatureMapper.getSignature(userId, classId, month);
         String signature = appraisalSignatureMapper.getTeamSignature(classId, month);
         signature = signature != null ? urlUtil.getUrl(signature) : null;
@@ -243,15 +237,10 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     @Override
-    public IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, String className, String keyword, Integer current, Integer size) throws UnknownHostException {
-        List<String> userNumbers = appraisalMapper.selectUserNumbersHistory(year, month, className, keyword, (current - 1) * size, size);
-        Long total = appraisalMapper.selectHistoryTotal(year, month, className, keyword);
-        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
-        for (String number : userNumbers) {
-            AppraisalVo appraisalVo = getAppraisal(number, month);
-            appraisalVos.add(appraisalVo);
-        }
-
+    public IPage<AppraisalVo> getAppraisalHistory(Integer year, Integer month, Long classId, String keyword, Integer current, Integer size) throws UnknownHostException {
+        List<UserMessageBo> userMessageBos = appraisalMapper.selectUserMessageHistory(year, classId, keyword, (current - 1) * size, size);
+        Long total = appraisalMapper.selectHistoryTotal(year, month, classId, keyword);
+        List<AppraisalVo> appraisalVos = getAppraisals(userMessageBos, month);
         IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, total);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
@@ -267,12 +256,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     @Override
     public List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year) throws UnknownHostException {
-        List<String> userNumbers = studentMapper.selectUserNumberByClassYear(classId, year);
-        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
-        for (String number : userNumbers) {
-            AppraisalVo appraisalVo = getAppraisal(number, month);
-            appraisalVos.add(appraisalVo);
-        }
+        List<UserMessageBo> userMessageBos = studentMapper.selectUserMessageByClassYear(classId, year);
+        List<AppraisalVo> appraisalVos = getAppraisals(userMessageBos, month);
         return appraisalVos;
     }
 
@@ -306,33 +291,6 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         return list;
     }
 
-// test
-    private AppraisalVo getAppraisal(UserMessageBo userMessageBo, Integer month) throws UnknownHostException {
-        Long userId = userMessageBo.getUserId();
-        String userNumber = userMessageBo.getUserNumber();
-        Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
-        AppraisalVo appraisalVo = new AppraisalVo();
-        String username = userMessageBo.getUsername();
-        Double lastMonthScore = userMessageBo.getAppraisalScore();
-        if (appraisal != null) {
-            BeanUtils.copyProperties(appraisal, appraisalVo);
-            appraisalVo.setSignature(appraisal.getSignature() != null ? urlUtil.getUrl(appraisal.getSignature()) : null);
-            if (appraisal.getContent() != null) {
-                AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
-                bean.setUsername(username);
-                appraisalVo.setContent(bean);
-            }else {
-                AppraisalContentVo appraisalContentVo = new AppraisalContentVo(userNumber, username, lastMonthScore);
-                appraisalVo.setContent(appraisalContentVo);
-            }
-        }else {
-            appraisalVo.setMonth(month);
-            appraisalVo.setContent(new AppraisalContentVo(userNumber, username, lastMonthScore));
-        }
-        return appraisalVo;
-    }
-
-//    test
     private List<AppraisalVo> getAppraisals(List<UserMessageBo> userMessageBos, Integer month) throws UnknownHostException {
         List<Appraisal> appraisalList = appraisalMapper.selectAppraisals(userMessageBos, month);
         HashMap<Long, Appraisal> map = new HashMap<>();
@@ -392,18 +350,12 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     }
 
     private IPage<AppraisalVo> getAppraisalPage(Long classId, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException {
-        List<String> userNumbers;
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
         }
-        userNumbers = appraisalMapper.selectUserNumbersToTeacher(classId, keyword, month, rank, (current - 1) * size, size);
+        List<UserMessageBo> userMessageBos = appraisalMapper.selectUserMessageToTeacher(classId ,keyword, rank, (current - 1) * size, size);
         Long count = studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id", classId));
-        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
-        for (String number : userNumbers) {
-            AppraisalVo appraisalVo = getAppraisal(number, month);
-            appraisalVos.add(appraisalVo);
-        }
-
+        List<AppraisalVo> appraisalVos = getAppraisals(userMessageBos, month);
         IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, count);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;

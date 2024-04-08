@@ -1,6 +1,7 @@
 package com.social.demo.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.social.demo.data.bo.UserMessageBo;
 import com.social.demo.entity.WishClass;
 import com.social.demo.entity.Ranking;
 import com.social.demo.data.bo.GradeBo;
@@ -66,4 +67,6 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
     List<String> selectUserNumberByClass(Long classId);
 
     List<String> selectUserNumberByClassYear(Long classId, Integer year);
+
+    List<UserMessageBo> selectUserMessageByClassYear(Long classId, Integer year);
 }

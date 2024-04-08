@@ -26,6 +26,7 @@ import com.social.demo.entity.WishClass;
 import com.social.demo.entity.Class;
 import com.social.demo.entity.User;
 import com.social.demo.util.MybatisPlusUtil;
+import com.social.demo.util.RanDomUtil;
 import com.social.demo.util.TimeUtil;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author 杨世博
@@ -83,6 +85,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Override
     public Long createClass(@NotNull String className, Long userId){
         Class aClass = new Class();
+        className = TimeUtil.now().getYear() + "级" + className + "班";
         aClass.setClassName(className);
         if (userId != null){
             aClass.setUserId(userId);
@@ -90,7 +93,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         }
         aClass.setYear(TimeUtil.now().getYear());
         classMapper.insert(aClass);
-        User user = new User(String.valueOf(TimeUtil.now().getYear())+ aClass.getClassId(),
+
+        //获取一个四位的随机数
+        String userNumber = RanDomUtil.CreateUserNumber(String.valueOf(TimeUtil.now().getYear())+ aClass.getClassId());
+
+        User user = new User(userNumber,
                 className + "综测账号",
                 MD5.create().digestHex(PropertiesConstant.PASSWORD),
                 TimeUtil.now(), TimeUtil.now(), IdentityEnum.APPRAISAL_TEAM.getRoleId());
@@ -101,6 +108,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
     @Override
     public Boolean judgeClassName(String className) {
+        className = TimeUtil.now().getYear() + "级" + className + "班";
         List<Class> classes = classMapper.selectList(MybatisPlusUtil.queryWrapperEq("class_name", className));
         if (!classes.isEmpty()) {
             throw new SystemException(ResultCode.IS_EXISTS);
