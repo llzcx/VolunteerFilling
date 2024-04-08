@@ -41,6 +41,10 @@ public interface IWishTimeService extends IService<WishTime> {
      */
     IPage<WishTime> selectWishTime1(Integer schoolId,Integer ago, Long current, Long size);
     /**
+     * 获取志愿时间Id
+     */
+    WishTime selectWishTime3(Long timeId);
+    /**
      * 按照学生id搜索志愿时间
      */
     List<WishTimeVo1> selectWishTime2(Long userId);

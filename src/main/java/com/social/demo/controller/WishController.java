@@ -25,6 +25,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +45,8 @@ import static com.social.demo.controller.MajorController.MajorMajorVo;
 public class WishController {
     @Autowired
     private IWishService wishService;
+    @Autowired
+    private IWishTimeService wishTimeService;
     @Autowired
     private IMajorService majorService;
     @Autowired
@@ -75,8 +78,20 @@ public class WishController {
     @PutMapping("modifyWish")
     @Identity(IdentityEnum.STUDENT)
     public ApiResp<Boolean> modifyWish(MultipartFile file,WishVo1 wishVo1){
-        System.out.println(wishVo1);
         Long userId = SecurityContext.get().getUserId();
+        Long timeId = wishVo1.getTimeId();
+        WishTime wishTime = wishTimeService.selectWishTime3(timeId);
+        LocalDateTime currentTime = LocalDateTime.now();
+        if (currentTime.isAfter(wishTime.getStartTime())&&currentTime.isBefore(wishTime.getEndTime())) {
+            throw new SystemException(ResultCode.NOT_AT_THE_WISH_TIME);
+        }
+        List<Autograph> autographList = autographService.getAutograph(timeId,userId);
+        Autograph autograph1 = autographList.get(autographList.size()-1);
+        LocalDateTime time = autograph1.getUpdateTime();
+        Duration duration = Duration.between(currentTime,time);
+        if (Math.abs(duration.getSeconds()) <= 10) {
+            throw new SystemException(ResultCode.FREQUENT_REPORTING);
+        }
         String fileName = null;
         try {
             fileName = uploadFile.upload(file, SIGNATURE_WISH, MD5.create().digestHex(userId + TimeUtil.now().toString()));
@@ -93,8 +108,8 @@ public class WishController {
         autograph.setSecondName(wish.getSecondName());
         autograph.setThirdName(wish.getThirdName());
         autograph.setTimeId(wish.getTimeId());
-        LocalDateTime currentTime = LocalDateTime.now();
-        autograph.setUpdateTime(currentTime);
+        LocalDateTime currentTime1 = LocalDateTime.now();
+        autograph.setUpdateTime(currentTime1);
         autographService.addAutograph(autograph);
         wish.setUserId(userId);
         wish.setFrequency(wishVo.getFrequency()-1);
