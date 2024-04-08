@@ -5,10 +5,12 @@ import cn.hutool.core.util.StrUtil;
 
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
+import com.social.demo.constant.DevAndProd;
 import com.social.demo.manager.file.UploadFile;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,9 @@ public class LocalImpl implements UploadFile {
     @Value("${file-picture.address.path}")
     private String path;
 
+    @Autowired
+    DevAndProd devAndProd;
+
     @Override
     public String upload(MultipartFile file, String filesName, String filename) throws Exception {
         //获取文件原始名称
@@ -45,7 +50,7 @@ public class LocalImpl implements UploadFile {
             uploadParentFile.mkdirs();
         }
         String fileName = filename+ StrUtil.DOT + type;
-        File uploadFile = new File(path + filesName + "\\" + fileName);
+        File uploadFile = new File(path + filesName + devAndProd.getFileSplit() + fileName);
         //将临时文件转存到指定磁盘位置
         file.transferTo(uploadFile);
         return "/image/" + filesName + "/" + fileName;

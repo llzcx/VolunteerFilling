@@ -70,6 +70,10 @@ public class RequestInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        //本次请求的路径
+        String requestURL = request.getRequestURI();
+        log.info("requestURL:{}", requestURL);
+
 
         if (!(handler instanceof HandlerMethod)) {
             //不是映射到方法直接通过
@@ -84,9 +88,6 @@ public class RequestInterceptor implements HandlerInterceptor {
         }
 
 
-        //本次请求的路径
-        String requestURL = request.getRequestURI();
-        log.info("requestURL:{}", requestURL);
         //放行路径
         for (String path : PathConfig.RELEASABLE_PATH) {
             if (antPathMatcher.match(path, requestURL)) {
