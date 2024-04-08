@@ -121,13 +121,13 @@
     <select id="selectSignatureCount" resultType="java.lang.Integer">
         SELECT COUNT(signature) FROM appraisal AS a, student AS s WHERE a.user_id = s.user_id AND class_id = #{classId} AND a.month = #{month}
     </select>
-    <select id="selectAppraisals" resultType="com.social.demo.entity.Appraisal">
-        SELECT a.* FROM appraisal AS a, user AS u, student AS s WHERE u.user_id = a.user_id AND a.user_id = s.user_id
-             AND s.class_id IN (SELECT class_id FROM appraisal_team WHERE team_user_id = #{userId})
+    <select id="selectUserMessageToTeam" resultType="com.social.demo.data.bo.UserMessageBo">
+        SELECT u.user_number, u.user_id, u.username, s.appraisal_score FROM user AS u, student AS s
+        WHERE s.class_id IN (SELECT class_id FROM appraisal_team WHERE team_user_id = #{userId})
+        AND u.user_id = s.user_id
         <if test="keyword!=null and keyword!='' and keyword!='null'">
             AND (u.username LIKE CONCAT("%",#{keyword},"%") OR u.user_number LIKE CONCAT("%",#{keyword},"%"))
         </if>
-        AND `month` = #{month}
         <if test="rank == -1">
             ORDER BY s.appraisal_score
         </if>
@@ -135,5 +135,14 @@
             ORDER BY s.appraisal_score desc
         </if>
         LIMIT #{number1}, #{number2}
+    </select>
+    <select id="selectAppraisals" resultType="com.social.demo.entity.Appraisal">
+        SELECT * FROM appraisal
+        <where>
+            month = #{month} AND
+            <foreach collection="userMessageBos" index="index" item="userMessageBos" open="(" close=")" separator="or">
+                ( `user_id`=#{userMessageBos.userId} )
+            </foreach>
+        </where>
     </select>
 </mapper>

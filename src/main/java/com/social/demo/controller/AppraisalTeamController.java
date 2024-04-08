@@ -12,6 +12,7 @@ import com.social.demo.data.dto.RemoveSignatureDto;
 import com.social.demo.data.vo.*;
 import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -46,6 +47,9 @@ public class AppraisalTeamController {
     @Autowired
     IAppraisalSignatureService appraisalSignatureService;
 
+    @Autowired
+    URLUtil urlUtil;
+
     /**
      * 综测小组获取学生综测
      * @param request
@@ -75,7 +79,7 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal")
     public ApiResp<String> uploadAppraisal(@RequestBody AppraisalUploadDto appraisalUploadDto){
         appraisalService.uploadAppraisal(appraisalUploadDto);
-        return ApiResp.success("上传成功");
+        return ApiResp.success("修改成功");
     }
 
     /**
@@ -147,7 +151,7 @@ public class AppraisalTeamController {
     @PostMapping("/appraisal/signature")
     public ApiResp<String> uploadSignature(MultipartFile file, Integer month, HttpServletRequest request) throws Exception{
         String fileName = appraisalTeamService.uploadSignature(file, month, request);
-        return ApiResp.judge(fileName != null, URLUtil.getPictureUrl(request) + fileName, ResultCode.APPRAISAL_NOT_END);
+        return ApiResp.judge(fileName != null, urlUtil.getUrl(fileName), ResultCode.APPRAISAL_NOT_END);
     }
 
     /**
@@ -160,7 +164,7 @@ public class AppraisalTeamController {
     public ApiResp<String> getSignature(HttpServletRequest request,
                                         @RequestParam("month") Integer month) throws UnknownHostException {
         String url = appraisalSignatureService.getSignature(request, month);
-        return ApiResp.success(url != null ? URLUtil.getPictureUrl(request) + url : null);
+        return ApiResp.success(url != null ? urlUtil.getUrl(url) : null);
     }
 
     /**

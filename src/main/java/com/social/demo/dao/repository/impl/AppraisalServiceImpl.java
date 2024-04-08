@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.*;
 import com.social.demo.dao.repository.IAppraisalService;
+import com.social.demo.data.bo.UserMessageBo;
 import com.social.demo.data.dto.AppraisalUploadDto;
 import com.social.demo.data.vo.AppraisalContentVo;
 import com.social.demo.data.vo.AppraisalTotalVo;
@@ -34,6 +35,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -72,8 +74,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     @Value("${file-picture.address.signature.student}")
     private String SIGNATURE_STUDENTS;
 
-    @Value("${server.port}")
-    private String port;
+    @Autowired
+    URLUtil urlUtil;
 
     @Override
     public AppraisalVo getAppraisal(HttpServletRequest request, Integer month) throws UnknownHostException {
@@ -163,25 +165,16 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     public YPage<AppraisalVo> getAppraisalsToTeam(HttpServletRequest request, String keyword, Integer month, Integer rank, Integer current, Integer size) throws UnknownHostException {
         Long userId = jwtUtil.getUserId(request);
         Long classId = appraisalTeamMapper.selectClassId(userId);
-        List<String> userNumbers;
         if (month == 0){
             month = TimeUtil.now().getMonthValue();
         }
-        System.out.println("1:" + TimeUtil.now());
-        userNumbers = appraisalMapper.selectUserNumbersToTeam(userId, keyword, rank, (current - 1) * size, size);
-        System.out.println("2:" + TimeUtil.now());
+        List<UserMessageBo> userMessageBos = appraisalMapper.selectUserMessageToTeam(userId, keyword, rank, (current - 1) * size, size);
         Integer total = appraisalMapper.selectTotalToTeam(userId, keyword);
-        System.out.println("3:" + TimeUtil.now());
-        ArrayList<AppraisalVo> appraisalVos = new ArrayList<>();
-        for (String number : userNumbers) {
-            AppraisalVo appraisalVo = getAppraisal(number, month);
-            appraisalVos.add(appraisalVo);
-        }
-        System.out.println("4:" + TimeUtil.now());
+        List<AppraisalVo> appraisalVos = getAppraisals(userMessageBos, month);
         String signature = appraisalSignatureMapper.getSignature(userId, classId, month);
-        signature = signature != null ? URLUtil.getPictureUrl(request) + signature : null;
+        signature = signature != null ? urlUtil.getUrl(signature) : null;
         String teacherSignature = appraisalSignatureMapper.getTeacherSignature(classId, month);
-        teacherSignature = teacherSignature != null ? URLUtil.getPictureUrl(request) + teacherSignature : null;
+        teacherSignature = teacherSignature != null ? urlUtil.getUrl(teacherSignature) : null;
         YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, total, signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalVos);
         return appraisalVoIPage;
@@ -196,8 +189,8 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
         String teacherSignature = appraisalSignatureMapper.getSignature(userId, classId, month);
         String signature = appraisalSignatureMapper.getTeamSignature(classId, month);
-        signature = signature != null ? URLUtil.getPictureUrl(request) + signature : null;
-        teacherSignature = teacherSignature != null ? URLUtil.getPictureUrl(request) + teacherSignature : null;
+        signature = signature != null ? urlUtil.getUrl(signature) : null;
+        teacherSignature = teacherSignature != null ? urlUtil.getUrl(teacherSignature) : null;
         YPage<AppraisalVo> appraisalVoIPage = new YPage<>(current, size, appraisalPage.getTotal(), signature, teacherSignature);
         appraisalVoIPage.setRecords(appraisalPage.getRecords());
         return appraisalVoIPage;
@@ -313,6 +306,67 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         return list;
     }
 
+// test
+    private AppraisalVo getAppraisal(UserMessageBo userMessageBo, Integer month) throws UnknownHostException {
+        Long userId = userMessageBo.getUserId();
+        String userNumber = userMessageBo.getUserNumber();
+        Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
+        AppraisalVo appraisalVo = new AppraisalVo();
+        String username = userMessageBo.getUsername();
+        Double lastMonthScore = userMessageBo.getAppraisalScore();
+        if (appraisal != null) {
+            BeanUtils.copyProperties(appraisal, appraisalVo);
+            appraisalVo.setSignature(appraisal.getSignature() != null ? urlUtil.getUrl(appraisal.getSignature()) : null);
+            if (appraisal.getContent() != null) {
+                AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
+                bean.setUsername(username);
+                appraisalVo.setContent(bean);
+            }else {
+                AppraisalContentVo appraisalContentVo = new AppraisalContentVo(userNumber, username, lastMonthScore);
+                appraisalVo.setContent(appraisalContentVo);
+            }
+        }else {
+            appraisalVo.setMonth(month);
+            appraisalVo.setContent(new AppraisalContentVo(userNumber, username, lastMonthScore));
+        }
+        return appraisalVo;
+    }
+
+//    test
+    private List<AppraisalVo> getAppraisals(List<UserMessageBo> userMessageBos, Integer month) throws UnknownHostException {
+        List<Appraisal> appraisalList = appraisalMapper.selectAppraisals(userMessageBos, month);
+        HashMap<Long, Appraisal> map = new HashMap<>();
+        for (Appraisal appraisal : appraisalList) {
+            map.put(appraisal.getUserId(), appraisal);
+        }
+        List<AppraisalVo> appraisalVos = new ArrayList<>();
+        for (UserMessageBo userMessageBo : userMessageBos) {
+            Long userId = userMessageBo.getUserId();
+            String userNumber = userMessageBo.getUserNumber();
+            String username = userMessageBo.getUsername();
+            Double lastMonthScore = userMessageBo.getAppraisalScore();
+            AppraisalVo appraisalVo = new AppraisalVo();
+            if (map.get(userId) == null){
+                appraisalVo.setMonth(month);
+                appraisalVo.setContent(new AppraisalContentVo(userNumber, username, lastMonthScore));
+            }else {
+                Appraisal appraisal = map.get(userId);
+                BeanUtils.copyProperties(appraisal, appraisalVo);
+                appraisalVo.setSignature(appraisal.getSignature() != null ? urlUtil.getUrl(appraisal.getSignature()) : null);
+                if (appraisal.getContent() != null) {
+                    AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
+                    bean.setUsername(username);
+                    appraisalVo.setContent(bean);
+                }else {
+                    AppraisalContentVo appraisalContentVo = new AppraisalContentVo(userNumber, username, lastMonthScore);
+                    appraisalVo.setContent(appraisalContentVo);
+                }
+            }
+            appraisalVos.add(appraisalVo);
+        }
+        return appraisalVos;
+    }
+
     private AppraisalVo getAppraisal(String userNumber, Integer month) throws UnknownHostException {
         Long userId = userMapper.selectUserIdByUserNumber(userNumber);
         Appraisal appraisal = appraisalMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", userId, "month", month));
@@ -321,7 +375,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
         Double lastMonthScore = getLastMonthScore(userNumber, TimeUtil.now().getMonthValue());
         if (appraisal != null) {
             BeanUtils.copyProperties(appraisal, appraisalVo);
-            appraisalVo.setSignature(appraisal.getSignature() != null ? InetAddress.getLocalHost().getHostAddress() + ":" + port + appraisal.getSignature() : null);
+            appraisalVo.setSignature(appraisal.getSignature() != null ? urlUtil.getUrl(appraisal.getSignature()) : null);
             if (appraisal.getContent() != null) {
                 AppraisalContentVo bean = JSONUtil.toBean(appraisal.getContent(), AppraisalContentVo.class);
                 bean.setUsername(username);

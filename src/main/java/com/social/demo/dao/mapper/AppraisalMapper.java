@@ -1,6 +1,7 @@
 package com.social.demo.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.social.demo.data.bo.UserMessageBo;
 import com.social.demo.entity.Appraisal;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,7 +14,6 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
     List<String> selectUserNumbersToTeacher(Long classId, String keyword, Integer month, Integer rank, Integer number1, Integer number2);
 
     Integer selectTotal(Long classId, String name, String userNumber, Integer month, Integer rank);
-
 
     Appraisal selectAppraisalByUserId(Long userId, Integer month);
 
@@ -35,5 +35,7 @@ public interface AppraisalMapper extends BaseMapper<Appraisal> {
 
     Integer selectSignatureCount(Long classId, Integer month);
 
-    List<Appraisal> selectAppraisals(Long userId, Long classId, String keyword, Integer rank, Integer number1, Integer number2);
+    List<UserMessageBo> selectUserMessageToTeam(Long userId, String keyword, Integer rank, Integer number1, Integer number2);
+
+    List<Appraisal> selectAppraisals(List<UserMessageBo> userMessageBos, Integer month);
 }

@@ -6,6 +6,7 @@ import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.dao.mapper.AutographMapper;
 import com.social.demo.dao.repository.IAutographService;
 import com.social.demo.entity.Autograph;
+import com.social.demo.util.URLUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,8 @@ public class AutographServiceImpl extends ServiceImpl<AutographMapper, Autograph
     @Autowired
     AutographMapper autographMapper;
 
-    @Value("${server.port}")
-    private String port;
+    @Autowired
+    URLUtil urlUtil;
 
     public Boolean addAutograph(Autograph autograph){
         boolean insertSuccess;
@@ -37,7 +38,7 @@ public class AutographServiceImpl extends ServiceImpl<AutographMapper, Autograph
         List<Autograph> autographs = autographMapper.selectList(queryWrapper);
         for(Autograph autograph : autographs){
             try {
-                autograph.setSignature(InetAddress.getLocalHost().getHostAddress() + ":" + port +autograph.getSignature());
+                autograph.setSignature(urlUtil.getUrl(autograph.getSignature()));
             } catch (UnknownHostException e) {
                 throw new RuntimeException(e);
             }

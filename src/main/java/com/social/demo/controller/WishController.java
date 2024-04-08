@@ -82,15 +82,17 @@ public class WishController {
         Long timeId = wishVo1.getTimeId();
         WishTime wishTime = wishTimeService.selectWishTime3(timeId);
         LocalDateTime currentTime = LocalDateTime.now();
-        if (currentTime.isAfter(wishTime.getStartTime())&&currentTime.isBefore(wishTime.getEndTime())) {
+        if (currentTime.isAfter(wishTime.getEndTime())||currentTime.isBefore(wishTime.getStartTime())) {
             throw new SystemException(ResultCode.NOT_AT_THE_WISH_TIME);
         }
         List<Autograph> autographList = autographService.getAutograph(timeId,userId);
-        Autograph autograph1 = autographList.get(autographList.size()-1);
-        LocalDateTime time = autograph1.getUpdateTime();
-        Duration duration = Duration.between(currentTime,time);
-        if (Math.abs(duration.getSeconds()) <= 10) {
-            throw new SystemException(ResultCode.FREQUENT_REPORTING);
+        if(autographList.size()!=0){
+            Autograph autograph1 = autographList.get(autographList.size()-1);
+            LocalDateTime time = autograph1.getUpdateTime();
+            Duration duration = Duration.between(currentTime,time);
+            if (Math.abs(duration.getSeconds()) <= 10) {
+                throw new SystemException(ResultCode.FREQUENT_REPORTING);
+            }
         }
         String fileName = null;
         try {
