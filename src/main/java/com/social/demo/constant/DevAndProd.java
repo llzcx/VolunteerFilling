@@ -43,7 +43,8 @@ public class DevAndProd implements InitializingBean {
         } else {
             throw new RuntimeException("未知操作系统");
         }
-
+        log.info("登录验证是否开启：{}",true);
+        log.info("接口身份认证是否开启：{}",!PropertiesConstant.AUTHORIZATION_CLOSE);
         log.info("当前处于{}环境当中，系统为：{}。", env, isLinux() ? "linux" : "windows");
     }
 }

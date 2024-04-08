@@ -30,5 +30,5 @@ public interface PropertiesConstant {
      * 验权开关，false：表示开启权限验证
      *         true：表示关闭权限功能，便于部分接口测试。
      */
-    boolean AUTHORIZATION_CLOSE = true;
+    boolean AUTHORIZATION_CLOSE = false;
 }
