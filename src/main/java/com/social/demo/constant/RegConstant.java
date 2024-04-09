@@ -72,4 +72,19 @@ public interface RegConstant {
      * 身份证
      */
    String IDCard = "(\\d{17}[0-9a-zA-Z])|(\\d{14}[0-9a-zA-Z])";
+
+    /**
+     * 是否全部由中文组成
+     */
+   String CHINESE = "^[\\u4e00-\\u9fa5]+$";
+
+    /**
+     * 20个字符，包含1-9a-zA-Z
+     */
+   String STR_1_20 = "^[1-9a-zA-Z]{1,20}$";
+
+    /**
+     * 数字或者字符串
+     */
+   String NUMBER_OR_STR = "^[0-9\\u4e00-\\u9fa5]*$";
 }

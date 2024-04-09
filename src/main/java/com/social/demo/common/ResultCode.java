@@ -25,7 +25,7 @@ public enum ResultCode {
     /* 参数错误：1000～1999 */
     PARAM_NOT_VALID(1001, "参数无效"),
     PARAM_IS_BLANK(1002, "参数为空"),
-    PARAM_TYPE_ERROR(1003, "参数类型错误"),
+    ILLEGAL_PARAMETER(1003, "非法参数"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
 
 

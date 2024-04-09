@@ -91,7 +91,6 @@ public class RequestInterceptor implements HandlerInterceptor {
         //放行路径
         for (String path : PathConfig.RELEASABLE_PATH) {
             if (antPathMatcher.match(path, requestURL)) {
-                log.info("放行了");
                 return true;
             }
         }
