@@ -74,6 +74,7 @@ public class ExceptionHandlerConfig {
     @ExceptionHandler(value = NullPointerException.class)
     @ResponseBody
     public ApiResp exceptionHandler(NullPointerException e) {
+        log.error(errorStackInfoToString(e));
         return ApiResp.fail(ResultCode.NULL_POINT_EXCEPTION);
     }
 
@@ -96,6 +97,7 @@ public class ExceptionHandlerConfig {
     @ExceptionHandler(value = IllegalArgumentException.class)
     @ResponseBody
     public ApiResp exceptionHandler(IllegalArgumentException e) {
+        log.error(errorStackInfoToString(e));
         return ApiResp.fail(ResultCode.ILLEGAL_PARAMETER);
     }
 }
