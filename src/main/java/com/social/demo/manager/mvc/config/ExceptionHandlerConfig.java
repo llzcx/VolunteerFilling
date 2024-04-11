@@ -86,7 +86,8 @@ public class ExceptionHandlerConfig {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     @ResponseBody
     public ApiResp exceptionHandler(MethodArgumentNotValidException e) {
-        return ApiResp.fail(ResultCode.PARAM_NOT_VALID);
+        log.error(errorStackInfoToString(e));
+        return ApiResp.failRegular(e.getMessage());
     }
 
     /**

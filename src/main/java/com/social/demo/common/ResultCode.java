@@ -27,6 +27,7 @@ public enum ResultCode {
     PARAM_IS_BLANK(1002, "参数为空"),
     ILLEGAL_PARAMETER(1003, "非法参数"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
+    REG_ERROR(1005,"请求参数不符合规范"),
 
 
     /* 用户错误 */

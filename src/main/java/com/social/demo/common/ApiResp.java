@@ -113,6 +113,10 @@ public class ApiResp<T> implements Serializable {
         return new ApiResp(false, resultEnum);
     }
 
+    public static ApiResp failRegular(String msg){
+        return new ApiResp(false,ResultCode.REG_ERROR,msg);
+    }
+
     public static ApiResp fail(String msg) {
         return new ApiResp(false, msg);
     }
