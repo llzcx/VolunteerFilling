@@ -4,6 +4,7 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
+import com.social.demo.constant.RegConstant;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IAppraisalSignatureService;
@@ -14,6 +15,7 @@ import com.social.demo.data.vo.*;
 import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Pattern;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,7 +67,7 @@ public class AppraisalTeamController {
     @GetMapping("/appraisal")
     @Identity(IdentityEnum.APPRAISAL_TEAM)
     public ApiResp<YPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
-                                                     @RequestParam(value = "keyword", required = false)String keyword,
+                                                     @RequestParam(value = "keyword", required = false)@Pattern(regexp = RegConstant.KEYWORD)String keyword,
                                                      @RequestParam("month")Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,

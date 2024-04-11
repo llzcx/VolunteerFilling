@@ -4,12 +4,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
+import com.social.demo.constant.RegConstant;
 import com.social.demo.dao.repository.IGradeService;
 import com.social.demo.data.dto.GradeDto;
 import com.social.demo.data.dto.GradeSubjectDto;
 import com.social.demo.data.vo.GradeVo;
 import com.social.demo.entity.GradeSubject;
 import com.social.demo.manager.security.identity.Identity;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +91,7 @@ public class GradeController {
     @GetMapping
     @Identity(IdentityEnum.SUPER)
     public ApiResp<IPage<GradeVo>> getGrades(@RequestParam(value = "year", required = false)String year,
-                                            @RequestParam("keyword") String keyword,
+                                            @RequestParam("keyword") @Pattern(regexp = RegConstant.KEYWORD)String keyword,
                                             @RequestParam("current")Integer current,
                                             @RequestParam("size")Integer size){
         IPage<GradeVo> gradeVoIPage = gradeService.getGrades(year, keyword, current, size);
