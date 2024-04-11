@@ -63,8 +63,6 @@ security:
         - /user/loginVerify/base64 #图片Base54
         - /user/register #注册
         - /user/register/send/** #注册手机验证码发送
-file:
-    URL: http://192.168.50.35:8081
 logging:
     level:
         root: INFO # 日志级别，可选值为：TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF

@@ -6,15 +6,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.dao.mapper.AdmissionsMajorMapper;
 import com.social.demo.dao.mapper.MateMapper;
 import com.social.demo.dao.mapper.StudentMapper;
-import com.social.demo.dao.mapper.SysApiMapper;
 import com.social.demo.dao.repository.IMateService;
-import com.social.demo.dao.repository.IStudentService;
-import com.social.demo.dao.repository.ISysApiService;
 import com.social.demo.data.vo.RankingVo;
-import com.social.demo.demo.School;
-import com.social.demo.demo.Student;
 import com.social.demo.entity.*;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

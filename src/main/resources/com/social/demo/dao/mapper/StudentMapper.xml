@@ -148,4 +148,11 @@
             AND s.class_id = #{classId}
             AND s.enrollment_year = #{year}
     </select>
+    <select id="selectCountByClassAndKeyword" resultType="java.lang.Long">
+        SELECT COUNT(s.user_id) FROM user AS u, student AS s WHERE u.user_id = s.user_id
+        AND class_id = #{classId}
+        <if test="keyword != null and keyword != 'null' and keyword != ''">
+            AND (u.user_number LIKE CONCAT("%",#{keyword},"%") OR u.username LIKE CONCAT("%",#{keyword},"%"))
+        </if>
+    </select>
 </mapper>

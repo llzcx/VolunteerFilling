@@ -57,6 +57,10 @@ public class Appeal {
      * 申述类型 0-综测 1-志愿
      */
     private Boolean type;
+    /**
+     * 申述记录是否删除 0-未删除 1-已删除
+     */
+    private Boolean recordDelete;
 
     public Appeal(Long userId, Long classId, String content, LocalDateTime created, Integer state, LocalDateTime lastDdlTime) {
         this.userId = userId;

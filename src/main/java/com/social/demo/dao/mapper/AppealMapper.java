@@ -27,7 +27,7 @@ public interface AppealMapper extends BaseMapper<Appeal> {
 
     int selectAppealsByClassId(Long classId, Long appealId);
 
-    void deleteAppealByClassId(Long classId, Long appealId);
+    void updateAppealByClassId(Long classId, Long appealId);
 
     List<Appeal> selectTeamAppeals(Long userId, Boolean type);
 }

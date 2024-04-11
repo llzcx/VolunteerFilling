@@ -19,7 +19,7 @@
         SELECT class_id FROM `class` WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{teacherNumber})
     </select>
     <select id="selectClassIdByTeacherUserId" resultType="java.lang.Long">
-        SELECT class_id FROM `class` WHERE user_id = #{userId}
+        SELECT class_id FROM `class` WHERE user_id = #{userId} AND record_delete = 0
     </select>
     <select id="selectTeacherUserIdByClassId" resultType="java.lang.Long">
         SELECT user_id FROM `class` WHERE class_id = #{classId}
