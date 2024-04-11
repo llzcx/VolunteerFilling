@@ -46,7 +46,7 @@ public class AppraisalController {
     public ApiResp<IPage<AppraisalVo>> getAppraisalHistory(@RequestParam(value = "year", required = false)Integer year,
                                                            @RequestParam(value = "month", required = false)Integer month,
                                                            @RequestParam(value = "classId")Long classId,
-                                                           @RequestParam(value = "keyword",required = false)@Pattern(regexp = RegConstant.KEYWORD)String keyword,
+                                                           @RequestParam(value = "keyword",required = false)@Pattern(regexp = RegConstant.KEYWORD) String keyword,
                                                            @RequestParam("current")Integer current,
                                                            @RequestParam("size")Integer size) throws UnknownHostException {
         IPage<AppraisalVo> appraisalHistory = appraisalService.getAppraisalHistory(year, month, classId, keyword, current, size);
