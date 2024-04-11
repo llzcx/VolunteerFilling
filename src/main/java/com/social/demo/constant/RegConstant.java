@@ -37,6 +37,8 @@ public interface RegConstant {
      */
    String USER_NUMBER = "[0-9]{2,16}$";
 
+   String KEYWORD = "^(?:[\\u4e00-\\u9fa50-9]|\"\"|null|$)+$";
+
     /**
      * 微信号
      */

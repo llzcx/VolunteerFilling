@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.social.demo.dao.mapper.AppealMapper">
+    <update id="updateAppealByClassId">
+        UPDATE appeal SET record_delete = 1 WHERE class_id = #{classId} AND appeal_id = #{appealId}
+    </update>
     <delete id="deleteAppeal">
         DELETE FROM appeal WHERE user_id in (SELECT user_id FROM user WHERE user_number = #{userNumber})
-        AND appeal_id = #{appealId} AND state != 0
-    </delete>
-    <delete id="deleteAppealByClassId">
-        DELETE FROM appeal WHERE class_id = #{classId}
         AND appeal_id = #{appealId} AND state != 0
     </delete>
 
@@ -47,11 +46,12 @@
     </select>
     <select id="selectAppealsByClassId" resultType="java.lang.Integer">
         SELECT COUNT(appeal_id) FROM appeal WHERE class_id = #{classId}
-        AND appeal_id = #{appealId} AND state != 0
+        AND appeal_id = #{appealId} AND state != 0 AND record_delete = 0
     </select>
     <select id="selectTeamAppeals" resultType="com.social.demo.entity.Appeal">
         SELECT a.* FROM appeal AS a, student AS s WHERE a.type = #{type}
         AND a.user_id = s.user_id
         AND s.class_id IN (SELECT class_id FROM appraisal_team WHERE team_user_id = #{userId})
+        AND a.record_delete = 0
     </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
+import com.social.demo.constant.RegConstant;
 import com.social.demo.dao.repository.*;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.*;
@@ -13,6 +14,7 @@ import com.social.demo.manager.security.jwt.JwtUtil;
 import com.social.demo.util.TimeUtil;
 import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -69,7 +71,7 @@ public class ClassAdviserController {
     @GetMapping("/students")
     @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<IPage<ClassUserVo>> getStudents(HttpServletRequest request,
-                                                     @RequestParam(value = "keyword", required = false)String keyword,
+                                                     @RequestParam(value = "keyword", required = false)@Pattern(regexp = RegConstant.KEYWORD)String keyword,
                                                      @RequestParam(value = "role", required = false)String role,
                                                      @RequestParam(value = "rank")Integer rank,
                                                      @RequestParam("current")Integer current,
@@ -126,7 +128,7 @@ public class ClassAdviserController {
     @GetMapping("/appraisal")
     @Identity(IdentityEnum.CLASS_ADVISER)
     public ApiResp<YPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
-                                                            @RequestParam(value = "keyword", required = false)String keyword,
+                                                            @RequestParam(value = "keyword", required = false)@Pattern(regexp = RegConstant.KEYWORD)String keyword,
                                                             @RequestParam(value = "month", required = false)Integer month,
                                                             @RequestParam("rank")Integer rank,
                                                             @RequestParam("current")Integer current,

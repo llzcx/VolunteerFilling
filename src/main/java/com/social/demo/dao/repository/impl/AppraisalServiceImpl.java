@@ -2,6 +2,7 @@ package com.social.demo.dao.repository.impl;
 
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -259,8 +260,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
     @Override
     public List<AppraisalVo> getClassAppraisal(Long classId, Integer month, Integer year) throws UnknownHostException {
         List<UserMessageBo> userMessageBos = studentMapper.selectUserMessageByClassYear(classId, year);
-        List<AppraisalVo> appraisalVos = getAppraisals(userMessageBos, month);
-        return appraisalVos;
+        return getAppraisals(userMessageBos, month);
     }
 
     @Override
@@ -295,7 +295,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
 
     private List<AppraisalVo> getAppraisals(List<UserMessageBo> userMessageBos, Integer month) throws UnknownHostException {
         if(userMessageBos.isEmpty())
-            throw new SystemException(ResultCode.CLASS_NOT_HAVE_STUDENT);
+            return null;
         List<Appraisal> appraisalList = appraisalMapper.selectAppraisals(userMessageBos, month);
         HashMap<Long, Appraisal> map = new HashMap<>();
         for (Appraisal appraisal : appraisalList) {
@@ -358,7 +358,7 @@ public class AppraisalServiceImpl extends ServiceImpl<AppraisalMapper, Appraisal
             month = TimeUtil.now().getMonthValue();
         }
         List<UserMessageBo> userMessageBos = appraisalMapper.selectUserMessageToTeacher(classId ,keyword, rank, (current - 1) * size, size);
-        Long count = studentMapper.selectCount(MybatisPlusUtil.queryWrapperEq("class_id", classId));
+        Long count = studentMapper.selectCountByClassAndKeyword(classId, keyword);
         List<AppraisalVo> appraisalVos = getAppraisals(userMessageBos, month);
         IPage<AppraisalVo> appraisalVoIPage = new Page<>(current, size, count);
         appraisalVoIPage.setRecords(appraisalVos);

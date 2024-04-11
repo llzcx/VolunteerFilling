@@ -72,6 +72,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Autowired
     ConsigneeMapper consigneeMapper;
 
+    @Autowired
+    AppraisalMapper appraisalMapper;
+
+    @Autowired
+    AppealMapper appealMapper;
+
     @Qualifier("local")
     @Autowired
     UploadFile uploadFile;
@@ -168,8 +174,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         user.setUserNumber(null);
         NullifyEmptyStrings.nullifyEmptyStringsInObject(user);
         NullifyEmptyStrings.nullifyEmptyStringsInObject(student);
-        if (!NullCheckUtils.areAllFieldsNull(user)) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
-        if (!NullCheckUtils.areAllFieldsNull(student)) studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
+        if (!ObjectUtils.areAllFieldsNull(user)) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        if (!ObjectUtils.areAllFieldsNull(student)) studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(userNumber)));
         return true;
     }
 
@@ -388,8 +394,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             }
         }
         for (String number : numbers) {
-            studentMapper.delete(MybatisPlusUtil.queryWrapperEq("user_id", userMapper.selectUserIdByUserNumber(number)));
+            Long userId = userMapper.selectUserIdByUserNumber(number);
+            studentMapper.delete(MybatisPlusUtil.queryWrapperEq("user_id", userId));
             userMapper.delete(MybatisPlusUtil.queryWrapperEq("user_number", number));
+            consigneeMapper.delete(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+            appealMapper.delete(MybatisPlusUtil.queryWrapperEq("user_id", userId));
+            appraisalMapper.delete(MybatisPlusUtil.queryWrapperEq("user_id", userId));
         }
         return null;
     }

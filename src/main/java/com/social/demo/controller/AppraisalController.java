@@ -3,9 +3,11 @@ package com.social.demo.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.social.demo.common.ApiResp;
 import com.social.demo.constant.IdentityEnum;
+import com.social.demo.constant.RegConstant;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.data.vo.AppraisalVo;
 import com.social.demo.manager.security.identity.Identity;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +46,7 @@ public class AppraisalController {
     public ApiResp<IPage<AppraisalVo>> getAppraisalHistory(@RequestParam(value = "year", required = false)Integer year,
                                                            @RequestParam(value = "month", required = false)Integer month,
                                                            @RequestParam(value = "classId")Long classId,
-                                                           @RequestParam(value = "keyword",required = false)String keyword,
+                                                           @RequestParam(value = "keyword",required = false)@Pattern(regexp = RegConstant.KEYWORD) String keyword,
                                                            @RequestParam("current")Integer current,
                                                            @RequestParam("size")Integer size) throws UnknownHostException {
         IPage<AppraisalVo> appraisalHistory = appraisalService.getAppraisalHistory(year, month, classId, keyword, current, size);

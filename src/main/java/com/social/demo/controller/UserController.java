@@ -5,6 +5,7 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
+import com.social.demo.constant.RegConstant;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
@@ -19,6 +20,7 @@ import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -113,7 +115,7 @@ public class UserController {
      */
     @GetMapping
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<IPage<UserVo>> getUser(@RequestParam(value = "username", required = false)String username,
+    public ApiResp<IPage<UserVo>> getUser(@RequestParam(value = "username", required = false)@Pattern(regexp = RegConstant.KEYWORD)String username,
                                           @RequestParam(value = "role", required = false)String role,
                                           @RequestParam("current")Long current,
                                           @RequestParam("size")Long size){

@@ -5,6 +5,7 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
+import com.social.demo.constant.RegConstant;
 import com.social.demo.dao.repository.IAppealService;
 import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IStudentService;
@@ -18,6 +19,7 @@ import com.social.demo.manager.security.context.SecurityContext;
 import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -262,7 +264,7 @@ public class StudentController {
     @Identity(IdentityEnum.STUDENT)
     public ApiResp<IPage<StudentVo>> getStudentHistory(@RequestParam("year") Integer year,
                                                        @RequestParam(value = "classId", required = false) Integer classId,
-                                                       @RequestParam(value = "keyword", required = false) String keyword,
+                                                       @RequestParam(value = "keyword", required = false)@Pattern(regexp = RegConstant.KEYWORD) String keyword,
                                                        @RequestParam("current") Integer current,
                                                        @RequestParam("size") Integer size) throws UnknownHostException {
         IPage<StudentVo> studentVoIPage = studentService.getStudentHistory(year, classId, keyword, current, size);
@@ -281,7 +283,7 @@ public class StudentController {
     @GetMapping("/appraisal")
     @Identity(IdentityEnum.STUDENT)
     public ApiResp<IPage<AppraisalVo>> getAppraisals(HttpServletRequest request,
-                                                     @RequestParam(value = "keyword", required = false)String keyword,
+                                                     @RequestParam(value = "keyword", required = false)@Pattern(regexp = RegConstant.KEYWORD)String keyword,
                                                      @RequestParam(value = "month", required = false)Integer month,
                                                      @RequestParam("rank")Integer rank,
                                                      @RequestParam("current")Integer current,

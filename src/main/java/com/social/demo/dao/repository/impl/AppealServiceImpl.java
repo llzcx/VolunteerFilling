@@ -127,7 +127,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
             }
         }
         for (Long appealId : appealIds) {
-            appealMapper.deleteAppealByClassId(classId, appealId);
+            appealMapper.updateAppealByClassId(classId, appealId);
         }
         return true;
     }
@@ -165,7 +165,7 @@ public class AppealServiceImpl extends ServiceImpl<AppealMapper, Appeal> impleme
             }
         }
         for (Long appealId : appealIds) {
-            appealMapper.deleteAppealByClassId(classId, appealId);
+            appealMapper.updateAppealByClassId(classId, appealId);
         }
         return true;
     }
