@@ -117,6 +117,9 @@ public class ApiResp<T> implements Serializable {
         return new ApiResp(false,ResultCode.REG_ERROR,msg);
     }
 
+    public static ApiResp failUnKnown(String msg){
+        return new ApiResp(false,ResultCode.ERROR_UNKNOWN,msg);
+    }
     public static ApiResp fail(String msg) {
         return new ApiResp(false, msg);
     }

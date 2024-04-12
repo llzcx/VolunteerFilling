@@ -1,6 +1,7 @@
 package com.social.demo.manager.mvc.config;
 
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
@@ -65,7 +66,7 @@ public class ExceptionHandlerConfig {
         // 把错误信息输入到日志中
         String s = errorStackInfoToString(e);
         log.error(s);
-        return ApiResp.fail(ResultCode.ERROR_UNKNOWN.getMessage() + errorString(e));
+        return ApiResp.failUnKnown(errorString(e));
     }
 
     /**
@@ -78,6 +79,17 @@ public class ExceptionHandlerConfig {
         return ApiResp.fail(ResultCode.NULL_POINT_EXCEPTION);
     }
 
+
+    /**
+     * json反序列化错误
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = MismatchedInputException.class)
+    @ResponseBody
+    public ApiResp exceptionHandler(MismatchedInputException e) {
+        return ApiResp.fail(ResultCode.JSON_ERROR);
+    }
     /**
      * 参数异常
      * @param e
