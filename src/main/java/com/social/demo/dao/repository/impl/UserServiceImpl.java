@@ -239,7 +239,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             users.add(user);
             Student student = new Student();
             BeanUtils.copyProperties(studentDto, student);
-            Long classId = classMapper.selectClassIdByName(studentDto.getClassName());
+            Long classId = classMapper.selectClassIdByName(getClassAllName(studentDto.getClassName()));
             if (classId == null){
                 classId = classService.createClass(studentDto.getClassName(), null);
             }
@@ -285,6 +285,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         studentMapper.insertBatchSomeColumn(students);
         consigneeMapper.insertBatchSomeColumn(consignees);
         return null;
+    }
+
+    private String getClassAllName(String className){
+        return TimeUtil.now().getYear() + "级" + className + "班";
     }
 
     @Override
