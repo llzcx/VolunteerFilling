@@ -67,6 +67,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Autowired
     IUserService userService;
 
+    @Autowired
+    IClassService classService;
+
     @Override
     public Boolean create(ClassDto classDto) {
         Long userId = getTeacherId(classDto.getUserNumber());
@@ -85,6 +88,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Override
     public Long createClass(@NotNull String className, Long userId){
         Class aClass = new Class();
+        classService.judgeClassName(className);
         className = TimeUtil.now().getYear() + "级" + className + "班";
         aClass.setClassName(className);
         if (userId != null){
