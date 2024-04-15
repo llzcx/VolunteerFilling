@@ -67,6 +67,9 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Autowired
     IUserService userService;
 
+    @Autowired
+    IClassService classService;
+
     @Override
     public Boolean create(ClassDto classDto) {
         Long userId = getTeacherId(classDto.getUserNumber());
