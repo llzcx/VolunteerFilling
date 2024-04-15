@@ -3,7 +3,7 @@
 # jar包名称
 JAR_FILE="volunteer-filling.jar"
 # pid 名称
-PID_FILE="volunteer-filling.pid"
+PID_FILE="/data/yuke/volunteer-filling.pid"
 
 start() {
     if [ -f "$PID_FILE" ]; then
