@@ -40,6 +40,7 @@ public interface IMateService extends IService<Mate> {
      */
     List<WishResult> getWishResultBySchoolId2(Long schoolId, Long timeId);
     List<WishResult> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size);
+     void updateWishResult(Long timeId);
     /**
      * 查看匹配结果
      * @param schoolId

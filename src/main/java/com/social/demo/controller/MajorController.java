@@ -93,7 +93,7 @@ public class MajorController {
      */
     @GetMapping("/selectSchoolMajor")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<IPage<MajorVo>> selectSchoolMajor(@RequestParam("schoolId")Long schoolId,@RequestParam("type") String type,
+    public ApiResp<IPage<MajorVo>> selectSchoolMajor(@RequestParam("schoolId")Long schoolId,@RequestParam("type")String type,
                                                      @RequestParam("word") String word,@RequestParam("current")Long current,
                                                      @RequestParam("size")Long size){
         new Page<>();

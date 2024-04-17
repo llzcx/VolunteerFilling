@@ -16,4 +16,8 @@ public class MateDto {
      * 志愿时间id
      */
     private Long timeId;
+    /**
+     * 重新匹配id
+     */
+    private Integer type1;
 }

@@ -147,6 +147,11 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     public List<WishResult> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size){
         return studentMapper.getWishResultBySchoolId6(schoolId,timeId,current,size);
     }
+    public void updateWishResult(Long timeId){
+        QueryWrapper<Mate> queryWrapper = Wrappers.query();
+        queryWrapper.eq("time_id",timeId);
+        mateMapper.delete(queryWrapper);
+    }
     public List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type){
         current=(current-1)*size;
         if(type==1){

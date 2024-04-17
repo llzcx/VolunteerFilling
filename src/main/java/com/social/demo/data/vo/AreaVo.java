@@ -1,6 +1,11 @@
 package com.social.demo.data.vo;
 
+import com.social.demo.constant.RegConstant;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.NonNull;
+import org.springframework.validation.annotation.Validated;
 
 import java.sql.Timestamp;
 import java.util.List;

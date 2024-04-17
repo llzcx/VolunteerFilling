@@ -40,6 +40,9 @@ public class VolunteerDiversionController {
     @PostMapping("/Mate")
     @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> MateResult(@RequestBody MateDto mateDto){
+        if(mateDto.getType1()==1){
+            mateService.updateWishResult(mateDto.getTimeId());
+        }
         Long m =mateService.mateJudge(mateDto.getTimeId(),mateDto.getType());
         if(m>0){
             return ApiResp.fail(ResultCode.REPEATED_GENERATION);
