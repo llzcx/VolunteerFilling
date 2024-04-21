@@ -35,7 +35,7 @@ public interface RegConstant {
      * 只能使用数字
      * 长度在2到16个字符之间
      */
-   String USER_NUMBER = "[0-9]{2,16}$";
+   String USER_NUMBER = "^[@#$%^&+=a-zA-Z0-9]{6,16}$";
 
    String KEYWORD = "^(?:[\\u4e00-\\u9fa50-9]|\"\"|null|$)+$";
 
