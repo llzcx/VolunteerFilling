@@ -1,6 +1,7 @@
 package com.social.demo.dao.mapper;
 
 import com.social.demo.data.bo.StudentBo;
+import com.social.demo.data.vo.AdminVo;
 import com.social.demo.data.vo.ClassUserVo;
 import com.social.demo.entity.User;
 import org.apache.ibatis.annotations.Mapper;
@@ -65,4 +66,6 @@ public interface UserMapper extends EasyBaseMapper<User> {
     List<String> selectUserIdHistory(Integer year, Integer classId, String keyword, Integer number1, Integer number2);
 
     Integer selectUserCountHistory(Integer year, Integer classId, String keyword);
+
+    AdminVo getAdminMessage(Long userId);
 }

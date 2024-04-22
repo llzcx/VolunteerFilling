@@ -6,14 +6,15 @@ import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.constant.PropertiesConstant;
 import com.social.demo.constant.RegConstant;
+import com.social.demo.dao.mapper.UserMapper;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
-import com.social.demo.data.dto.LoginDto;
-import com.social.demo.data.dto.ModifyClassDto;
-import com.social.demo.data.dto.StudentDto;
-import com.social.demo.data.dto.TeacherDto;
+import com.social.demo.data.bo.UserMessageBo;
+import com.social.demo.data.dto.*;
+import com.social.demo.data.vo.AdminVo;
 import com.social.demo.data.vo.ClassTeacherVo;
+import com.social.demo.data.vo.StudentVo;
 import com.social.demo.data.vo.UserVo;
 import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.util.URLUtil;
@@ -21,12 +22,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -41,6 +44,9 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     URLUtil urlUtil;
@@ -171,6 +177,17 @@ public class UserController {
     }
 
     /**
+     * 管理员修改用户头像
+     * @param file 文件
+     * @return
+     */
+    @PostMapping("/admin/headshot")
+    @Identity({IdentityEnum.SUPER})
+    public ApiResp<String> adminUploadHeadshot(Integer userId, MultipartFile file) throws Exception {
+        return ApiResp.success(urlUtil.getUrl(userService.adminUploadHeadshot(Long.valueOf(userId), file)));
+    }
+
+    /**
      * 修改密码
      * @param request
      * @param password
@@ -193,5 +210,42 @@ public class UserController {
     public ApiResp<String> modifyClass(ModifyClassDto modifyClassDto){
         Boolean b = userService.modifyClass(modifyClassDto);
         return ApiResp.judge(b, "修改成功", ResultCode.PARAM_NOT_VALID);
+    }
+
+    /**
+     * 管理员获取学生个人信息
+     * @param userId 学生id
+     * @return 学生个人信息
+     */
+    @GetMapping("/student")
+    @Identity(IdentityEnum.SUPER)
+    public ApiResp<StudentVo> getStudent(@RequestParam("userId")Long userId) throws UnknownHostException {
+        String userNumber = userMapper.selectUserNumberByUserId(userId);
+        StudentVo user = userService.getStudent(userNumber);
+        return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
+    }
+
+    /**
+     * 管理员修改学生个人信息
+     * @param userDtoByAdmin
+     * @return 学生个人信息
+     */
+    @PutMapping("/student")
+    @Identity(IdentityEnum.SUPER)
+    public ApiResp<String> modifyStudent(@RequestBody UserDtoByAdmin userDtoByAdmin) throws IllegalAccessException {
+        Boolean b = userService.modifyStudentForAdmin(userDtoByAdmin);
+        return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
+    }
+
+    /**
+     * 获取管理员信息
+     * @param request
+     * @return
+     */
+    @GetMapping("/admin")
+    @Identity(IdentityEnum.SUPER)
+    public ApiResp<AdminVo> getAdminMessage(HttpServletRequest request){
+        AdminVo adminVo = userService.getAdminMessage(request);
+        return ApiResp.success(adminVo);
     }
 }

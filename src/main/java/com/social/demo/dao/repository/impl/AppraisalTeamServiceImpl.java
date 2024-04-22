@@ -67,7 +67,7 @@ public class AppraisalTeamServiceImpl extends ServiceImpl<AppraisalTeamMapper, A
     @Override
     public void resetAppraisalTeamPwd(String userNumber) {
         User user = new User();
-        user.setPassword(MD5.create().digestHex(PropertiesConstant.PASSWORD));
+        user.setPassword(MD5.create().digestHex(userNumber));
         userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
     }
 

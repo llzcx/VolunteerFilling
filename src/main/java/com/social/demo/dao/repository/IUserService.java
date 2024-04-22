@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.dto.*;
-import com.social.demo.data.vo.ClassTeacherVo;
-import com.social.demo.data.vo.TeacherVo;
-import com.social.demo.data.vo.StudentVo;
-import com.social.demo.data.vo.UserVo;
+import com.social.demo.data.vo.*;
 import com.social.demo.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -144,4 +141,10 @@ public interface IUserService extends IService<User> {
     String uploadHeadshot(HttpServletRequest request, MultipartFile file) throws Exception;
 
     Boolean modifyClass(ModifyClassDto modifyClassDto);
+
+    String adminUploadHeadshot(Long userId, MultipartFile file) throws Exception;
+
+    Boolean modifyStudentForAdmin(UserDtoByAdmin userDtoByAdmin);
+
+    AdminVo getAdminMessage(HttpServletRequest request);
 }

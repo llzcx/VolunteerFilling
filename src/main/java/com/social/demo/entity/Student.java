@@ -27,7 +27,7 @@ public class Student {
      */
     private Long classId;
     /**
-     * 学校编号
+     * 学校id
      */
     private Long schoolId;
     /**

@@ -97,5 +97,8 @@
                 AND (u.user_number LIKE CONCAT("%",#{keyword},"%") OR u.username LIKE CONCAT("%",#{keyword},"%"))
             </if>
     </select>
+    <select id="getAdminMessage" resultType="com.social.demo.data.vo.AdminVo">
+        SELECT user_number, last_ddl_time FROM user WHERE user_id = #{userId}
+    </select>
 
 </mapper>

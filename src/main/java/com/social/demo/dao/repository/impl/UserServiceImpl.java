@@ -191,8 +191,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             }
         }
         User user = new User();
-        user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
         for (String number : numbers) {
+            user.setPassword(DigestUtil.md5Hex(number));
             userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_number", number));
         }
         return true;
@@ -255,7 +255,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             student.setState(StateEnum.NOT_FILL.getState());
             student.setScore(SCORE);
             student.setAppraisalScore(APPRAISAL_SCORE);
-            user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
+            //使用学号为密码
+            user.setPassword(DigestUtil.md5Hex(user.getUserNumber()));
             user.setIdentity(IdentityEnum.STUDENT.getRoleId());
             student.setEnrollmentYear(TimeUtil.now().getYear());
             Set<String> strings = new HashSet<>(Arrays.asList(studentDto.getSubjects()));
@@ -317,17 +318,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             User user = new User();
             BeanUtils.copyProperties(teacher, user);
             user.setIdentity(IdentityEnum.TEACHER.getRoleId());
-            user.setPassword(DigestUtil.md5Hex(PropertiesConstant.PASSWORD));
+            user.setPassword(DigestUtil.md5Hex(user.getUserNumber()));
             users.add(user);
             if (!JudgeUser(teacher.getUserNumber())){
                 return teacher.getUserNumber();
             }
         }
 
-//        SysRole sysRole = sysRoleMapper.selectOne(MybatisPlusUtil.queryWrapperEq("role_name", PropertiesConstant.IDENTITY_TEACHER));
         for (User user : users) {
             userMapper.insert(user);
-//            sysUserRoleMapper.insert(new SysUserRole(user.getClassUserId(), sysRole.getId()));
         }
         return null;
     }
@@ -447,5 +446,67 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
             studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userId));
         }
         return true;
+    }
+
+    @Override
+    public String adminUploadHeadshot(Long userId, MultipartFile file) throws Exception {
+        String upload = uploadFile.upload(file, HEADSHOT, MD5.create().digestHex(userId + TimeUtil.now().toString()));
+        User user = new User();
+        user.setHeadshot(upload);
+        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));
+        return upload;
+    }
+
+    @Transactional
+    @Override
+    public Boolean modifyStudentForAdmin(UserDtoByAdmin userDtoByAdmin) {
+        User user = new User();
+        BeanUtils.copyProperties(userDtoByAdmin.getStudentDto(), user);
+        Student student = new Student();
+        BeanUtils.copyProperties(userDtoByAdmin.getStudentDto(), student);
+        // 判断学校
+        if (userDtoByAdmin.getStudentDto().getSchoolId() != null){
+            Long count = schoolMapper.selectCount(MybatisPlusUtil.queryWrapperEq("school_id", userDtoByAdmin.getStudentDto().getSchoolId()));
+            if (count == 0)
+                throw new SystemException(ResultCode.SCHOOL_NOT_EXISTS);
+            else
+                student.setSchoolId(userDtoByAdmin.getStudentDto().getSchoolId());
+        }
+        String oldUserNumber = userMapper.selectUserNumberByUserId(userDtoByAdmin.getUserId());
+        // 判断学号
+        if (!oldUserNumber.equals(userDtoByAdmin.getStudentDto().getUserNumber())){
+            Long count = userMapper.selectCount(MybatisPlusUtil.queryWrapperEq("user_number", userDtoByAdmin.getStudentDto().getUserNumber()));
+            if (count > 0)
+                throw new SystemException(ResultCode.IS_EXISTS);
+        }
+        // 科目
+        if (userDtoByAdmin.getStudentDto().getSubjects().length != 0 && !userDtoByAdmin.getStudentDto().getSubjects()[0].isEmpty()){
+            Set<String> strings = new HashSet<>(Arrays.asList(userDtoByAdmin.getStudentDto().getSubjects()));
+            int hashCode = 0;
+            for (String string : strings) {
+                hashCode += string.hashCode();
+            }
+            student.setHashcode(hashCode);
+        }
+        // 班级
+        if (userDtoByAdmin.getClassId() != null && userDtoByAdmin.getClassId() != 0){
+            student.setClassId(userDtoByAdmin.getClassId());
+        }
+
+        Consignee consignee = new Consignee();
+        BeanUtils.copyProperties(userDtoByAdmin.getConsignee(), consignee);
+        NullifyEmptyStrings.nullifyEmptyStringsInObject(user);
+        NullifyEmptyStrings.nullifyEmptyStringsInObject(consignee);
+        NullifyEmptyStrings.nullifyEmptyStringsInObject(student);
+        if (!ObjectUtils.areAllFieldsNull(user)) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        if (!ObjectUtils.areAllFieldsNull(student)) studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        if (!ObjectUtils.areAllFieldsNull(consignee)) consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        return true;
+    }
+
+    @Override
+    public AdminVo getAdminMessage(HttpServletRequest request) {
+        Long userId = jwtUtil.getUserId(request);
+        return userMapper.getAdminMessage(userId);
     }
 }
