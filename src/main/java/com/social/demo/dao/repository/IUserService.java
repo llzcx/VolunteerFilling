@@ -147,4 +147,6 @@ public interface IUserService extends IService<User> {
     Boolean modifyStudentForAdmin(UserDtoByAdmin userDtoByAdmin);
 
     AdminVo getAdminMessage(HttpServletRequest request);
+
+    StudentForAdminVo getStudentForAdmin(String userNumber) throws UnknownHostException;
 }

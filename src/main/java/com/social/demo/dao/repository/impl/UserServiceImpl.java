@@ -495,12 +495,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
         Consignee consignee = new Consignee();
         BeanUtils.copyProperties(userDtoByAdmin.getConsignee(), consignee);
-        NullifyEmptyStrings.nullifyEmptyStringsInObject(user);
-        NullifyEmptyStrings.nullifyEmptyStringsInObject(consignee);
-        NullifyEmptyStrings.nullifyEmptyStringsInObject(student);
-        if (!ObjectUtils.areAllFieldsNull(user)) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
-        if (!ObjectUtils.areAllFieldsNull(student)) studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
-        if (!ObjectUtils.areAllFieldsNull(consignee)) consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
         return true;
     }
 
@@ -508,5 +505,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     public AdminVo getAdminMessage(HttpServletRequest request) {
         Long userId = jwtUtil.getUserId(request);
         return userMapper.getAdminMessage(userId);
+    }
+
+    @Override
+    public StudentForAdminVo getStudentForAdmin(String userNumber) throws UnknownHostException {
+        User user = userMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_number", userNumber));
+        Student student = studentMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", user.getUserId()));
+        StudentForAdminVo studentVo = new StudentForAdminVo();
+        BeanUtils.copyProperties(user, studentVo);
+        BeanUtils.copyProperties(student, studentVo);
+        studentVo.setHeadshot(studentVo.getHeadshot() != null ? urlUtil.getUrl(studentVo.getHeadshot()) : null);
+        studentVo.setSubjects(JSONUtil.toList(subjectGroupMapper.selectSubjects(student.getHashcode()).getSubjects(), String.class));
+        studentVo.setClassName(classMapper.selectNameByClassId(student.getClassId()));
+        ConsigneeBo consigneeBo = new ConsigneeBo();
+        BeanUtils.copyProperties(consigneeMapper.selectOne(MybatisPlusUtil.queryWrapperEq("user_id", user.getUserId())), consigneeBo);
+        studentVo.setConsignee(consigneeBo);
+        return studentVo;
     }
 }

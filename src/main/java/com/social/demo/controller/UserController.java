@@ -12,10 +12,7 @@ import com.social.demo.data.bo.LoginBo;
 import com.social.demo.data.bo.TokenPair;
 import com.social.demo.data.bo.UserMessageBo;
 import com.social.demo.data.dto.*;
-import com.social.demo.data.vo.AdminVo;
-import com.social.demo.data.vo.ClassTeacherVo;
-import com.social.demo.data.vo.StudentVo;
-import com.social.demo.data.vo.UserVo;
+import com.social.demo.data.vo.*;
 import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.util.URLUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -219,9 +216,9 @@ public class UserController {
      */
     @GetMapping("/student")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<StudentVo> getStudent(@RequestParam("userId")Long userId) throws UnknownHostException {
+    public ApiResp<StudentForAdminVo> getStudent(@RequestParam("userId")Long userId) throws UnknownHostException {
         String userNumber = userMapper.selectUserNumberByUserId(userId);
-        StudentVo user = userService.getStudent(userNumber);
+        StudentForAdminVo user = userService.getStudentForAdmin(userNumber);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
