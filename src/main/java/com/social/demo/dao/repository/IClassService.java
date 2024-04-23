@@ -52,4 +52,6 @@ public interface IClassService extends IService<Class> {
     List<ClassVo> getClassList(Integer year);
 
     List<StudentVo> getClassStudents(Long classId) throws UnknownHostException;
+
+    void removeClassAdviser(Integer classId);
 }

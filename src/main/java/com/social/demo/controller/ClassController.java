@@ -91,7 +91,6 @@ public class ClassController {
     @PutMapping
     @Identity(IdentityEnum.SUPER)
     public ApiResp<String> modify(@RequestBody ClassModifyDto classModifyDto){
-        System.out.println(classModifyDto);
         Boolean b = classService.modify(classModifyDto);
         return ApiResp.judge(b, "操作成功", ResultCode.IS_EXISTS);
     }
@@ -118,5 +117,17 @@ public class ClassController {
     public ApiResp<List<StudentVo>> getClassStudents(@RequestParam("classId")Long classId) throws UnknownHostException {
         List<StudentVo> studentVos = classService.getClassStudents(classId);
         return ApiResp.success(studentVos);
+    }
+
+    /**
+     * 移除班级班主任
+     * @param classId
+     * @return
+     */
+    @PostMapping("/class/adviser")
+    @Identity(IdentityEnum.SUPER)
+    public ApiResp<String> deleteClassAdviser(@RequestBody Integer classId){
+        classService.removeClassAdviser(classId);
+        return ApiResp.success("移除成功");
     }
 }

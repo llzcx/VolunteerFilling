@@ -169,6 +169,17 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         return studentVos;
     }
 
+    @Transactional
+    @Override
+    public void removeClassAdviser(Integer classId) {
+        Long classIdLong = Long.valueOf(classId);
+        Class aClass = new Class();
+        aClass.setUserId(null);
+        Long teacherId = classMapper.selectTeacherUserIdByClassId(classIdLong);
+        classMapper.removeClassAdviser(classIdLong);
+        sysRoleService.saveUserRole(teacherId, IdentityEnum.TEACHER.getRoleId());
+    }
+
     private Long getTeacherId (String userNumber){
             Long userId = userMapper.selectUserIdByUserNumber(userNumber);
 
