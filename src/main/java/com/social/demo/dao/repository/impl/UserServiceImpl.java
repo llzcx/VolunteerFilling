@@ -474,6 +474,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
         }
         String oldUserNumber = userMapper.selectUserNumberByUserId(userDtoByAdmin.getUserId());
         // 判断学号
+        if (userDtoByAdmin.getStudentDto().getUserNumber().isEmpty()){
+            throw new SystemException(ResultCode.USER_NUMBER_ILLEGAL);
+        }
         if (!oldUserNumber.equals(userDtoByAdmin.getStudentDto().getUserNumber())){
             Long count = userMapper.selectCount(MybatisPlusUtil.queryWrapperEq("user_number", userDtoByAdmin.getStudentDto().getUserNumber()));
             if (count > 0)
@@ -495,9 +498,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
 
         Consignee consignee = new Consignee();
         BeanUtils.copyProperties(userDtoByAdmin.getConsignee(), consignee);
-        userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
-        studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
-        consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        if (!ObjectUtils.areAllFieldsNull(user)) userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        if (!ObjectUtils.areAllFieldsNull(student)) studentMapper.update(student, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
+        if (!ObjectUtils.areAllFieldsNull(consignee)) consigneeMapper.update(consignee, MybatisPlusUtil.queryWrapperEq("user_id", userDtoByAdmin.getUserId()));
         return true;
     }
 

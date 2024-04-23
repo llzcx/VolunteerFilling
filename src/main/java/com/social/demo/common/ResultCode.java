@@ -84,6 +84,7 @@ public enum ResultCode {
     APPRAISAL_NOT_END(2043,"本月综测还未结束，无法签名"),
     APPRAISAL_IS_END(2044, "本月综测已结束，禁止修改"),
     CLASS_NOT_HAVE_STUDENT(2045, "班级内不存在学生，暂无综测"),
+    USER_NUMBER_ILLEGAL(2046, "学号不合法"),
 
         /*接口异常*/
     UNDEFINED(3001,"枚举范围错误"),
