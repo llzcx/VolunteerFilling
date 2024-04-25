@@ -143,8 +143,8 @@ public class WishController {
         Long userId = SecurityContext.get().getUserId();
         Student student = studentService.getStudent(userId);
         String  address1;
-        if(student.getProvince().equals("内蒙古")){
-            address1 = student.getProvince();
+        if(student.getProvince().contains("内蒙古")){
+            address1 = "内蒙古";
         }else {
             address1 = student.getProvince().substring(0,2);
         }

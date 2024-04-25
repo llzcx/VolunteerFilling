@@ -54,6 +54,7 @@ public class VolunteerDiversionController {
         List<RankingVo> rankingVos  = studentService.getRanking(3,student);
         List<Major> majors = majorService.getSchoolMajor(mateDto.getSchoolId());
         List<Wish> wishes = wishService.selectSchool(mateDto.getSchoolId(),mateDto.getTimeId());
+        System.out.println(wishes);
         if (mateDto.getType()==1){
             mateService.firstMate(rankingVos,majors,wishes);
         }else {
