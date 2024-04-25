@@ -422,6 +422,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements IUs
     @Override
     public Boolean modifyPassword(HttpServletRequest request, String password) {
         Long userId = jwtUtil.getUserId(request);
+        System.out.println("password:" + password);
         User user = new User();
         user.setPassword(DigestUtil.md5Hex(password));
         int update = userMapper.update(user, MybatisPlusUtil.queryWrapperEq("user_id", userId));

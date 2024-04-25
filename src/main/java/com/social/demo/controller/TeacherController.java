@@ -4,6 +4,7 @@ import com.social.demo.common.ApiResp;
 import com.social.demo.common.ResultCode;
 import com.social.demo.constant.IdentityEnum;
 import com.social.demo.dao.repository.IUserService;
+import com.social.demo.data.dto.PasswordDto;
 import com.social.demo.data.dto.UserDtoByTeacher;
 import com.social.demo.data.vo.TeacherVo;
 import com.social.demo.data.vo.StudentVo;
@@ -60,8 +61,8 @@ public class TeacherController {
     @PutMapping("/password")
     @Identity(IdentityEnum.TEACHER)
     public ApiResp<String> modifyPassword(HttpServletRequest request,
-                                          @RequestBody String password){
-        Boolean b = userService.modifyPassword(request, password);
+                                          @RequestBody PasswordDto password){
+        Boolean b = userService.modifyPassword(request, password.getPassword());
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 }

@@ -22,6 +22,8 @@ import jakarta.validation.constraints.Pattern;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -193,8 +195,8 @@ public class UserController {
     @PutMapping("/password")
     @Identity({IdentityEnum.SUPER, IdentityEnum.APPRAISAL_TEAM, IdentityEnum.STUDENT, IdentityEnum.TEACHER, IdentityEnum.CLASS_ADVISER})
     public ApiResp<String> modifyPassword(HttpServletRequest request,
-                                          @RequestBody String password){
-        Boolean b = userService.modifyPassword(request, password);
+                                          @RequestBody PasswordDto password){
+        Boolean b = userService.modifyPassword(request, password.getPassword());
         return ApiResp.judge(b, "修改成功", ResultCode.PARAM_NOT_VALID);
     }
 

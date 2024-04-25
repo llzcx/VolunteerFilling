@@ -11,6 +11,7 @@ import com.social.demo.dao.repository.IAppraisalService;
 import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IUserService;
 import com.social.demo.data.dto.AppealDto;
+import com.social.demo.data.dto.PasswordDto;
 import com.social.demo.data.dto.UserDtoByStudent;
 import com.social.demo.data.vo.*;
 import com.social.demo.entity.Student;
@@ -22,6 +23,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,8 +96,8 @@ public class StudentController {
     @PutMapping("/password")
     @Identity(IdentityEnum.STUDENT)
     public ApiResp<String> modifyPassword(HttpServletRequest request,
-                                          @RequestBody String password) {
-        Boolean b = userService.modifyPassword(request, password);
+                                          @RequestBody PasswordDto password){
+        Boolean b = userService.modifyPassword(request, password.getPassword());
         return ApiResp.judge(b, "修改成功", ResultCode.DATABASE_DATA_EXCEPTION);
     }
 
