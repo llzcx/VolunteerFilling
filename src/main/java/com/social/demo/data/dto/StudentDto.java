@@ -1,5 +1,7 @@
 package com.social.demo.data.dto;
 
+import com.social.demo.constant.RegConstant;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +36,7 @@ public class StudentDto implements Serializable {
     /**
      * 身份证号
      */
+    @Pattern(regexp = RegConstant.IDCard)
     private String idCard;
     /**
      * 政治面貌

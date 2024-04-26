@@ -54,4 +54,17 @@ public class RegTest {
         }
     }
 
+    /**
+     * 学号
+     * @throws Exception
+     */
+    @Test
+    void IdCard() throws Exception{
+        String IdCard = "43092320021028329X";
+        if (IdCard.matches(RegConstant.IDCard)) {
+            System.out.println("格式正确");
+        } else {
+            System.out.println("格式不正确");
+        }
+    }
 }

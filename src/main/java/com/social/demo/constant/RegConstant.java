@@ -73,7 +73,7 @@ public interface RegConstant {
     /**
      * 身份证
      */
-   String IDCard = "(\\d{17}[0-9a-zA-Z])|(\\d{14}[0-9a-zA-Z])";
+   String IDCard = "(^\\d{15}$)|(^\\d{18}$)|(^\\d{17}(\\d|X|x)$)";
 
     /**
      * 是否全部由中文组成
