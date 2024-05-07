@@ -86,7 +86,7 @@ public class ClassAdviserController {
      * @return 学生个人信息
      */
     @GetMapping("/student")
-    @Identity(IdentityEnum.CLASS_ADVISER)
+    @Identity({IdentityEnum.CLASS_ADVISER,IdentityEnum.SUPER})
     public ApiResp<StudentVo> getStudent(@RequestParam("number")String number) throws UnknownHostException {
         StudentVo user = userService.getStudent(number);
         return ApiResp.judge(user != null, user, ResultCode.DATABASE_DATA_EXCEPTION);
