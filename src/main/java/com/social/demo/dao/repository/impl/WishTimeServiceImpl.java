@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.social.demo.dao.mapper.AdmissionsMajorMapper;
+import com.social.demo.dao.mapper.MateMapper;
+import com.social.demo.dao.mapper.WishMapper;
 import com.social.demo.dao.mapper.WishTimeMapper;
 import com.social.demo.dao.repository.IStudentService;
 import com.social.demo.dao.repository.IWishService;
@@ -12,11 +15,13 @@ import com.social.demo.dao.repository.IWishTimeService;
 import com.social.demo.data.vo.NotAcceptedVo;
 import com.social.demo.data.vo.NotAcceptedVos;
 import com.social.demo.data.vo.WishTimeVo1;
+import com.social.demo.entity.AdmissionsMajor;
 import com.social.demo.entity.WishTime;
 import com.social.demo.util.MybatisPlusUtil;
 import org.checkerframework.checker.units.qual.N;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -28,9 +33,15 @@ import java.util.*;
 public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> implements IWishTimeService {
   @Autowired
   WishTimeMapper wishTimeMapper;
-
+  @Autowired
+  WishMapper wishMapper;
+  @Autowired
+  MateMapper mateMapper;
+  @Autowired
+  AdmissionsMajorMapper admissionsMajorMapper;
   @Autowired
   private IStudentService studentService;
+
 
   @Autowired
   private IWishService wishService;
@@ -100,8 +111,12 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
    * @return
    */
   @Override
+  @Transactional
   public Boolean deleteWishTime(Long id){
     int delete = wishTimeMapper.delete(MybatisPlusUtil.queryWrapperEq("id",id));
+    int delete1 = wishMapper.delete(MybatisPlusUtil.queryWrapperEq("time_id",id));
+    int delete2 = mateMapper.delete(MybatisPlusUtil.queryWrapperEq("time_id",id));
+    int delete3 = admissionsMajorMapper.delete(MybatisPlusUtil.queryWrapperEq("time_id",id));
     return delete > 0;
   }
   /**

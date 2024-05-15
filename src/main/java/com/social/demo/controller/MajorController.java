@@ -132,13 +132,16 @@ public class MajorController {
     }
     /**
      * 删除专业
-     * @param majorId
+     * @param majorIds
      * @return
      */
     @DeleteMapping("/deleteMajor")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<Boolean> deleteMajor(@RequestParam("MajorId")Long majorId) {
-        Boolean deleteArea = majorService.deleteMajor(majorId);
+    public ApiResp<Boolean> deleteMajor(@RequestParam("MajorId")List<Long> majorIds) {
+        Boolean deleteArea = false;
+        for(Long majorId:majorIds){
+             deleteArea = majorService.deleteMajor(majorId);
+        }
         return ApiResp.success(deleteArea);
     }
     public static  MajorVo MajorMajorVo(Major major){
