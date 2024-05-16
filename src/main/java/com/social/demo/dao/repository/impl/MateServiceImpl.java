@@ -144,6 +144,9 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     public List<WishResult> getWishResultBySchoolId2(Long schoolId, Long timeId){
         return studentMapper.getWishResultBySchoolId5(schoolId,timeId);
     }
+    public List<WishResult1> getWishResultBySchoolId3(Long schoolId, Long timeId){
+        return studentMapper.getWishResultBySchoolId7(schoolId,timeId);
+    }
     public List<WishResult> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size){
         return studentMapper.getWishResultBySchoolId6(schoolId,timeId,current,size);
     }

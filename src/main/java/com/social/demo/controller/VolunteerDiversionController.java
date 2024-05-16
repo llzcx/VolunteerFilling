@@ -77,9 +77,21 @@ public class VolunteerDiversionController {
      */
     @GetMapping("/getResult2")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<List<WishResult>> getPagingResult(@RequestParam("schoolId") Long schoolId,
+    public ApiResp<List<WishResult1>> getPagingResult(@RequestParam("schoolId") Long schoolId,
                                                @RequestParam("timeId") Long timeId){
-        return ApiResp.success(mateService.getWishResultBySchoolId2(schoolId,timeId));
+        List<WishResult1> wishResults = mateService.getWishResultBySchoolId3(schoolId,timeId);
+        for(WishResult1 wishResult1:wishResults){
+            if(wishResult1.getMajorName().equals(wishResult1.getFirstName())){
+                wishResult1.setResult("1");
+            }else if(wishResult1.getMajorName().equals(wishResult1.getSecondName())){
+                wishResult1.setResult("2");
+            } else if(wishResult1.getMajorName().equals(wishResult1.getThirdName())){
+                wishResult1.setResult("3");
+            }else {
+                wishResult1.setResult("调剂");
+            }
+        }
+        return ApiResp.success();
     }
     /**
      *分页查看最终匹配结果
