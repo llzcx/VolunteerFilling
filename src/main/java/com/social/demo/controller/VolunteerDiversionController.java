@@ -67,10 +67,12 @@ public class VolunteerDiversionController {
      */
     @GetMapping("/getResult")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<List<WishResult>> getResult(@RequestParam("schoolId") Long schoolId,
+    public ApiResp<List<WishResult1>> getResult(@RequestParam("schoolId") Long schoolId,
                                          @RequestParam("timeId") Long timeId,@RequestParam("mateWay") Integer mateWay,
                                                @RequestParam("type")Integer type){
-        return ApiResp.success(mateService.getWishResultBySchoolId(schoolId,timeId,mateWay,type));
+        List<WishResult1> wishResult1s = mateService.getWishResultBySchoolId(schoolId,timeId,mateWay,type);
+        wishResult1s = getWishResult(wishResult1s);
+        return ApiResp.success(wishResult1s);
     }
     /**
      *查看最终匹配结果
@@ -80,30 +82,21 @@ public class VolunteerDiversionController {
     public ApiResp<List<WishResult1>> getPagingResult(@RequestParam("schoolId") Long schoolId,
                                                @RequestParam("timeId") Long timeId){
         List<WishResult1> wishResults = mateService.getWishResultBySchoolId3(schoolId,timeId);
-        for(WishResult1 wishResult1:wishResults){
-            if(wishResult1.getMajorName().equals(wishResult1.getFirstName())){
-                wishResult1.setResult("1");
-            }else if(wishResult1.getMajorName().equals(wishResult1.getSecondName())){
-                wishResult1.setResult("2");
-            } else if(wishResult1.getMajorName().equals(wishResult1.getThirdName())){
-                wishResult1.setResult("3");
-            }else {
-                wishResult1.setResult("调剂");
-            }
-        }
-        return ApiResp.success();
+        wishResults =getWishResult(wishResults);
+        return ApiResp.success(wishResults);
     }
     /**
      *分页查看最终匹配结果
      */
     @GetMapping("/getPagingResult")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<IPage<WishResult>> getResult2(@RequestParam("schoolId") Long schoolId,
+    public ApiResp<IPage<WishResult1>> getResult2(@RequestParam("schoolId") Long schoolId,
                                                 @RequestParam("timeId") Long timeId,
                                                 @RequestParam("current")Long current,@RequestParam("size") Long size){
         List<WishResult> wishResults = mateService.getWishResultBySchoolId2(schoolId,timeId);
-        List<WishResult> wishResults1 = mateService.getPagingWishResultBySchoolId(schoolId,timeId,current,size);
-        IPage<WishResult> wishResultIPage = new Page<>();
+        List<WishResult1> wishResults1 = mateService.getPagingWishResultBySchoolId(schoolId,timeId,current,size);
+        wishResults1 =getWishResult(wishResults1);
+        IPage<WishResult1> wishResultIPage = new Page<>();
         wishResultIPage.setRecords(wishResults1);
         wishResultIPage.setCurrent(current);
         wishResultIPage.setTotal(wishResults.size());
@@ -115,13 +108,13 @@ public class VolunteerDiversionController {
      */
     @GetMapping("/getResult1")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<IPage<WishResult>> getResult1(@RequestParam("schoolId") Long schoolId,
+    public ApiResp<IPage<WishResult1>> getResult1(@RequestParam("schoolId") Long schoolId,
                                                @RequestParam("timeId") Long timeId,@RequestParam("mateWay") Integer mateWay,
                                                @RequestParam("current")Long current,@RequestParam("size") Long size,
                                                  @RequestParam("type")Integer type){
-        List<WishResult> wishResults = mateService.getWishResultBySchoolId(schoolId,timeId,mateWay,type);
-        List<WishResult> wishResults1 = mateService.getWishResultBySchoolId1(schoolId,timeId,mateWay,current,size,type);
-        IPage<WishResult> wishResultIPage = new Page<>();
+        List<WishResult1> wishResults = mateService.getWishResultBySchoolId(schoolId,timeId,mateWay,type);
+        List<WishResult1> wishResults1 = mateService.getWishResultBySchoolId1(schoolId,timeId,mateWay,current,size,type);
+        IPage<WishResult1> wishResultIPage = new Page<>();
         wishResultIPage.setRecords(wishResults1);
         wishResultIPage.setCurrent(current);
         wishResultIPage.setTotal(wishResults.size());
@@ -143,5 +136,19 @@ public class VolunteerDiversionController {
     @Identity(IdentityEnum.SUPER)
     public ApiResp<List<AdmissionsMajor>> getAdmissionsMajor(@RequestParam("type") Integer type,@RequestParam("timeId")Long timeId){
            return ApiResp.success(mateService.getAdmissionsMajor(type,timeId));
+    }
+    public List<WishResult1>  getWishResult(List<WishResult1> wishResults1){
+        for(WishResult1 wishResult1:wishResults1){
+            if(wishResult1.getMajorName().equals(wishResult1.getFirstName())){
+                wishResult1.setResult("1");
+            }else if(wishResult1.getMajorName().equals(wishResult1.getSecondName())){
+                wishResult1.setResult("2");
+            } else if(wishResult1.getMajorName().equals(wishResult1.getThirdName())){
+                wishResult1.setResult("3");
+            }else {
+                wishResult1.setResult("调剂");
+            }
+        }
+        return wishResults1;
     }
 }

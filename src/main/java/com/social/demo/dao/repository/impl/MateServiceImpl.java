@@ -3,11 +3,13 @@ package com.social.demo.dao.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.social.demo.common.JsonUtil;
 import com.social.demo.dao.mapper.AdmissionsMajorMapper;
 import com.social.demo.dao.mapper.MateMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.repository.IMateService;
 import com.social.demo.data.vo.RankingVo;
+import com.social.demo.data.vo.SubjectRuleVo;
 import com.social.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             if(value.getEnrollmentNumber()>0){
                 AdmissionsMajor admissionsMajor = new AdmissionsMajor();
                 admissionsMajor.setCollege(value.getCollege());
+                admissionsMajor.setClassification(value.getSubjectRule());
                 admissionsMajor.setName(value.getName());
                 admissionsMajor.setEnrollmentNumber(value.getEnrollmentNumber());
                 admissionsMajor.setMateWay(1);
@@ -112,6 +115,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             if(value.getEnrollmentNumber()>0){
                 AdmissionsMajor admissionsMajor = new AdmissionsMajor();
                 admissionsMajor.setCollege(value.getCollege());
+                admissionsMajor.setClassification(value.getSubjectRule());
                 admissionsMajor.setName(value.getName());
                 admissionsMajor.setEnrollmentNumber(value.getEnrollmentNumber());
                 admissionsMajor.setMateWay(2);
@@ -133,7 +137,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         mateMapper.insertBatchSomeColumn(mates);
         return true;
     }
-    public List<WishResult> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay,Integer type){
+    public List<WishResult1> getWishResultBySchoolId(Long schoolId, Long timeId, Integer mateWay,Integer type){
         if(type==1){
             return studentMapper.getWishResultBySchoolId(schoolId,timeId,mateWay);
         }else {
@@ -147,7 +151,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     public List<WishResult1> getWishResultBySchoolId3(Long schoolId, Long timeId){
         return studentMapper.getWishResultBySchoolId7(schoolId,timeId);
     }
-    public List<WishResult> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size){
+    public List<WishResult1> getPagingWishResultBySchoolId(Long schoolId, Long timeId,Long current,Long size){
         return studentMapper.getWishResultBySchoolId6(schoolId,timeId,current,size);
     }
     public void updateWishResult(Long timeId){
@@ -155,7 +159,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         queryWrapper.eq("time_id",timeId);
         mateMapper.delete(queryWrapper);
     }
-    public List<WishResult> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type){
+    public List<WishResult1> getWishResultBySchoolId1(Long schoolId, Long timeId, Integer mateWay,Long current,Long size,Integer type){
         current=(current-1)*size;
         if(type==1){
             return studentMapper.getWishResultBySchoolId1(schoolId,timeId,mateWay,current,size);
