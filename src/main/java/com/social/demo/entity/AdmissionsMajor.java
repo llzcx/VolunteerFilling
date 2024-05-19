@@ -29,4 +29,9 @@ public class AdmissionsMajor {
      * 志愿时间段Id
      */
     private Long timeId;
+    /**
+     * 分类
+     */
+    private String classification;
+
 }

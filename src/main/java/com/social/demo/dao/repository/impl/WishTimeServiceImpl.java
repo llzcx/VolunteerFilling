@@ -117,6 +117,7 @@ public class WishTimeServiceImpl extends ServiceImpl<WishTimeMapper, WishTime> i
     int delete1 = wishMapper.delete(MybatisPlusUtil.queryWrapperEq("time_id",id));
     int delete2 = mateMapper.delete(MybatisPlusUtil.queryWrapperEq("time_id",id));
     int delete3 = admissionsMajorMapper.delete(MybatisPlusUtil.queryWrapperEq("time_id",id));
+
     return delete > 0;
   }
   /**

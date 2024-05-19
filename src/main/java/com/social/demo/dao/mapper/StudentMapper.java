@@ -2,11 +2,8 @@ package com.social.demo.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.social.demo.data.bo.UserMessageBo;
-import com.social.demo.entity.WishClass;
-import com.social.demo.entity.Ranking;
+import com.social.demo.entity.*;
 import com.social.demo.data.bo.GradeBo;
-import com.social.demo.entity.Student;
-import com.social.demo.entity.WishResult;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -29,12 +26,13 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
      */
     List<WishClass> getUserIdByClassId1(Long classId, Long timeId,Long current,Long size);
     List<Long> getUserIdByClassId(Long classId);
-    List<WishResult> getWishResultBySchoolId(Long schoolId,Long timeId,Integer mateWay);
-    List<WishResult> getWishResultBySchoolId2(Long schoolId,Long timeId,Integer mateWay);
+    List<WishResult1> getWishResultBySchoolId(Long schoolId,Long timeId,Integer mateWay);
+    List<WishResult1> getWishResultBySchoolId2(Long schoolId,Long timeId,Integer mateWay);
     List<WishResult> getWishResultBySchoolId5(Long schoolId,Long timeId);
-    List<WishResult> getWishResultBySchoolId6(Long schoolId,Long timeId,Long current,Long size);
-    List<WishResult> getWishResultBySchoolId1(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
-    List<WishResult> getWishResultBySchoolId3(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
+    List<WishResult1> getWishResultBySchoolId7(Long schoolId, Long timeId);
+    List<WishResult1> getWishResultBySchoolId6(Long schoolId,Long timeId,Long current,Long size);
+    List<WishResult1> getWishResultBySchoolId1(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
+    List<WishResult1> getWishResultBySchoolId3(Long schoolId,Long timeId,Integer mateWay,Long current,Long size);
     Long getClass1(Long classId, Long timeId);
     Long selectClassIdByUserId(Long userId);
 
