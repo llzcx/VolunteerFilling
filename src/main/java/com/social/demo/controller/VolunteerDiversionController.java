@@ -41,7 +41,8 @@ public class VolunteerDiversionController {
     @Identity(IdentityEnum.SUPER)
     public ApiResp<Boolean> MateResult(@RequestBody MateDto mateDto){
         if(mateDto.getType1()==1){
-            mateService.updateWishResult(mateDto.getTimeId());
+            mateService.updateWishResult(mateDto.getTimeId(),mateDto.getType());
+            mateService.updateAdmissionsMajor(mateDto.getTimeId(),mateDto.getType());
         }
         Long m =mateService.mateJudge(mateDto.getTimeId(),mateDto.getType());
         if(m>0){
@@ -54,7 +55,6 @@ public class VolunteerDiversionController {
         List<RankingVo> rankingVos  = studentService.getRanking(3,student);
         List<Major> majors = majorService.getSchoolMajor(mateDto.getSchoolId());
         List<Wish> wishes = wishService.selectSchool(mateDto.getSchoolId(),mateDto.getTimeId());
-        System.out.println(wishes);
         if (mateDto.getType()==1){
             mateService.firstMate(rankingVos,majors,wishes);
         }else {
@@ -114,6 +114,7 @@ public class VolunteerDiversionController {
                                                  @RequestParam("type")Integer type){
         List<WishResult1> wishResults = mateService.getWishResultBySchoolId(schoolId,timeId,mateWay,type);
         List<WishResult1> wishResults1 = mateService.getWishResultBySchoolId1(schoolId,timeId,mateWay,current,size,type);
+        wishResults1 =getWishResult(wishResults1);
         IPage<WishResult1> wishResultIPage = new Page<>();
         wishResultIPage.setRecords(wishResults1);
         wishResultIPage.setCurrent(current);
@@ -139,12 +140,14 @@ public class VolunteerDiversionController {
     }
     public List<WishResult1>  getWishResult(List<WishResult1> wishResults1){
         for(WishResult1 wishResult1:wishResults1){
-            if(wishResult1.getMajorName().equals(wishResult1.getFirstName())){
-                wishResult1.setResult("1");
+            if(wishResult1.getMajorName() == null){
+                wishResult1.setResult("调剂");
+            }else if(wishResult1.getMajorName().equals(wishResult1.getFirstName())){
+                wishResult1.setResult("第一志愿");
             }else if(wishResult1.getMajorName().equals(wishResult1.getSecondName())){
-                wishResult1.setResult("2");
+                wishResult1.setResult("第二志愿");
             } else if(wishResult1.getMajorName().equals(wishResult1.getThirdName())){
-                wishResult1.setResult("3");
+                wishResult1.setResult("第三志愿");
             }else {
                 wishResult1.setResult("调剂");
             }
