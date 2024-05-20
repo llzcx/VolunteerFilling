@@ -8,6 +8,7 @@ import com.social.demo.dao.mapper.AdmissionsMajorMapper;
 import com.social.demo.dao.mapper.MateMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.repository.IMateService;
+import com.social.demo.data.vo.MajorVo2;
 import com.social.demo.data.vo.RankingVo;
 import com.social.demo.data.vo.SubjectRuleVo;
 import com.social.demo.entity.*;
@@ -33,22 +34,46 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     public  Boolean firstMate(List<RankingVo> rankingVos, List<Major> majors, List<Wish> wishes){
         Long timeId = wishes.get(0).getTimeId();
         List<StudentMate> studentMates = studentMates(rankingVos,wishes);
-        HashMap<Long,Major> majorHashMap= new HashMap<>();
+        HashMap<Long, MajorVo2> majorHashMap= new HashMap<>();
         for (Major major:majors) {
-            majorHashMap.put(major.getMajorId(),major);
+            MajorVo2 majorVo2 = new MajorVo2();
+            majorVo2.setMajorId(major.getMajorId());
+            majorVo2.setSchoolId(major.getSchoolId());
+            majorVo2.setName(major.getName());
+            majorVo2.setCollege(major.getCollege());
+            majorVo2.setSubjectRule(major.getSubjectRule());
+            majorVo2.setEnrollmentNumber(major.getEnrollmentNumber());
+            majorVo2.setSurplusNumber(major.getEnrollmentNumber());
+            majorVo2.setFirst(0);
+            majorVo2.setSecond(0);
+            majorVo2.setThird(0);
+            majorHashMap.put(major.getMajorId(),majorVo2);
         }
         int volunteersNumber = studentMates.get(0).getVolunteerList().size();
         for(int i=0;i<volunteersNumber;i++){
             for (StudentMate studentMate : studentMates) {
                 if(studentMate.getState().equals(0)&&studentMate.getVolunteerList().get(i).getMajorId()!=null){
-                    Major major = majorHashMap.get(studentMate.getVolunteerList().get(i).getMajorId());
-                    if(major.getEnrollmentNumber()>0){
-                        Integer a = major.getEnrollmentNumber();
+                    MajorVo2 major = majorHashMap.get(studentMate.getVolunteerList().get(i).getMajorId());
+                    if(major.getSurplusNumber()>0){
+                        Integer a = major.getSurplusNumber();
                         a--;
-                        major.setEnrollmentNumber(a);
+                        major.setSurplusNumber(a);
                         studentMate.setMajorId(major.getMajorId());
                         studentMate.setMajorName(major.getName());
                         studentMate.setState(1);
+                        if(i==0){
+                            Integer b = major.getFirst();
+                            b++;
+                            major.setFirst(b);
+                        }else if(i==1){
+                            Integer b = major.getSecond();
+                            b++;
+                            major.setSecond(b);
+                        }else if(i==2){
+                            Integer b = major.getThird();
+                            b++;
+                            major.setThird(b);
+                        }
                         majorHashMap.put(major.getMajorId(),major);
                     }
                 }
@@ -56,8 +81,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         }
         List<AdmissionsMajor> admissionsMajors = new ArrayList<>();
         for (Long key : majorHashMap.keySet()) {
-            Major value = majorHashMap.get(key);
-            if(value.getEnrollmentNumber()>0){
+                MajorVo2 value = majorHashMap.get(key);
                 AdmissionsMajor admissionsMajor = new AdmissionsMajor();
                 admissionsMajor.setCollege(value.getCollege());
                 admissionsMajor.setClassification(value.getSubjectRule());
@@ -65,8 +89,11 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                 admissionsMajor.setEnrollmentNumber(value.getEnrollmentNumber());
                 admissionsMajor.setMateWay(1);
                 admissionsMajor.setTimeId(timeId);
+                admissionsMajor.setFirst(value.getFirst());
+                admissionsMajor.setSecond(value.getSecond());
+                admissionsMajor.setThird(value.getThird());
+                admissionsMajor.setSurplusNumber(value.getSurplusNumber());
                 admissionsMajors.add(admissionsMajor);
-            }
         }
         admissionsMajorMapper.insertBatchSomeColumn(admissionsMajors);
         List<Mate> mates = new ArrayList<>();
@@ -88,22 +115,46 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
     public Boolean parallelMate(List<RankingVo> rankingVos, List<Major> majors, List<Wish> wishes){
         Long timeId = wishes.get(0).getTimeId();
         List<StudentMate> studentMates = studentMates(rankingVos,wishes);
-        HashMap<Long,Major> majorHashMap= new HashMap<>();
+        HashMap<Long, MajorVo2> majorHashMap= new HashMap<>();
         for (Major major:majors) {
-            majorHashMap.put(major.getMajorId(),major);
+            MajorVo2 majorVo2 = new MajorVo2();
+            majorVo2.setMajorId(major.getMajorId());
+            majorVo2.setSchoolId(major.getSchoolId());
+            majorVo2.setName(major.getName());
+            majorVo2.setCollege(major.getCollege());
+            majorVo2.setSubjectRule(major.getSubjectRule());
+            majorVo2.setEnrollmentNumber(major.getEnrollmentNumber());
+            majorVo2.setSurplusNumber(major.getEnrollmentNumber());
+            majorVo2.setFirst(0);
+            majorVo2.setSecond(0);
+            majorVo2.setThird(0);
+            majorHashMap.put(major.getMajorId(),majorVo2);
         }
         int volunteersNumber = studentMates.get(0).getVolunteerList().size();
             for (StudentMate student : studentMates){
                 for(int i=0;i<volunteersNumber;i++){
                 if(student.getState().equals(0)&&student.getVolunteerList().get(i).getMajorId()!=null){
-                    Major major = majorHashMap.get(student.getVolunteerList().get(i).getMajorId());
-                    if(major.getEnrollmentNumber()>0){
-                        Integer a = major.getEnrollmentNumber();
+                    MajorVo2 major = majorHashMap.get(student.getVolunteerList().get(i).getMajorId());
+                    if(major.getSurplusNumber()>0){
+                        Integer a = major.getSurplusNumber();
                         a--;
-                        major.setEnrollmentNumber(a);
+                        major.setSurplusNumber(a);
                         student.setMajorId(major.getMajorId());
                         student.setMajorName(major.getName());
                         student.setState(1);
+                        if(i==0){
+                            Integer b = major.getFirst();
+                            b++;
+                            major.setFirst(b);
+                        }else if(i==1){
+                            Integer b = major.getSecond();
+                            b++;
+                            major.setSecond(b);
+                        }else if(i==2){
+                            Integer b = major.getThird();
+                            b++;
+                            major.setThird(b);
+                        }
                         majorHashMap.put(major.getMajorId(),major);
                     }
                 }
@@ -111,8 +162,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             }
         List<AdmissionsMajor> admissionsMajors = new ArrayList<>();
         for (Long key : majorHashMap.keySet()) {
-            Major value = majorHashMap.get(key);
-            if(value.getEnrollmentNumber()>0){
+                MajorVo2 value = majorHashMap.get(key);
                 AdmissionsMajor admissionsMajor = new AdmissionsMajor();
                 admissionsMajor.setCollege(value.getCollege());
                 admissionsMajor.setClassification(value.getSubjectRule());
@@ -120,8 +170,12 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                 admissionsMajor.setEnrollmentNumber(value.getEnrollmentNumber());
                 admissionsMajor.setMateWay(2);
                 admissionsMajor.setTimeId(timeId);
+                admissionsMajor.setFirst(value.getFirst());
+                admissionsMajor.setSecond(value.getSecond());
+                admissionsMajor.setThird(value.getThird());
+                admissionsMajor.setSurplusNumber(value.getSurplusNumber());
                 admissionsMajors.add(admissionsMajor);
-            }
+
         }
         admissionsMajorMapper.insertBatchSomeColumn(admissionsMajors);
         List<Mate> mates = new ArrayList<>();
