@@ -18,7 +18,7 @@ public class AdmissionsMajor {
      */
     private String college;
     /**
-     * 剩余人数
+     * 招生人数
      */
     private Integer enrollmentNumber;
     /**
@@ -33,5 +33,20 @@ public class AdmissionsMajor {
      * 分类
      */
     private String classification;
-
+    /**
+     * 剩余人数
+     */
+    private Integer surplusNumber;
+    /**
+     * 第一志愿
+     */
+    private Integer first;
+    /**
+     * 第二志愿
+     */
+    private Integer second;
+    /**
+     * 第三志愿
+     */
+    private Integer third;
 }
