@@ -60,7 +60,7 @@ public class MajorController {
     @PutMapping("/modifyMajor")
     @Identity(IdentityEnum.SUPER)
     public ApiResp<MajorVo> modifyMajor(@RequestBody MajorVo majorVo){
-        if(majorVo.getSubjectRule()!=null){
+        if(majorVo.getSubjectRule().get(0).getAreaId()!=0){
             majorVo = SubjectScopeCount(majorVo);
         }
         List<SubjectRuleVo> subjectRuleVos = majorVo.getSubjectRule();
@@ -69,15 +69,17 @@ public class MajorController {
         for (SubjectRuleVo subjectRuleVo:subjectRuleVos){
              list1.add(subjectRuleVo.getAreaId());
         }
-        list = areaService.getAreaProvinces(list1);
-        for(int i=0;i<list.size();i++){
-            for(int j=i+1;j<list.size();j++){
-                List<String> combinedList = new ArrayList<>(list.get(i));
-                combinedList.addAll(list.get(j));
-                Set<String> set = new HashSet<>();
-                for (String item : combinedList) {
-                    if (!set.add(item)) {
-                        return ApiResp.fail(ResultCode.REGIONAL_DUPLICATION);
+        if(list1.get(0)!=0){
+            list = areaService.getAreaProvinces(list1);
+            for(int i=0;i<list.size();i++){
+                for(int j=i+1;j<list.size();j++){
+                    List<String> combinedList = new ArrayList<>(list.get(i));
+                    combinedList.addAll(list.get(j));
+                    Set<String> set = new HashSet<>();
+                    for (String item : combinedList) {
+                        if (!set.add(item)) {
+                            return ApiResp.fail(ResultCode.REGIONAL_DUPLICATION);
+                        }
                     }
                 }
             }
@@ -87,7 +89,6 @@ public class MajorController {
         MajorVo majorVo1 = MajorMajorVo(major);
         return ApiResp.success(majorVo1);
     }
-
     /**
      *查看学校专业
      */
