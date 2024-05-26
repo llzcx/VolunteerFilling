@@ -28,4 +28,8 @@ public class Mate {
      * 时间段Id
      */
     private Long timeId;
+    /**
+     * 所属学院
+     */
+    private String college;
 }

@@ -72,4 +72,8 @@ public class WishResult1 {
      * 学生地址
      */
     private String address;
+    /**
+     * 所属学院
+     */
+    private String college;
 }
