@@ -20,7 +20,7 @@
     </select>
     <select id="getWishResultBySchoolId" resultType="com.social.demo.entity.WishResult1">
         SELECT class.class_name,subject_group.subjects,school.name,student.province,user.username,user.user_number,user.sex,student.score
-             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,user.phone,student.parent_phone,consignee.address
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,mate.college,user.phone,student.parent_phone,consignee.address
         FROM student INNER JOIN wish  on student.user_id = wish.user_id
                                                                                            INNER JOIN wish.school ON student.school_id = school.school_id
                                                                                            INNER JOIN wish.user on user.user_id = student.user_id
@@ -32,7 +32,7 @@
     </select>
     <select id="getWishResultBySchoolId2" resultType="com.social.demo.entity.WishResult1">
         SELECT class.class_name,subject_group.subjects,school.name,student.province,user.username,user.user_number,user.sex,student.score
-             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,user.phone,student.parent_phone,consignee.address
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,mate.college,user.phone,student.parent_phone,consignee.address
         FROM student INNER JOIN wish  on student.user_id = wish.user_id
                      INNER JOIN wish.school ON student.school_id = school.school_id
                      INNER JOIN wish.user on user.user_id = student.user_id
@@ -80,7 +80,7 @@
     </select>
     <select id="getWishResultBySchoolId1" resultType="com.social.demo.entity.WishResult1">
         SELECT class.class_name,subject_group.subjects,school.name,student.province,user.username,user.user_number,user.sex,student.score
-             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,user.phone,student.parent_phone,consignee.address
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,mate.college,user.phone,student.parent_phone,consignee.address
         FROM student INNER JOIN wish  on student.user_id = wish.user_id
                      INNER JOIN wish.school ON student.school_id = school.school_id
                      INNER JOIN wish.user on user.user_id = student.user_id
@@ -93,7 +93,7 @@
     </select>
     <select id="getWishResultBySchoolId3" resultType="com.social.demo.entity.WishResult1">
         SELECT class.class_name,subject_group.subjects,school.name,student.province,user.username,user.user_number,user.sex,student.score
-             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,user.phone,student.parent_phone,consignee.address
+             ,wish.wish.first_name,wish.wish.second_name,wish.wish.third_name,mate.major_id,mate.major_name,mate.mate_way,mate.college,user.phone,student.parent_phone,consignee.address
         FROM student INNER JOIN wish  on student.user_id = wish.user_id
                      INNER JOIN wish.school ON student.school_id = school.school_id
                      INNER JOIN wish.user on user.user_id = student.user_id

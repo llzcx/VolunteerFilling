@@ -30,4 +30,8 @@ public class StudentMate {
      * 是否录取
      */
     private Integer state;
+    /**
+     * 所属学院
+     */
+    private String college;
 }

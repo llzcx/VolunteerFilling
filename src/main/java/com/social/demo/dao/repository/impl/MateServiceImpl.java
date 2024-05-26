@@ -60,6 +60,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                         major.setSurplusNumber(a);
                         studentMate.setMajorId(major.getMajorId());
                         studentMate.setMajorName(major.getName());
+                        studentMate.setCollege(major.getCollege());
                         studentMate.setState(1);
                         if(i==0){
                             Integer b = major.getFirst();
@@ -104,6 +105,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             mate.setMajorId(studentMate.getMajorId());
             mate.setMajorName(studentMate.getMajorName());
             mate.setTimeId(timeId);
+            mate.setCollege(studentMate.getCollege());
             mates.add(mate);
         }
         mateMapper.insertBatchSomeColumn(mates);
@@ -141,6 +143,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
                         major.setSurplusNumber(a);
                         student.setMajorId(major.getMajorId());
                         student.setMajorName(major.getName());
+                        student.setCollege(major.getCollege());
                         student.setState(1);
                         if(i==0){
                             Integer b = major.getFirst();
@@ -186,6 +189,7 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
             mate.setMajorId(studentMate.getMajorId());
             mate.setMajorName(studentMate.getMajorName());
             mate.setTimeId(timeId);
+            mate.setCollege(studentMate.getCollege());
             mates.add(mate);
         }
         mateMapper.insertBatchSomeColumn(mates);
