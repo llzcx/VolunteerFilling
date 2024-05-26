@@ -31,6 +31,7 @@ import com.social.demo.util.TimeUtil;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +70,10 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
 
     @Autowired
     IClassService classService;
+
+    //综测成绩初始分数
+    @Value("${basic.attribute.appraisal_score}")
+    private Double APPRAISAL_SCORE;
 
     @Override
     public Boolean create(ClassDto classDto) {
@@ -178,6 +183,11 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         Long teacherId = classMapper.selectTeacherUserIdByClassId(classIdLong);
         classMapper.removeClassAdviser(classIdLong);
         sysRoleService.saveUserRole(teacherId, IdentityEnum.TEACHER.getRoleId());
+    }
+
+    @Override
+    public void resetClassAppraisal(Integer classId) {
+        studentMapper.updateClassAppraisal(classId, APPRAISAL_SCORE);
     }
 
     private Long getTeacherId (String userNumber){

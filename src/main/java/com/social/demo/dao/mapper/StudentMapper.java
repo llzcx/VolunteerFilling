@@ -69,4 +69,6 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
     List<UserMessageBo> selectUserMessageByClassYear(Long classId, Integer year);
 
     Long selectCountByClassAndKeyword(Long classId, String keyword);
+
+    void updateClassAppraisal(Integer classId, Double appraisalScore);
 }

@@ -54,4 +54,6 @@ public interface IClassService extends IService<Class> {
     List<StudentVo> getClassStudents(Long classId) throws UnknownHostException;
 
     void removeClassAdviser(Integer classId);
+
+    void resetClassAppraisal(Integer classId);
 }

@@ -130,4 +130,16 @@ public class ClassController {
         classService.removeClassAdviser(classId);
         return ApiResp.success("移除成功");
     }
+
+    /**
+     * 管理员重置班级综测成绩
+     * @param classId 班级ia
+     * @return
+     */
+    @GetMapping("/class/appraisal")
+    @Identity(IdentityEnum.SUPER)
+    public ApiResp<String> resetClassAppraisal(@RequestParam Integer classId){
+        classService.resetClassAppraisal(classId);
+        return ApiResp.success("重置成功");
+    }
 }
