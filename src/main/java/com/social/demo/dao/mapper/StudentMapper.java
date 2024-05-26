@@ -1,12 +1,9 @@
 package com.social.demo.dao.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.social.demo.data.bo.UserMessageBo;
 import com.social.demo.entity.*;
 import com.social.demo.data.bo.GradeBo;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -70,5 +67,5 @@ public interface StudentMapper extends EasyBaseMapper<Student> {
 
     Long selectCountByClassAndKeyword(Long classId, String keyword);
 
-    void updateClassAppraisal(Integer classId, Double appraisalScore);
+    void updateClassAppraisal(Integer year, Double appraisalScore);
 }

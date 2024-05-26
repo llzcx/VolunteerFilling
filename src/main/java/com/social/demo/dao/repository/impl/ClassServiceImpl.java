@@ -38,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author 杨世博
@@ -186,8 +185,8 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     }
 
     @Override
-    public void resetClassAppraisal(Integer classId) {
-        studentMapper.updateClassAppraisal(classId, APPRAISAL_SCORE);
+    public void resetClassAppraisal(Integer year) {
+        studentMapper.updateClassAppraisal(year, APPRAISAL_SCORE);
     }
 
     private Long getTeacherId (String userNumber){

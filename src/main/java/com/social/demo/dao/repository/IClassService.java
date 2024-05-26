@@ -55,5 +55,5 @@ public interface IClassService extends IService<Class> {
 
     void removeClassAdviser(Integer classId);
 
-    void resetClassAppraisal(Integer classId);
+    void resetClassAppraisal(Integer year);
 }

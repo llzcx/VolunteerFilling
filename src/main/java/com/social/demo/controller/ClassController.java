@@ -133,13 +133,13 @@ public class ClassController {
 
     /**
      * 管理员重置班级综测成绩
-     * @param classId 班级ia
+     * @param year 入学年份
      * @return
      */
     @GetMapping("/class/appraisal")
     @Identity(IdentityEnum.SUPER)
-    public ApiResp<String> resetClassAppraisal(@RequestParam Integer classId){
-        classService.resetClassAppraisal(classId);
+    public ApiResp<String> resetClassAppraisal(@RequestParam Integer year){
+        classService.resetClassAppraisal(year);
         return ApiResp.success("重置成功");
     }
 }

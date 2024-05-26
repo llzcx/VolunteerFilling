@@ -5,7 +5,7 @@
         UPDATE student SET grade = null, score = null WHERE user_id IN (SELECT user_id FROM user WHERE user_number = #{userNumber})
     </update>
     <update id="updateClassAppraisal">
-        UPDATE student SET appraisal_score = #{appraisalScore} WHERE class_id = #{classId}
+        UPDATE student SET appraisal_score = #{appraisalScore} WHERE enrollment_year = #{year}
     </update>
 
     <select id="selectClassIdByUserNumber" resultType="java.lang.Long">
