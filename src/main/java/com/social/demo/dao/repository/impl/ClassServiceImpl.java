@@ -70,9 +70,7 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
     @Autowired
     IClassService classService;
 
-    //综测成绩初始分数
-    @Value("${basic.attribute.appraisal_score}")
-    private Double APPRAISAL_SCORE;
+
 
     @Override
     public Boolean create(ClassDto classDto) {
@@ -182,11 +180,6 @@ public class ClassServiceImpl extends ServiceImpl<ClassMapper, Class> implements
         Long teacherId = classMapper.selectTeacherUserIdByClassId(classIdLong);
         classMapper.removeClassAdviser(classIdLong);
         sysRoleService.saveUserRole(teacherId, IdentityEnum.TEACHER.getRoleId());
-    }
-
-    @Override
-    public void resetClassAppraisal(Integer year) {
-        studentMapper.updateClassAppraisal(year, APPRAISAL_SCORE);
     }
 
     private Long getTeacherId (String userNumber){

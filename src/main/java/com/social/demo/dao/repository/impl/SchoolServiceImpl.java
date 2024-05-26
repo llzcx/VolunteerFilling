@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.social.demo.common.ResultCode;
 import com.social.demo.common.SystemException;
 import com.social.demo.dao.mapper.SchoolMapper;
+import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.repository.ISchoolService;
 import com.social.demo.data.dto.SchoolDto;
 import com.social.demo.entity.School;
 import com.social.demo.util.MybatisPlusUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +24,13 @@ import java.util.Objects;
 public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> implements ISchoolService {
     @Autowired
     SchoolMapper schoolMapper;
+
+    //综测成绩初始分数
+    @Value("${basic.attribute.appraisal_score}")
+    private Double APPRAISAL_SCORE;
+
+    @Autowired
+    StudentMapper studentMapper;
 
     @Override
     public Boolean addSchool(SchoolDto schoolDto) {
@@ -67,5 +76,10 @@ public class SchoolServiceImpl extends ServiceImpl<SchoolMapper, School> impleme
         }else {
             return true;
         }
+    }
+
+    @Override
+    public void resetClassAppraisal(Integer year) {
+        studentMapper.updateClassAppraisal(year, APPRAISAL_SCORE);
     }
 }

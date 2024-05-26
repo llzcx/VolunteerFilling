@@ -41,4 +41,6 @@ public interface ISchoolService extends IService<School> {
     List<School> getSchool(String schoolName);
 
     Boolean judgeSchoolName(String schoolName);
+
+    void resetClassAppraisal(Integer year);
 }

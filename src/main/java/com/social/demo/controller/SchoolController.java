@@ -83,4 +83,16 @@ public class SchoolController {
         Boolean b = schoolService.judgeSchoolName(schoolName);
         return ApiResp.success(b);
     }
+
+    /**
+     * 管理员重置班级综测成绩
+     * @param year 入学年份
+     * @return
+     */
+    @GetMapping("/appraisal")
+    @Identity(IdentityEnum.SUPER)
+    public ApiResp<String> resetClassAppraisal(@RequestParam Integer year){
+        schoolService.resetClassAppraisal(year);
+        return ApiResp.success("重置成功");
+    }
 }
