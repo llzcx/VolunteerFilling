@@ -52,6 +52,7 @@ public class MajorServiceImpl extends ServiceImpl<MajorMapper,Major> implements 
 
         QueryWrapper<Major> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("school_id",schoolId);
+        queryWrapper.ne("enrollment_number", 0);
         return majorMapper.selectList(queryWrapper);
     }
     /**
