@@ -48,6 +48,7 @@ public class VolunteerDiversionController {
         if(m>0){
             return ApiResp.fail(ResultCode.REPEATED_GENERATION);
         }
+        WishTime wishTime = wishTimeService.selectWishTime3(mateDto.getTimeId());
         Student student = new Student();
         student.setSchoolId(mateDto.getSchoolId());
         Integer ago = wishTimeService.selectAgo(mateDto.getTimeId());
@@ -55,11 +56,16 @@ public class VolunteerDiversionController {
         List<RankingVo> rankingVos  = studentService.getRanking(3,student);
         List<Major> majors = majorService.getSchoolMajor(mateDto.getSchoolId());
         List<Wish> wishes = wishService.selectSchool(mateDto.getSchoolId(),mateDto.getTimeId());
-        if (mateDto.getType()==1){
-            mateService.firstMate(rankingVos,majors,wishes);
+        if(!wishTime.getType()){
+            mateService.prepareMate(wishes);
         }else {
-            mateService.parallelMate(rankingVos,majors,wishes);
+            if (mateDto.getType()==1){
+                mateService.firstMate(rankingVos,majors,wishes);
+            }else {
+                mateService.parallelMate(rankingVos,majors,wishes);
+            }
         }
+
         return ApiResp.success(true);
     }
     /**

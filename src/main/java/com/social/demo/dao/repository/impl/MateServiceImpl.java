@@ -3,14 +3,12 @@ package com.social.demo.dao.repository.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.social.demo.common.JsonUtil;
 import com.social.demo.dao.mapper.AdmissionsMajorMapper;
 import com.social.demo.dao.mapper.MateMapper;
 import com.social.demo.dao.mapper.StudentMapper;
 import com.social.demo.dao.repository.IMateService;
 import com.social.demo.data.vo.MajorVo2;
 import com.social.demo.data.vo.RankingVo;
-import com.social.demo.data.vo.SubjectRuleVo;
 import com.social.demo.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +50,8 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         int volunteersNumber = studentMates.get(0).getVolunteerList().size();
         for(int i=0;i<volunteersNumber;i++){
             for (StudentMate studentMate : studentMates) {
-                if(studentMate.getState().equals(0)&&studentMate.getVolunteerList().get(i).getMajorId()!=null){
+                if(studentMate.getState().equals(0)&&studentMate.getVolunteerList().get(i).getMajorId()!=null
+                        &&studentMate.getVolunteerList().get(i).getMajorId()!=0){
                     MajorVo2 major = majorHashMap.get(studentMate.getVolunteerList().get(i).getMajorId());
                     if(major.getSurplusNumber()>0){
                         Integer a = major.getSurplusNumber();
@@ -111,6 +110,19 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         mateMapper.insertBatchSomeColumn(mates);
     return true;
     }
+    public  Boolean prepareMate(List<Wish> wishes){
+        Long timeId = wishes.get(0).getTimeId();
+        List<Mate> mates = new ArrayList<>();
+        for(Wish wish :wishes){
+            Mate mate = new Mate();
+            mate.setMateWay(1);
+            mate.setUserId(wish.getUserId());
+            mate.setTimeId(timeId);
+            mates.add(mate);
+        }
+        mateMapper.insertBatchSomeColumn(mates);
+        return true;
+    }
     public Long mateJudge(Long timeId, Integer type){
         return mateMapper.mateJudge(timeId,type);
     }
@@ -135,7 +147,8 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         int volunteersNumber = studentMates.get(0).getVolunteerList().size();
             for (StudentMate student : studentMates){
                 for(int i=0;i<volunteersNumber;i++){
-                if(student.getState().equals(0)&&student.getVolunteerList().get(i).getMajorId()!=null){
+                if(student.getState().equals(0)&&student.getVolunteerList().get(i).getMajorId()!=null
+                        &&student.getVolunteerList().get(i).getMajorId()!=0){
                     MajorVo2 major = majorHashMap.get(student.getVolunteerList().get(i).getMajorId());
                     if(major.getSurplusNumber()>0){
                         Integer a = major.getSurplusNumber();
@@ -269,4 +282,5 @@ public class MateServiceImpl extends ServiceImpl<MateMapper, Mate> implements IM
         }
         return studentMates;
     }
+
 }

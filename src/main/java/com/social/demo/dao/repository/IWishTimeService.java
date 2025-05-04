@@ -59,5 +59,7 @@ public interface IWishTimeService extends IService<WishTime> {
      */
     Integer selectAgo(Long timeId);
 
+
+
     List<NotAcceptedVos> selectNotAccepted(Long timeId);
 }

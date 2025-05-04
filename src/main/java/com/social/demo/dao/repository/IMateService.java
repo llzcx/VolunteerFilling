@@ -20,6 +20,10 @@ public interface IMateService extends IService<Mate> {
      */
     Boolean parallelMate(List<RankingVo> rankingVos, List<Major> majors, List<Wish> wishes);
     /**
+     * 预填报
+     */
+    Boolean prepareMate(List<Wish> wishes);
+    /**
      * 查看是否已经生成志愿
      */
     Long mateJudge(Long timeId,Integer type);

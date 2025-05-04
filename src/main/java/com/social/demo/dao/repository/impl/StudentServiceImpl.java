@@ -94,7 +94,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         ranking.setScore(student.getScore());
         ranking.setGrade(student.getGrade());
         ranking.setUserId(student.getUserId());
-        rankings.add(ranking);
+        if(rankings.contains(ranking)){
+        }else {
+            rankings.add(ranking);
+        }
         sort(rankings);
         return getRankingVo(rankings);
     }
