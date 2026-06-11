@@ -46,6 +46,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--H2 内嵌数据库 (local 模式替代 MySQL)-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- MyBatis-Plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -159,6 +165,14 @@
     <build>
         <!-- 打包后的jar包名称 -->
         <finalName>volunteer-filling</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/bin</directory>
+            </resource>
+        </resources>
         <!-- 打包配置 -->
         <plugins>
             <!-- maven 打包时跳过测试 -->

@@ -35,6 +35,8 @@ public class DevAndProd implements InitializingBean {
             env = "开发";
         } else if ("prod".equals(active)) {
             env = "生产";
+        } else if ("local".equals(active)) {
+            env = "本地";
         } else {
             throw new RuntimeException("请在参数spring.profiles.active中说明是生成环境还是开发环境");
         }
