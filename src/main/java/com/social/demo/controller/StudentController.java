@@ -301,7 +301,7 @@ public class StudentController {
      * @return
      */
     @GetMapping("/appraisal/month")
-    @Identity({IdentityEnum.CLASS_ADVISER,IdentityEnum.APPRAISAL_TEAM,IdentityEnum.STUDENT})
+    @Identity({IdentityEnum.SUPER, IdentityEnum.CLASS_ADVISER, IdentityEnum.APPRAISAL_TEAM, IdentityEnum.STUDENT})
     public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
         List<Integer> list = appraisalService.getMonthToStudent(request);
         return ApiResp.success(list);

@@ -50,6 +50,7 @@ public class SysRoleController {
      * @return
      */
     @GetMapping("/current")
+    @Identity({IdentityEnum.SUPER, IdentityEnum.APPRAISAL_TEAM, IdentityEnum.STUDENT, IdentityEnum.TEACHER, IdentityEnum.CLASS_ADVISER})
     public ApiResp<SysRoleVo> getRole() {
         Long userId = SecurityContext.get().getUserId();
         Integer code = userMapper.selectIdentityByUserId(userId);

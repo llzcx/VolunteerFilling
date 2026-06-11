@@ -58,7 +58,7 @@ public class WishTimeController {
      *根据学校编码搜索志愿时间接口
      */
     @GetMapping("selectWishTime")
-    @Identity({IdentityEnum.SUPER,IdentityEnum.STUDENT})
+    @Identity({IdentityEnum.SUPER, IdentityEnum.STUDENT, IdentityEnum.CLASS_ADVISER, IdentityEnum.APPRAISAL_TEAM})
     public ApiResp<IPage<WishTime>> selectWishTime(@RequestParam("schoolId") Integer schoolId,
                                                @RequestParam("current")Long current,
                                                @RequestParam("size")Long size){
@@ -79,7 +79,7 @@ public class WishTimeController {
      *搜索志愿时间未录取学生接口
      */
     @GetMapping("selectNotAccepted")
-    @Identity(IdentityEnum.SUPER)
+    @Identity({IdentityEnum.SUPER, IdentityEnum.CLASS_ADVISER})
     public ApiResp<List<NotAcceptedVos>> selectNotAccepted(@RequestParam("timeId") Long timeId){
         return ApiResp.success(wishTimeService.selectNotAccepted(timeId));
     }

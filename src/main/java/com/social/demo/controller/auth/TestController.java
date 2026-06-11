@@ -1,6 +1,8 @@
 package com.social.demo.controller.auth;
 
 import com.social.demo.common.ApiResp;
+import com.social.demo.constant.IdentityEnum;
+import com.social.demo.manager.security.identity.Identity;
 import com.social.demo.manager.security.identity.Release;
 import com.social.demo.manager.ratelimit.api.APIRateLimiter;
 import com.social.demo.manager.security.context.SecurityContext;
@@ -17,19 +19,23 @@ import java.util.Random;
 @RestController
 public class TestController {
     @GetMapping("/test/super")
+    @Identity(IdentityEnum.SUPER)
     public String super1() {
         return "hello super"+ SecurityContext.get();
     }
     @GetMapping("/test/teacher")
+    @Identity(IdentityEnum.SUPER)
     public String teacher() {
         return "hello teacher"+ SecurityContext.get();
     }
     @GetMapping("/test/student")
+    @Identity(IdentityEnum.SUPER)
     public String student() {
         return "hello student"+ SecurityContext.get();
     }
 
     @GetMapping("/test/other/{name}")
+    @Identity(IdentityEnum.SUPER)
     public ApiResp<String> other(@PathVariable String name){
        return ApiResp.success("1");
     }

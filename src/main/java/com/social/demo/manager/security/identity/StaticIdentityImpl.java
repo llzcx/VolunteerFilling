@@ -15,14 +15,16 @@ public class StaticIdentityImpl implements IdentityAuthentication {
     @Override
     public boolean check(String requestURL, IdentityEnum identity, Method method) {
         Identity annotation = method.getAnnotation(Identity.class);
-        if (identity != null) {
-            //需要身份认证的接口
-            IdentityEnum[] value = annotation.value();
-            for (IdentityEnum ide : value)
-                if (ide.equals(identity)) return true;
-            return true;
-        } else {
-            throw new SystemException(ResultCode.ENCODING_ANOMALY);
+        if (annotation == null) {
+            throw new SystemException(ResultCode.UNAUTHORIZED_ACCESS);
         }
+        if (identity == null) {
+            throw new SystemException(ResultCode.UNAUTHORIZED_ACCESS);
+        }
+        IdentityEnum[] value = annotation.value();
+        for (IdentityEnum ide : value) {
+            if (ide.equals(identity)) return true;
+        }
+        throw new SystemException(ResultCode.UNAUTHORIZED_ACCESS);
     }
 }

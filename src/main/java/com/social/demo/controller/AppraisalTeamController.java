@@ -133,7 +133,7 @@ public class AppraisalTeamController {
      * @return
      */
     @GetMapping("/appraisal/month")
-    @Identity(IdentityEnum.APPRAISAL_TEAM)
+    @Identity({IdentityEnum.SUPER, IdentityEnum.CLASS_ADVISER, IdentityEnum.APPRAISAL_TEAM, IdentityEnum.STUDENT})
     public ApiResp<List<Integer>> getMonth(HttpServletRequest request){
         List<Integer> list = appraisalService.getMonthToTeam(request);
         return ApiResp.success(list);
